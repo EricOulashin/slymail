@@ -2,7 +2,7 @@
 
 This is a cross-platform text-based offline mail reader for the [QWK](https://en.wikipedia.org/wiki/QWK_(file_format)) packet format.  The QWK packet format was/is often used to exchange mail on [bulletin board systems](https://en.wikipedia.org/wiki/Bulletin_board_system).
 
-SlyMail provides a full-featured interface for reading and replying to messages from BBS (Bulletin Board System) QWK mail packets. Its user interface is inspired by [Digital Distortion Message Reader (DDMsgReader)](https://github.com/SynchronetBBS/sbbs/tree/master/xtrn/DigDist/MsgReader) for message reading and [SlyEdit](https://github.com/SynchronetBBS/sbbs/tree/master/exec) for message editing, both originally created for [Synchronet BBS](https://www.synchro.net/).
+SlyMail provides a full-featured interface for reading and replying to messages from BBS (Bulletin Board System) QWK mail packets. Its user interface is inspired by [Digital Distortion Message Reader (DDMsgReader)](https://github.com/SynchronetBBS/sbbs/tree/master/xtrn/DDMsgReader) for message reading and [SlyEdit](https://github.com/SynchronetBBS/sbbs/tree/master/exec) for message editing, both originally created for [Synchronet BBS](https://www.synchro.net/).
 
 ## Features
 
