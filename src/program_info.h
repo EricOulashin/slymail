@@ -1,0 +1,8 @@
+#ifndef SLYMAIL_PROGRAM_INFO_H
+#define SLYMAIL_PROGRAM_INFO_H
+
+#define PROGRAM_NAME    "SlyMail"
+#define PROGRAM_VERSION "0.50"
+#define PROGRAM_DATE    "2026-03-24"
+
+#endif // SLYMAIL_PROGRAM_INFO_H
