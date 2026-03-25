@@ -13,6 +13,7 @@
 #include "msg_reader.h"
 #include "msg_editor.h"
 #include "settings_dialog.h"
+#include "program_info.h"
 
 #include <ctime>
 #include <optional>
@@ -20,9 +21,6 @@
 using std::string;
 using std::vector;
 using std::optional;
-
-// Application version
-constexpr const char* SLYMAIL_VERSION = "1.00";
 
 // Show the splash/title screen
 void showSplashScreen()
@@ -50,7 +48,7 @@ void showSplashScreen()
         tAttr(TC_CYAN, TC_BLACK, false));
 
     printCentered(centerY + 7,
-        "QWK Offline Mail Reader v" + std::string(SLYMAIL_VERSION),
+        "QWK Offline Mail Reader v" + std::string(PROGRAM_VERSION),
         tAttr(TC_WHITE, TC_BLACK, true));
 
     printCentered(centerY + 9,
