@@ -5,10 +5,28 @@
 
 #include "terminal.h"
 #include <windows.h>
+#include <vector>
+
+// ============================================================
+// CellBuf - one screen cell in the double-buffer
+// ============================================================
+struct CellBuf
+{
+    wchar_t ch;
+    int     fg;
+    int     bg;
+    bool    bright;
+
+    bool operator==(const CellBuf& o) const
+    {
+        return ch == o.ch && fg == o.fg && bg == o.bg && bright == o.bright;
+    }
+    bool operator!=(const CellBuf& o) const { return !(*this == o); }
+};
 
 // ============================================================
 // Win32Terminal - Windows console implementation
-// using conio + Win32 Console API
+// using conio + Win32 Console API with double-buffering
 // ============================================================
 class Win32Terminal : public ITerminal
 {
@@ -57,7 +75,22 @@ private:
     HANDLE m_hInput;
     int    m_cols;
     int    m_rows;
-    WORD   m_currentAttr;
+
+    // Double buffers: back = desired state, front = last displayed state
+    std::vector<CellBuf>  m_back;
+    std::vector<CellBuf>  m_front;
+
+    // Reusable wide-char write buffer (sized to m_cols)
+    std::vector<wchar_t>  m_wbuf;
+
+    // Pending attribute applied by the next buffer write
+    int  m_pendFg;
+    int  m_pendBg;
+    bool m_pendBright;
+
+    // Logical cursor (updated by moveTo/printStr/putCh/putCP437)
+    int m_logRow;
+    int m_logCol;
 
     // Map standard keys
     int mapKey(int ch) const;

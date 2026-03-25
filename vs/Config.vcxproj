@@ -85,6 +85,8 @@
     <ClCompile Include="..\src\terminal_win32.cpp" />
     <ClCompile Include="..\src\ui_common.cpp" />
     <ClCompile Include="..\src\theme.cpp" />
+    <ClCompile Include="..\src\remote_systems.cpp" />
+    <ClCompile Include="..\src\file_browser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\terminal.h" />
