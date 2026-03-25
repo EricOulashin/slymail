@@ -143,18 +143,20 @@ SlyMail can download QWK packets directly from remote systems via FTP or SFTP (S
 	<a href="screenshots/SlyMail_02_File_Chooser.png" target='_blank'><img src="screenshots/SlyMail_02_File_Chooser.png" alt="File chooser: Browsing for QWK file" width="800"></a>
 	<a href="screenshots/SlyMail_03_msg_area_list.png" target='_blank'><img src="screenshots/SlyMail_03_msg_area_list.png" alt="Message area list" width="800"></a>
 	<a href="screenshots/SlyMail_04_msg_list.png" target='_blank'><img src="screenshots/SlyMail_04_msg_list.png" alt="Message list" width="800"></a>
-	<a href="screenshots/SlyMail_05_reading_msg.png" target='_blank'><img src="screenshots/SlyMail_05_reading_msg.png" alt="Reading a message" width="800"></a>
-	<a href="screenshots/SlyMail_06_msg_edit_start.png" target='_blank'><img src="screenshots/SlyMail_06_msg_edit_start.png" alt="Start of editing a message" width="800"></a>
-	<a href="screenshots/SlyMail_07_quote_line_selection.png" target='_blank'><img src="screenshots/SlyMail_07_quote_line_selection.png" alt="Editor: Quote line selection" width="800"></a>
-	<a href="screenshots/SlyMail_08_writing_reply_msg.png" target='_blank'><img src="screenshots/SlyMail_08_writing_reply_msg.png" alt="Editor: Editing a message" width="800"></a>
-	<a href="screenshots/SlyMail_09_editor_color_picker.png" target='_blank'><img src="screenshots/SlyMail_09_editor_color_picker.png" alt="Editor: Color picker" width="800"></a>
-	<a href="screenshots/SlyMail_10_Sync_poll_msg.png" target='_blank'><img src="screenshots/SlyMail_10_Sync_poll_msg.png" alt="Synchronet poll message" width="800"></a>
-	<a href="screenshots/SlyMail_11_reader_settings.png" target='_blank'><img src="screenshots/SlyMail_11_reader_settings.png" alt="Reader settings" width="800"></a>
-	<a href="screenshots/SlyMail_12_editor_settings.png" target='_blank'><img src="screenshots/SlyMail_12_editor_settings.png" alt="Editor settings" width="800"></a>
-	<a href="screenshots/SlyMail_13_msg_search.png" target='_blank'><img src="screenshots/SlyMail_13_msg_search.png" alt="Message Search" width="800"></a>
-	<a href="screenshots/SlyMail_14_Advanced_msg_search.png" target='_blank'><img src="screenshots/SlyMail_14_Advanced_msg_search.png" alt="Advanced Message Search" width="800"></a>
-	<a href="screenshots/SlyMail_15_advanced_msg_search_date_picker" target='_blank'><img src="screenshots/SlyMail_15_advanced_msg_search_date_picker" alt="Date Picker in Advanced Message Search" width="800"></a>
-	<a href="screenshots/SlyMail_16_config_program.png" target='_blank'><img src="screenshots/SlyMail_16_config_program.png" alt="Configuration Program" width="800"></a>
+	<a href="screenshots/SlyMail_05_remote_system_list.png" target='_blank'><img src="screenshots/SlyMail_05_remote_system_list.png" alt="Remote system list" width="800"></a>
+	<a href="screenshots/SlyMail_06_Remote_System_Edit.png" target='_blank'><img src="screenshots/SlyMail_06_Remote_System_Edit.png" alt="Editing a remote system" width="800"></a>
+	<a href="screenshots/SlyMail_07_reading_msg.png" target='_blank'><img src="screenshots/SlyMail_07_reading_msg.png" alt="Reading a message" width="800"></a>
+	<a href="screenshots/SlyMail_08_msg_edit_start.png" target='_blank'><img src="screenshots/SlyMail_08_msg_edit_start.png" alt="Start of editing a message" width="800"></a>
+	<a href="screenshots/SlyMail_09_quote_line_selection.png" target='_blank'><img src="screenshots/SlyMail_09_quote_line_selection.png" alt="Editor: Quote line selection" width="800"></a>
+	<a href="screenshots/SlyMail_10_writing_reply_msg.png" target='_blank'><img src="screenshots/SlyMail_10_writing_reply_msg.png" alt="Editor: Editing a message" width="800"></a>
+	<a href="screenshots/SlyMail_11_editor_color_picker.png" target='_blank'><img src="screenshots/SlyMail_11_editor_color_picker.png" alt="Editor: Color picker" width="800"></a>
+	<a href="screenshots/SlyMail_12_Sync_poll_msg.png" target='_blank'><img src="screenshots/SlyMail_12_Sync_poll_msg.png" alt="Synchronet poll message" width="800"></a>
+	<a href="screenshots/SlyMail_13_reader_settings.png" target='_blank'><img src="screenshots/SlyMail_13_reader_settings.png" alt="Reader settings" width="800"></a>
+	<a href="screenshots/SlyMail_14_editor_settings.png" target='_blank'><img src="screenshots/SlyMail_14_editor_settings.png" alt="Editor settings" width="800"></a>
+	<a href="screenshots/SlyMail_15_msg_search.png" target='_blank'><img src="screenshots/SlyMail_15_msg_search.png" alt="Message Search" width="800"></a>
+	<a href="screenshots/SlyMail_16_Advanced_msg_search.png" target='_blank'><img src="screenshots/SlyMail_16_Advanced_msg_search.png" alt="Advanced Message Search" width="800"></a>
+	<a href="screenshots/SlyMail_17_advanced_msg_search_date_picker" target='_blank'><img src="screenshots/SlyMail_17_advanced_msg_search_date_picker" alt="Date Picker in Advanced Message Search" width="800"></a>
+	<a href="screenshots/SlyMail_18_config_program.png" target='_blank'><img src="screenshots/SlyMail_18_config_program.png" alt="Configuration Program" width="800"></a>
 </p>
 
 ## Building
