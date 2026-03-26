@@ -15,7 +15,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 - **Quote line re-wrapping**: When replying to a message, quote lines are re-wrapped to fit within the configured quote line width (default 79 characters). Consecutive lines with the same quote prefix are grouped into paragraphs, joined, and re-wrapped. Blank lines, tear lines, and origin lines are preserved. Supports all common BBS quote prefix formats including nested quotes, initials-based quotes, and multi-level quoting. This addresses [issue 10](https://github.com/EricOulashin/SlyMail/issues/10).
 - **Updated help screens**: Conference list and message list help screens (? / F1) now list all applicable hotkeys including / (search), V (polls), Ctrl-R (remote systems), Ctrl-P (save REP), and ? / F1 (help).
 - **Directory chooser**: A visual directory browser is now used when selecting the reply packet directory in settings, instead of a plain text input field.
-- **Automated test suite**: Comprehensive tests for the text editing algorithm covering input, word wrap, color codes, cursor movement, paragraph saving, and quote wrapping.
 
 ### Changed
 - **Faster editor screen updates**: Cursor-only movements (arrow keys, Home, End, PageUp, PageDown) no longer redraw the edit area, eliminating visible flicker when holding down arrow keys. Only actual content changes trigger a redraw.
