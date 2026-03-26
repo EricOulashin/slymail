@@ -65,49 +65,59 @@ static int byteColToDisplayCol(const string& text, int byteCol)
     return displayCol;
 }
 
-// Move byte offset forward past any ANSI sequence at the current position.
-// If not at an ANSI sequence, advance by 1.
+// Move byte offset forward past one visible character.
+// Skips over all consecutive ANSI sequences at the current position first,
+// then advances past one regular character, then skips any trailing ANSI
+// sequences so the cursor lands on the next visible character.
 static int skipForward(const string& text, int pos)
 {
-    if (pos >= static_cast<int>(text.size()))
+    int len = static_cast<int>(text.size());
+    if (pos >= len) return pos;
+
+    // Skip any ANSI sequences at current position
+    while (pos < len)
     {
-        return pos;
+        int seqLen = ansiSeqLen(text, pos);
+        if (seqLen > 0)
+            pos += seqLen;
+        else
+            break;
     }
-    int seqLen = ansiSeqLen(text, pos);
-    if (seqLen > 0)
+
+    // Advance past one visible character
+    if (pos < len) ++pos;
+
+    // Skip any ANSI sequences immediately after
+    while (pos < len)
     {
-        return pos + seqLen;
+        int seqLen = ansiSeqLen(text, pos);
+        if (seqLen > 0)
+            pos += seqLen;
+        else
+            break;
     }
-    return pos + 1;
+
+    return pos;
 }
 
-// Move byte offset backward. If the position is right after an ANSI sequence,
-// skip back over the entire sequence.
-static int skipBackward(const string& text, int pos)
+// Skip backward over one ANSI sequence ending at pos.
+// Returns the start of that sequence, or pos unchanged if none found.
+static int skipOneSeqBackward(const string& text, int pos)
 {
-    if (pos <= 0)
-    {
-        return 0;
-    }
-    // Check if the character(s) before pos form an ANSI sequence ending here.
-    // An ANSI sequence ends with a byte in 0x40-0x7E. Scan backwards to find ESC[.
+    if (pos <= 0) return pos;
     int endByte = pos - 1;
     char ch = text[endByte];
     if (ch >= 0x40 && ch <= 0x7E)
     {
-        // Could be the end of an ANSI sequence. Scan backwards for ESC[
         int scan = endByte - 1;
         while (scan >= 0)
         {
             if (static_cast<uint8_t>(text[scan]) == 0x1B && scan + 1 < static_cast<int>(text.size())
                 && text[scan + 1] == '[')
             {
-                // Verify it's a valid sequence from scan to endByte
                 int seqLen = ansiSeqLen(text, scan);
                 if (seqLen > 0 && scan + seqLen == pos)
-                {
-                    return scan; // skip back over the entire sequence
-                }
+                    return scan;
                 break;
             }
             char sc = text[scan];
@@ -119,7 +129,41 @@ static int skipBackward(const string& text, int pos)
             break;
         }
     }
-    return pos - 1;
+    return pos; // no sequence found
+}
+
+// Move byte offset backward past one visible character.
+// Skips over all consecutive ANSI sequences before the current position,
+// then moves back one regular character, then skips any further ANSI
+// sequences so the cursor lands on the previous visible character.
+static int skipBackward(const string& text, int pos)
+{
+    if (pos <= 0) return 0;
+
+    // Skip backwards over any ANSI sequences ending at pos
+    while (pos > 0)
+    {
+        int newPos = skipOneSeqBackward(text, pos);
+        if (newPos < pos)
+            pos = newPos;
+        else
+            break;
+    }
+
+    // Move back one visible character
+    if (pos > 0) --pos;
+
+    // Skip backwards over any further ANSI sequences
+    while (pos > 0)
+    {
+        int newPos = skipOneSeqBackward(text, pos);
+        if (newPos < pos)
+            pos = newPos;
+        else
+            break;
+    }
+
+    return pos;
 }
 
 // Erase backward from pos: if right after an ANSI sequence, erase the whole
@@ -136,22 +180,20 @@ static int eraseBackward(string& text, int pos)
     return newPos;
 }
 
-// Erase forward from pos: if at the start of an ANSI sequence, erase the
-// whole sequence. Otherwise erase 1 byte.
+// Erase forward from pos: skips over all consecutive ANSI sequences,
+// then erases one visible character, then any trailing ANSI sequences.
+// This mirrors the forward cursor movement behavior.
 static void eraseForward(string& text, int pos)
 {
     if (pos >= static_cast<int>(text.size()))
     {
         return;
     }
-    int seqLen = ansiSeqLen(text, pos);
-    if (seqLen > 0)
+    // Find where skipForward would land — that's the end of what we erase
+    int endPos = skipForward(text, pos);
+    if (endPos > pos)
     {
-        text.erase(pos, seqLen);
-    }
-    else
-    {
-        text.erase(pos, 1);
+        text.erase(pos, endPos - pos);
     }
 }
 
@@ -2117,6 +2159,9 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                     {
                         cursorCol = static_cast<int>(lines[cursorRow].text.size());
                     }
+                    // Don't land inside an ANSI sequence
+                    int seqUp = ansiSeqLen(lines[cursorRow].text, cursorCol);
+                    if (seqUp > 0) cursorCol += seqUp;
                 }
                 break;
 
@@ -2128,6 +2173,9 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                     {
                         cursorCol = static_cast<int>(lines[cursorRow].text.size());
                     }
+                    // Don't land inside an ANSI sequence
+                    int seqDn = ansiSeqLen(lines[cursorRow].text, cursorCol);
+                    if (seqDn > 0) cursorCol += seqDn;
                 }
                 break;
 
@@ -2173,6 +2221,7 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                 {
                     cursorCol = static_cast<int>(lines[cursorRow].text.size());
                 }
+                { int sq = ansiSeqLen(lines[cursorRow].text, cursorCol); if (sq > 0) cursorCol += sq; }
                 break;
 
             case TK_PGDN:
@@ -2185,6 +2234,7 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                 {
                     cursorCol = static_cast<int>(lines[cursorRow].text.size());
                 }
+                { int sq = ansiSeqLen(lines[cursorRow].text, cursorCol); if (sq > 0) cursorCol += sq; }
                 break;
 
             case TK_INSERT:
@@ -2365,8 +2415,41 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                 else
                 {
                     // Normal enter - split line
-                    string remainder = lines[cursorRow].text.substr(cursorCol);
-                    lines[cursorRow].text = lines[cursorRow].text.substr(0, cursorCol);
+                    // If the cursor is inside an ANSI sequence, adjust the
+                    // split point to AFTER the sequence so it stays intact
+                    int splitPos = cursorCol;
+                    int seqAt = ansiSeqLen(lines[cursorRow].text, splitPos);
+                    if (seqAt > 0)
+                    {
+                        splitPos += seqAt; // move past the sequence
+                    }
+                    // Also check if we're in the MIDDLE of a sequence
+                    // (between ESC[ and the final byte) by scanning backward
+                    if (splitPos > 0 && splitPos < static_cast<int>(lines[cursorRow].text.size()))
+                    {
+                        // Scan backward to see if there's an unclosed ESC[
+                        for (int sc = splitPos - 1; sc >= 0; --sc)
+                        {
+                            if (static_cast<uint8_t>(lines[cursorRow].text[sc]) == 0x1B)
+                            {
+                                int sl = ansiSeqLen(lines[cursorRow].text, sc);
+                                if (sl > 0 && sc + sl > splitPos)
+                                {
+                                    // We're inside this sequence — move split past it
+                                    splitPos = sc + sl;
+                                }
+                                break;
+                            }
+                            char c = lines[cursorRow].text[sc];
+                            if (!((c >= '0' && c <= '9') || c == ';' || c == '['))
+                            {
+                                break; // Not inside an ANSI sequence
+                            }
+                        }
+                    }
+
+                    string remainder = lines[cursorRow].text.substr(splitPos);
+                    lines[cursorRow].text = lines[cursorRow].text.substr(0, splitPos);
                     EditorLine newLine;
                     newLine.text = remainder;
                     lines.insert(lines.begin() + cursorRow + 1, newLine);
@@ -2382,19 +2465,40 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                     if (insertMode)
                     {
                         lines[cursorRow].text.insert(cursorCol, 1, static_cast<char>(ch));
+                        ++cursorCol;
                     }
                     else
                     {
-                        if (cursorCol < static_cast<int>(lines[cursorRow].text.size()))
+                        // Overwrite mode: skip over ANSI sequences at cursor position
+                        // so we don't corrupt them
+                        int writePos = cursorCol;
+                        int seqLen = ansiSeqLen(lines[cursorRow].text, writePos);
+                        if (seqLen > 0)
                         {
-                            lines[cursorRow].text[cursorCol] = static_cast<char>(ch);
+                            // Cursor is at start of ANSI sequence — insert before it
+                            // rather than overwriting the escape byte
+                            lines[cursorRow].text.insert(writePos, 1, static_cast<char>(ch));
+                        }
+                        else if (writePos < static_cast<int>(lines[cursorRow].text.size()))
+                        {
+                            lines[cursorRow].text[writePos] = static_cast<char>(ch);
                         }
                         else
                         {
                             lines[cursorRow].text += static_cast<char>(ch);
                         }
+                        ++cursorCol;
                     }
-                    ++cursorCol;
+
+                    // After advancing the cursor, skip over any ANSI sequence
+                    // we may have landed on
+                    {
+                        int seqAtCursor = ansiSeqLen(lines[cursorRow].text, cursorCol);
+                        if (seqAtCursor > 0)
+                        {
+                            cursorCol += seqAtCursor;
+                        }
+                    }
 
                     // Word wrap — use display width (excluding ANSI sequences)
                     int lineDisplayWidth = byteColToDisplayCol(
@@ -2426,6 +2530,30 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                                 }
                             }
                         }
+                        // Ensure the wrap position doesn't fall inside an ANSI sequence
+                        {
+                            const string& lineText = lines[cursorRow].text;
+                            for (int sc = wrapPos - 1; sc >= 0; --sc)
+                            {
+                                if (static_cast<uint8_t>(lineText[sc]) == 0x1B)
+                                {
+                                    int sl = ansiSeqLen(lineText, sc);
+                                    if (sl > 0 && sc + sl > wrapPos)
+                                    {
+                                        // wrapPos is inside this ANSI sequence;
+                                        // move it to before the sequence
+                                        wrapPos = sc;
+                                    }
+                                    break;
+                                }
+                                char c = lineText[sc];
+                                if (!((c >= '0' && c <= '9') || c == ';' || c == '['))
+                                {
+                                    break;
+                                }
+                            }
+                        }
+
                         string overflow = lines[cursorRow].text.substr(wrapPos);
                         lines[cursorRow].text = lines[cursorRow].text.substr(0, wrapPos);
 
