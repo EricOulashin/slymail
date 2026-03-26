@@ -411,9 +411,14 @@ static bool matchesText(const string& haystack, const string& needle, bool useRe
             std::regex re(needle, std::regex::icase | std::regex::ECMAScript);
             return std::regex_search(haystack, re);
         }
-        catch (...)
+        catch (const std::regex_error&)
         {
             // Invalid regex, fall back to substring
+            return toLowerStr(haystack).find(toLowerStr(needle)) != string::npos;
+        }
+        catch (...)
+        {
+            // Unexpected error, fall back to substring
             return toLowerStr(haystack).find(toLowerStr(needle)) != string::npos;
         }
     }

@@ -61,6 +61,11 @@ bool editRemoteSystem(RemoteSystem& sys);
 // Returns local path of downloaded file, or empty string if cancelled/failed.
 std::string connectAndBrowse(RemoteSystem& sys, const std::string& downloadDir);
 
+// Upload a local file to a remote system's current directory.
+// Returns true on success, sets errMsg on failure.
+bool uploadFileToRemote(const RemoteSystem& sys, const std::string& localPath,
+                        const std::string& remotePath, std::string& errMsg);
+
 // --- Helper: get the user's home directory (cross-platform) ---
 std::string getHomeDir();
 

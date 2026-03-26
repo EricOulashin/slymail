@@ -9,6 +9,7 @@
 #include "settings.h"
 #include "settings_dialog.h"
 #include "remote_systems.h"
+#include "file_browser.h"
 #include "program_info.h"
 
 #include <ctime>
@@ -688,6 +689,20 @@ static bool editGeneralSettings(Settings& settings)
                 {
                     settings.showSplashScreen = !settings.showSplashScreen;
                     changed = true;
+                }
+                else if (selected == 1) // Reply packet directory — use directory chooser
+                {
+                    string startDir = settings.replyDir;
+                    if (startDir.empty())
+                    {
+                        startDir = getSlyMailDataDir() + PATH_SEP_STR + "REP";
+                    }
+                    string val = showDirChooser(startDir, "Select Reply Packet Directory");
+                    if (!val.empty())
+                    {
+                        settings.replyDir = val;
+                        changed = true;
+                    }
                 }
                 else
                 {

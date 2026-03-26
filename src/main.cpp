@@ -189,6 +189,37 @@ int main(int argc, char* argv[])
     vector<QwkReply> pendingReplies;
     vector<PendingVote> pendingVotes;
     bool running = true;
+    bool repPacketSaved = true; // true = no unsaved messages since last REP save
+
+    // Helper: save the REP packet from current pending replies/votes
+    auto saveRepPacket = [&]() -> bool
+    {
+        if (pendingReplies.empty() && pendingVotes.empty())
+        {
+            messageDialog("REP Packet", "No pending messages or votes to save.");
+            return false;
+        }
+        if (!currentPacket.has_value())
+        {
+            messageDialog("Error", "No QWK packet loaded.");
+            return false;
+        }
+        string repDir = settings.replyDir;
+        if (repDir.empty()) repDir = dataDir + PATH_SEP_STR + "REP";
+        string repFile = repDir + PATH_SEP_STR + currentPacket->info.bbsID + ".rep";
+        if (createRepPacket(repFile, currentPacket->info.bbsID,
+                            settings.userName, pendingReplies, pendingVotes))
+        {
+            messageDialog("REP Saved", "Reply packet saved: " + repFile);
+            repPacketSaved = true;
+            return true;
+        }
+        else
+        {
+            messageDialog("Error", "Failed to create REP packet.");
+            return false;
+        }
+    };
 
     while (running)
     {
@@ -340,16 +371,22 @@ int main(int argc, char* argv[])
                                             if (edResult == EditorResult::Saved)
                                             {
                                                 pendingReplies.push_back(reply);
+                                                repPacketSaved = false;
                                                 messageDialog("Reply Saved",
                                                     "Reply queued. " +
                                                     std::to_string(pendingReplies.size()) +
                                                     " pending reply(s).");
+                                                if (confirmDialog("Save REP packet now?"))
+                                                {
+                                                    saveRepPacket();
+                                                }
                                             }
                                             break;
                                         }
                                         case MsgReadResult::Vote:
                                         {
                                             pendingVotes.push_back(lastVote);
+                                            repPacketSaved = false;
                                             // Update the message's userVoted flag locally
                                             auto& votedMsg = conf.messages[currentMsg];
                                             if (lastVote.upVote)
@@ -408,10 +445,15 @@ int main(int argc, char* argv[])
                                 if (edResult == EditorResult::Saved)
                                 {
                                     pendingReplies.push_back(reply);
+                                    repPacketSaved = false;
                                     messageDialog("Message Saved",
                                         "Message queued. " +
                                         std::to_string(pendingReplies.size()) +
                                         " pending message(s).");
+                                    if (confirmDialog("Save REP packet now?"))
+                                    {
+                                        saveRepPacket();
+                                    }
                                 }
                                 break;
                             }
@@ -433,7 +475,7 @@ int main(int argc, char* argv[])
                                         string repDir = settings.replyDir;
                                         if (repDir.empty())
                                         {
-                                            repDir = fs::path(currentPacket->sourceFile).parent_path().string();
+                                            repDir = dataDir + PATH_SEP_STR + "REP";
                                         }
                                         string repFile = repDir + PATH_SEP_STR
                                             + currentPacket->info.bbsID + ".rep";
@@ -449,6 +491,39 @@ int main(int argc, char* argv[])
                                     cleanupTempDir(currentPacket->extractDir);
                                 }
                                 currentPacket.reset();
+                                break;
+                            case MsgListResult::RemoteSystems:
+                            {
+                                string downloadDir = dataDir + PATH_SEP_STR + "QWK";
+                                string downloaded = showRemoteSystems(dataDir, downloadDir);
+                                if (!downloaded.empty())
+                                {
+                                    if (!pendingReplies.empty() || !pendingVotes.empty())
+                                    {
+                                        if (confirmDialog("Save pending items before opening new file?"))
+                                        {
+                                            string repDir = settings.replyDir;
+                                            if (repDir.empty()) repDir = dataDir + PATH_SEP_STR + "REP";
+                                            string repFile = repDir + PATH_SEP_STR + currentPacket->info.bbsID + ".rep";
+                                            createRepPacket(repFile, currentPacket->info.bbsID,
+                                                            settings.userName, pendingReplies, pendingVotes);
+                                        }
+                                        pendingReplies.clear();
+                                        pendingVotes.clear();
+                                    }
+                                    if (currentPacket.has_value())
+                                    {
+                                        cleanupTempDir(currentPacket->extractDir);
+                                    }
+                                    currentPacket.reset();
+                                    initialFile = downloaded;
+                                    inMsgList = false;
+                                    inConfList = false;
+                                }
+                                break;
+                            }
+                            case MsgListResult::SaveRep:
+                                saveRepPacket();
                                 break;
                             case MsgListResult::Quit:
                                 inMsgList = false;
@@ -468,7 +543,7 @@ int main(int argc, char* argv[])
                             string repDir = settings.replyDir;
                             if (repDir.empty())
                             {
-                                repDir = fs::path(currentPacket->sourceFile).parent_path().string();
+                                repDir = dataDir + PATH_SEP_STR + "REP";
                             }
                             string repFile = repDir + PATH_SEP_STR
                                 + currentPacket->info.bbsID + ".rep";
@@ -494,6 +569,36 @@ int main(int argc, char* argv[])
                     currentPacket.reset();
                     inConfList = false;
                     break;
+                case ConfListResult::RemoteSystems:
+                {
+                    string downloadDir = dataDir + PATH_SEP_STR + "QWK";
+                    string downloaded = showRemoteSystems(dataDir, downloadDir);
+                    if (!downloaded.empty())
+                    {
+                        // Save pending replies first
+                        if (!pendingReplies.empty() || !pendingVotes.empty())
+                        {
+                            if (confirmDialog("Save pending items before opening new file?"))
+                            {
+                                string repDir = settings.replyDir;
+                                if (repDir.empty()) repDir = dataDir + PATH_SEP_STR + "REP";
+                                string repFile = repDir + PATH_SEP_STR + currentPacket->info.bbsID + ".rep";
+                                createRepPacket(repFile, currentPacket->info.bbsID,
+                                                settings.userName, pendingReplies, pendingVotes);
+                            }
+                            pendingReplies.clear();
+                            pendingVotes.clear();
+                        }
+                        if (currentPacket.has_value())
+                        {
+                            cleanupTempDir(currentPacket->extractDir);
+                        }
+                        currentPacket.reset();
+                        initialFile = downloaded;
+                        inConfList = false;
+                    }
+                    break;
+                }
                 case ConfListResult::Voting:
                     if (!currentPacket->voting.empty())
                     {
@@ -507,6 +612,9 @@ int main(int argc, char* argv[])
                 case ConfListResult::Settings:
                     showSettingsDialog(settings, baseDir);
                     break;
+                case ConfListResult::SaveRep:
+                    saveRepPacket();
+                    break;
                 case ConfListResult::Quit:
                     inConfList = false;
                     running = false;
@@ -515,19 +623,15 @@ int main(int argc, char* argv[])
         }
 
         // Before exiting or opening new file, offer to save replies
-        if (!running && (!pendingReplies.empty() || !pendingVotes.empty()))
+        if (!running && !repPacketSaved && (!pendingReplies.empty() || !pendingVotes.empty()))
         {
             int totalPending = static_cast<int>(pendingReplies.size() + pendingVotes.size());
-            if (confirmDialog("Save " + std::to_string(totalPending) + " pending item(s) to REP packet?"))
+            if (confirmDialog("Save " + std::to_string(totalPending) + " unsaved item(s) to REP packet?"))
             {
                 string repDir = settings.replyDir;
-                if (repDir.empty() && currentPacket.has_value())
-                {
-                    repDir = fs::path(currentPacket->sourceFile).parent_path().string();
-                }
                 if (repDir.empty())
                 {
-                    repDir = dataDir + PATH_SEP_STR + "QWK";
+                    repDir = dataDir + PATH_SEP_STR + "REP";
                 }
 
                 string bbsID = currentPacket.has_value()

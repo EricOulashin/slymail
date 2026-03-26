@@ -52,11 +52,17 @@ string getSlyMailDataDir()
     try
     {
         fs::create_directories(dataDir);
-        // Also create the QWK subdirectory
+        // Also create the QWK and REP subdirectories
         fs::create_directories(dataDir + PATH_SEP_STR + "QWK");
+        fs::create_directories(dataDir + PATH_SEP_STR + "REP");
+    }
+    catch (const fs::filesystem_error& e)
+    {
+        fprintf(stderr, "Warning: Could not create data directory: %s\n", e.what());
     }
     catch (...)
     {
+        fprintf(stderr, "Warning: Could not create data directory: %s\n", dataDir.c_str());
     }
     return dataDir;
 }
@@ -1171,7 +1177,7 @@ string connectAndBrowse(RemoteSystem& sys, const string& downloadDir)
 
         // Help bar
         drawDDHelpBar(rows - 1, "Up/Dn/PgUp/PgDn, ",
-                      {{'E', "nter=Select"}, {'/', "=Root"}, {'Q', "uit"}, {'?', ""}});
+                      {{'E', "nter=Select"}, {'U', "pload REP"}, {'/', "=Root"}, {'Q', "uit"}, {'?', ""}});
 
         // Status
         printAt(rows - 2, 0, string(cols, ' '), statusAttr);
@@ -1307,6 +1313,54 @@ string connectAndBrowse(RemoteSystem& sys, const string& downloadDir)
                 }
                 break;
             }
+            case 'u': case 'U':
+            {
+                // Upload a reply packet
+                string repDir = getSlyMailDataDir() + PATH_SEP_STR + "REP";
+                string repFile = showFileBrowser(repDir, "", ".rep");
+                if (!repFile.empty())
+                {
+                    // Build the remote destination path
+                    string remoteFile = currentPath;
+                    if (!remoteFile.empty() && remoteFile.back() != '/') remoteFile += "/";
+                    remoteFile += fs::path(repFile).filename().string();
+
+                    g_term->clear();
+                    printCentered(rows / 2,
+                        "Uploading " + fs::path(repFile).filename().string() + "...",
+                        tAttr(TC_CYAN, TC_BLACK, true));
+                    g_term->refresh();
+
+                    string uploadErr;
+                    if (uploadFileToRemote(sys, repFile, remoteFile, uploadErr))
+                    {
+                        messageDialog("Upload Complete",
+                            fs::path(repFile).filename().string() + " uploaded successfully.");
+                        if (confirmDialog("Delete local file " + fs::path(repFile).filename().string() + "?"))
+                        {
+                            try
+                            {
+                                fs::remove(repFile);
+                            }
+                            catch (const fs::filesystem_error& e)
+                            {
+                                messageDialog("Delete Error",
+                                    "Failed to delete file: " + string(e.what()));
+                            }
+                            catch (...)
+                            {
+                                messageDialog("Delete Error",
+                                    "Failed to delete " + fs::path(repFile).filename().string());
+                            }
+                        }
+                    }
+                    else
+                    {
+                        messageDialog("Upload Error", uploadErr);
+                    }
+                }
+                break;
+            }
             case '?':
             case TK_F1:
             {
@@ -1329,6 +1383,7 @@ string connectAndBrowse(RemoteSystem& sys, const string& downloadDir)
                 helpLine("PageUp/PageDown", "Scroll up/down a page");
                 helpLine("HOME/END", "Jump to first/last entry");
                 helpLine("Enter", "Open directory or download file");
+                helpLine("U", "Upload a reply packet (.rep)");
                 helpLine("/", "Go to root directory");
                 helpLine("Q / ESC / Ctrl-C", "Disconnect and go back");
                 helpLine("? / F1", "Show this help screen");
@@ -1539,4 +1594,56 @@ string showRemoteSystems(const string& dataDir, const string& downloadDir)
                 break;
         }
     }
+}
+
+// ============================================================
+// Upload a file to a remote system via FTP or SFTP
+// Uses curl -T for both protocols (cross-platform: Windows, Linux, macOS, BSD)
+// ============================================================
+
+bool uploadFileToRemote(const RemoteSystem& sys, const string& localPath,
+                        const string& remotePath, string& errMsg)
+{
+    if (!fs::exists(localPath))
+    {
+        errMsg = "Local file not found: " + localPath;
+        return false;
+    }
+
+    string remoteUrl;
+    string cmd;
+    string stderrFile = localPath + ".upload_stderr";
+
+    if (sys.type == RemoteConnType::FTP)
+    {
+        remoteUrl = ftpUrl(sys, remotePath);
+        cmd = "curl -sS -v --user \"" + sys.username + ":" + sys.password + "\"";
+        if (sys.passiveFTP) cmd += " --ftp-pasv";
+        cmd += " --connect-timeout 10 --max-time 300";
+        cmd += " -T \"" + localPath + "\" \"" + remoteUrl + "\"";
+        cmd += " 2>\"" + stderrFile + "\"";
+    }
+    else
+    {
+        remoteUrl = sftpUrl(sys, remotePath);
+        cmd = "curl -sS -v --user \"" + sys.username + ":" + sys.password + "\""
+            + " --insecure --connect-timeout 15 --max-time 300"
+            + " -T \"" + localPath + "\" \"" + remoteUrl + "\""
+            + " 2>\"" + stderrFile + "\"";
+    }
+
+    int rows = g_term->getRows();
+    int cols = g_term->getCols();
+    int ret = systemWithSpinner(cmd, rows / 2, cols / 2 + 12);
+    string stderrOutput = readAndRemoveStderr(stderrFile);
+
+    bool isFtp = (sys.type == RemoteConnType::FTP);
+    int exitCode = curlExitCode(ret);
+    if (exitCode == 0)
+    {
+        return true;
+    }
+
+    errMsg = buildDownloadErrorMsg(stderrOutput, ret, sys.host, isFtp);
+    return false;
 }

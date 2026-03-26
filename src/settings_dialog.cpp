@@ -1,4 +1,6 @@
 #include "settings_dialog.h"
+#include "file_browser.h"
+#include "remote_systems.h"
 
 using std::string;
 using std::vector;
@@ -163,6 +165,10 @@ vector<string> findDictionaries(const string& baseDir)
             }
         }
     }
+    catch (const fs::filesystem_error&)
+    {
+        // Dictionary directory not found or not accessible — return empty list
+    }
     catch (...)
     {
     }
@@ -191,6 +197,10 @@ vector<string> findThemeFiles(const string& baseDir,
                 }
             }
         }
+    }
+    catch (const fs::filesystem_error&)
+    {
+        // Theme directory not found or not accessible — return empty list
     }
     catch (...)
     {
@@ -644,7 +654,6 @@ bool showEditorSettings(Settings& settings, const string& baseDir)
         {"Quote with author's initials",          SettingType::Toggle,  ESET_QUOTE_INITIALS},
         {"Indent quote lines containing initials", SettingType::Toggle, ESET_INDENT_INITIALS},
         {"Trim spaces from quote lines",          SettingType::Toggle,  ESET_TRIM_QUOTE_SPACES},
-        {"Select theme file",                     SettingType::SubMenu, ESET_THEME_FILE},
     };
 
     int itemCount = static_cast<int>(items.size());
@@ -870,36 +879,6 @@ bool showEditorSettings(Settings& settings, const string& baseDir)
                         drawESetRow(selected);
                         g_term->refresh();
                         break;
-                    case ESET_THEME_FILE:
-                    {
-                        string themeName = showThemeSelector(baseDir, settings.editorStyle);
-                        if (!themeName.empty())
-                        {
-                            if (settings.editorStyle == EditorStyle::Ice)
-                            {
-                                settings.iceThemeFile = themeName;
-                            }
-                            else if (settings.editorStyle == EditorStyle::Dct)
-                            {
-                                settings.dctThemeFile = themeName;
-                            }
-                            else
-                            {
-                                // Random mode: determine which type by prefix
-                                if (themeName.substr(0, 16) == "EditorIceColors_")
-                                {
-                                    settings.iceThemeFile = themeName;
-                                }
-                                else
-                                {
-                                    settings.dctThemeFile = themeName;
-                                }
-                            }
-                            changed = true;
-                        }
-                        needFullRedraw = true;
-                        break;
-                    }
                 }
                 break;
             }
@@ -1170,10 +1149,12 @@ bool showSettingsDialog(Settings& settings, const string& baseDir)
                         break;
                     case SET_REPLY_DIR:
                     {
-                        int y = dlgY + 1 + (selected - scrollOffset);
-                        string val = getStringInput(y, dlgX + 2, dlgW - 6,
-                            settings.replyDir,
-                            tAttr(TC_WHITE, TC_BLACK, true));
+                        string startDir = settings.replyDir;
+                        if (startDir.empty())
+                        {
+                            startDir = getSlyMailDataDir() + PATH_SEP_STR + "REP";
+                        }
+                        string val = showDirChooser(startDir, "Select Reply Packet Directory");
                         if (!val.empty())
                         {
                             settings.replyDir = val;

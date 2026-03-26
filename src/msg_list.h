@@ -12,8 +12,10 @@ enum class ConfListResult
     Selected,
     Quit,
     OpenFile,
+    RemoteSystems,
     Settings,
     Voting,
+    SaveRep,
 };
 
 enum class MsgListResult
@@ -24,6 +26,8 @@ enum class MsgListResult
     NewMessage,
     Settings,
     OpenFile,
+    RemoteSystems,
+    SaveRep,
 };
 
 // Show the conference list

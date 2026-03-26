@@ -1,4 +1,4 @@
-name: CI Build
+name: CI Build and Test
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-    name: Build (${{ matrix.os }})
+  build-and-test:
+    name: Build and Test (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -33,3 +33,6 @@ jobs:
 
       - name: Build
         run: make
+
+      - name: Build and run tests
+        run: make runtest

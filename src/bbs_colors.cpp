@@ -84,27 +84,212 @@ static bool applySyncAttr(char ch, TermAttr& attr)
 
 void applyAnsiSgrParam(int param, TermAttr& attr)
 {
-    if (param == 0)
+    switch (param)
     {
-        attr = tAttr(TC_WHITE, TC_BLACK, false);
+        case 0: // Reset all attributes
+            attr = tAttr(TC_WHITE, TC_BLACK, false);
+            break;
+        case 1: // Bold / Bright
+            attr.bright = true;
+            break;
+        case 2:  // Dim / Normal intensity (turn off bold)
+        case 22: // Normal intensity (also turns off bold)
+            attr.bright = false;
+            break;
+        case 4:  // Underline — no terminal support, consume silently
+        case 24: // Underline off
+            break;
+        case 5:  // Blink
+        case 6:  // Rapid blink
+        case 25: // Blink off
+            break;
+        case 7: // Reverse video — swap fg and bg
+        {
+            int tmp = attr.fg;
+            attr.fg = attr.bg;
+            attr.bg = tmp;
+            break;
+        }
+        case 27: // Reverse video off — swap back (best effort)
+        {
+            int tmp = attr.fg;
+            attr.fg = attr.bg;
+            attr.bg = tmp;
+            break;
+        }
+        case 8:  // Conceal / Hidden — set fg to bg color
+            attr.fg = attr.bg;
+            break;
+        case 28: // Reveal (opposite of conceal) — reset fg to white
+            attr.fg = TC_WHITE;
+            break;
+
+        // Standard foreground colors (30-37)
+        case 30: case 31: case 32: case 33:
+        case 34: case 35: case 36: case 37:
+            attr.fg = param - 30;
+            break;
+
+        case 39: // Default foreground color
+            attr.fg = TC_WHITE;
+            attr.bright = false;
+            break;
+
+        // Standard background colors (40-47)
+        case 40: case 41: case 42: case 43:
+        case 44: case 45: case 46: case 47:
+            attr.bg = param - 40;
+            break;
+
+        case 49: // Default background color
+            attr.bg = TC_BLACK;
+            break;
+
+        // Bright/Aixterm foreground colors (90-97)
+        case 90: case 91: case 92: case 93:
+        case 94: case 95: case 96: case 97:
+            attr.fg = param - 90;
+            attr.bright = true;
+            break;
+
+        // Bright/Aixterm background colors (100-107)
+        // Map to normal bg colors (terminal can't do bright backgrounds)
+        case 100: case 101: case 102: case 103:
+        case 104: case 105: case 106: case 107:
+            attr.bg = param - 100;
+            break;
+
+        // 38 and 48 are handled specially in applyAnsiSgrParams (extended color)
+        default:
+            break;
     }
-    else if (param == 1)
+}
+
+// Apply a full vector of SGR parameters, handling extended color sequences
+// (38;5;n for 256-color, 38;2;r;g;b for truecolor, and 48;5;n, 48;2;r;g;b)
+static void applyAnsiSgrParams(const vector<int>& params, TermAttr& attr)
+{
+    for (size_t i = 0; i < params.size(); ++i)
     {
-        attr.bright = true;
+        int p = params[i];
+
+        // Extended foreground color: 38;5;n (256-color) or 38;2;r;g;b (truecolor)
+        if (p == 38 && i + 1 < params.size())
+        {
+            if (params[i + 1] == 5 && i + 2 < params.size())
+            {
+                // 256-color mode: map to nearest 8-color
+                int colorIdx = params[i + 2];
+                if (colorIdx >= 0 && colorIdx <= 7)
+                {
+                    attr.fg = colorIdx;
+                    attr.bright = false;
+                }
+                else if (colorIdx >= 8 && colorIdx <= 15)
+                {
+                    attr.fg = colorIdx - 8;
+                    attr.bright = true;
+                }
+                else if (colorIdx >= 16 && colorIdx <= 231)
+                {
+                    // 216-color cube: map to nearest 8-color
+                    int ci = colorIdx - 16;
+                    int r = ci / 36, g = (ci / 6) % 6, b = ci % 6;
+                    // Simple mapping: find dominant channel
+                    if (r > g && r > b) attr.fg = TC_RED;
+                    else if (g > r && g > b) attr.fg = TC_GREEN;
+                    else if (b > r && b > g) attr.fg = TC_BLUE;
+                    else if (r > 0 && g > 0 && b == 0) attr.fg = TC_YELLOW;
+                    else if (r > 0 && b > 0 && g == 0) attr.fg = TC_MAGENTA;
+                    else if (g > 0 && b > 0 && r == 0) attr.fg = TC_CYAN;
+                    else if (r > 3 || g > 3 || b > 3) { attr.fg = TC_WHITE; attr.bright = true; }
+                    else if (r > 0 || g > 0 || b > 0) attr.fg = TC_WHITE;
+                    else attr.fg = TC_BLACK;
+                }
+                else
+                {
+                    // Grayscale ramp (232-255): map to black, dark gray, white
+                    int gray = colorIdx - 232; // 0-23
+                    if (gray < 8) { attr.fg = TC_BLACK; attr.bright = true; }
+                    else if (gray < 16) attr.fg = TC_WHITE;
+                    else { attr.fg = TC_WHITE; attr.bright = true; }
+                }
+                i += 2;
+                continue;
+            }
+            else if (params[i + 1] == 2 && i + 4 < params.size())
+            {
+                // Truecolor: map r;g;b to nearest 8-color
+                int r = params[i + 2], g = params[i + 3], b = params[i + 4];
+                if (r > g && r > b) attr.fg = TC_RED;
+                else if (g > r && g > b) attr.fg = TC_GREEN;
+                else if (b > r && b > g) attr.fg = TC_BLUE;
+                else if (r > 128 && g > 128 && b < 64) attr.fg = TC_YELLOW;
+                else if (r > 128 && b > 128 && g < 64) attr.fg = TC_MAGENTA;
+                else if (g > 128 && b > 128 && r < 64) attr.fg = TC_CYAN;
+                else if (r > 192 || g > 192 || b > 192) { attr.fg = TC_WHITE; attr.bright = true; }
+                else if (r > 64 || g > 64 || b > 64) attr.fg = TC_WHITE;
+                else attr.fg = TC_BLACK;
+                i += 4;
+                continue;
+            }
+        }
+
+        // Extended background color: 48;5;n or 48;2;r;g;b
+        if (p == 48 && i + 1 < params.size())
+        {
+            if (params[i + 1] == 5 && i + 2 < params.size())
+            {
+                int colorIdx = params[i + 2];
+                if (colorIdx >= 0 && colorIdx <= 7)
+                {
+                    attr.bg = colorIdx;
+                }
+                else if (colorIdx >= 8 && colorIdx <= 15)
+                {
+                    attr.bg = colorIdx - 8;
+                }
+                else if (colorIdx >= 16 && colorIdx <= 231)
+                {
+                    int ci = colorIdx - 16;
+                    int r = ci / 36, g = (ci / 6) % 6, b = ci % 6;
+                    if (r > g && r > b) attr.bg = TC_RED;
+                    else if (g > r && g > b) attr.bg = TC_GREEN;
+                    else if (b > r && b > g) attr.bg = TC_BLUE;
+                    else if (r > 0 && g > 0) attr.bg = TC_YELLOW;
+                    else if (r > 0 && b > 0) attr.bg = TC_MAGENTA;
+                    else if (g > 0 && b > 0) attr.bg = TC_CYAN;
+                    else if (r > 0 || g > 0 || b > 0) attr.bg = TC_WHITE;
+                    else attr.bg = TC_BLACK;
+                }
+                else
+                {
+                    int gray = colorIdx - 232;
+                    if (gray < 12) attr.bg = TC_BLACK;
+                    else attr.bg = TC_WHITE;
+                }
+                i += 2;
+                continue;
+            }
+            else if (params[i + 1] == 2 && i + 4 < params.size())
+            {
+                int r = params[i + 2], g = params[i + 3], b = params[i + 4];
+                if (r > g && r > b) attr.bg = TC_RED;
+                else if (g > r && g > b) attr.bg = TC_GREEN;
+                else if (b > r && b > g) attr.bg = TC_BLUE;
+                else if (r > 128 && g > 128) attr.bg = TC_YELLOW;
+                else if (r > 128 && b > 128) attr.bg = TC_MAGENTA;
+                else if (g > 128 && b > 128) attr.bg = TC_CYAN;
+                else if (r > 64 || g > 64 || b > 64) attr.bg = TC_WHITE;
+                else attr.bg = TC_BLACK;
+                i += 4;
+                continue;
+            }
+        }
+
+        // Standard single-parameter SGR code
+        applyAnsiSgrParam(p, attr);
     }
-    else if (param == 5 || param == 6)
-    {
-        // Blink - consume but don't apply
-    }
-    else if (param >= 30 && param <= 37)
-    {
-        attr.fg = param - 30;
-    }
-    else if (param >= 40 && param <= 47)
-    {
-        attr.bg = param - 40;
-    }
-    // Ignore 256-color and truecolor sequences (38;5;n, 48;5;n, etc.)
 }
 
 // Parse ANSI escape sequence starting at ESC[ and return number of chars consumed
@@ -148,7 +333,7 @@ static size_t parseAnsiSequence(const string& line, size_t pos, TermAttr& attr)
             }
             ++i; // consume final byte
 
-            // Only process SGR sequences (final byte 'm')
+            // Process SGR sequences (final byte 'm')
             if (ch == 'm')
             {
                 if (params.empty())
@@ -158,13 +343,12 @@ static size_t parseAnsiSequence(const string& line, size_t pos, TermAttr& attr)
                 }
                 else
                 {
-                    for (int p : params)
-                    {
-                        applyAnsiSgrParam(p, attr);
-                    }
+                    // Use the extended handler that supports 256-color and truecolor
+                    applyAnsiSgrParams(params, attr);
                 }
             }
-            // For non-SGR sequences, we consume them but don't change attr
+            // For non-SGR sequences (cursor movement, screen clearing, etc.),
+            // we consume them but don't change the color attribute.
             return i - pos;
         }
         else

@@ -36,8 +36,16 @@ std::vector<FileEntry> listDirectory(const std::string& dirPath);
 
 bool isQwkFile(const std::string& name);
 
-// File browser dialog styled to match the DDMsgReader look
+// File browser dialog styled to match the DDMsgReader look.
+// fileExtFilter: if non-empty, only files with this extension can be selected
+// (e.g., ".qwk" or ".rep"). If empty, defaults to ".qwk".
 std::string showFileBrowser(const std::string& startDir = "",
-                            const std::string& preSelectFile = "");
+                            const std::string& preSelectFile = "",
+                            const std::string& fileExtFilter = "");
+
+// Directory chooser dialog — shows only directories, returns selected path.
+// Returns empty string if cancelled.
+std::string showDirChooser(const std::string& startDir = "",
+                           const std::string& title = "Select Directory");
 
 #endif // SLYMAIL_FILE_BROWSER_H

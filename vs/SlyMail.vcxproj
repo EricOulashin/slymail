@@ -95,6 +95,8 @@
     <ClCompile Include="..\src\voting.cpp" />
     <ClCompile Include="..\src\remote_systems.cpp" />
     <ClCompile Include="..\src\search.cpp" />
+    <ClCompile Include="..\src\text_input.cpp" />
+    <ClCompile Include="..\src\text_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\terminal.h" />
@@ -117,6 +119,8 @@
     <ClInclude Include="..\src\voting.h" />
     <ClInclude Include="..\src\remote_systems.h" />
     <ClInclude Include="..\src\search.h" />
+    <ClInclude Include="..\src\text_input.h" />
+    <ClInclude Include="..\src\text_utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

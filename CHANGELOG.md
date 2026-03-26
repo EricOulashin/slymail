@@ -4,104 +4,95 @@ All notable changes to SlyMail are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.52] - 2026-03-25
+## [0.52] - 2026-03-26
+
+### Added
+- **REP directory**: A dedicated REP directory is created automatically within the SlyMail data directory for storing reply packets.
+- **Save REP packet hotkey (Ctrl-P)**: Save the reply packet at any time from the conference list or message list, without needing to exit SlyMail.
+- **Save REP prompt after composing a message**: After saving a reply or new message, SlyMail prompts whether to save the REP packet immediately, so it can be uploaded right away.
+- **Remote systems from conference/message lists (Ctrl-R)**: The remote systems browser is now accessible via Ctrl-R from the conference list and message list, not just the file browser.
+- **Upload reply packets to remote systems**: Press 'U' when connected to a remote system to upload a .rep file via FTP or SFTP. Browse for the file locally, upload with a progress spinner, and optionally delete the local file after a successful upload. This addresses [issue 7](https://github.com/EricOulashin/SlyMail/issues/7).
+- **Quote line re-wrapping**: When replying to a message, quote lines are re-wrapped to fit within the configured quote line width (default 79 characters). Consecutive lines with the same quote prefix are grouped into paragraphs, joined, and re-wrapped. Blank lines, tear lines, and origin lines are preserved. Supports all common BBS quote prefix formats including nested quotes, initials-based quotes, and multi-level quoting. This addresses [issue 10](https://github.com/EricOulashin/SlyMail/issues/10).
+- **Updated help screens**: Conference list and message list help screens (? / F1) now list all applicable hotkeys including / (search), V (polls), Ctrl-R (remote systems), Ctrl-P (save REP), and ? / F1 (help).
+- **Directory chooser**: A visual directory browser is now used when selecting the reply packet directory in settings, instead of a plain text input field.
+- **Automated test suite**: Comprehensive tests for the text editing algorithm covering input, word wrap, color codes, cursor movement, paragraph saving, and quote wrapping.
 
 ### Changed
-- **Editor screen update efficiency**: The main editor loop no longer clears and redraws the entire screen on every keypress. Headers are only redrawn after dialogs, menus, or style changes; normal typing and cursor movement only update the edit area and status bar.
+- **Faster editor screen updates**: Cursor-only movements (arrow keys, Home, End, PageUp, PageDown) no longer redraw the edit area, eliminating visible flicker when holding down arrow keys. Only actual content changes trigger a redraw.
+- **Paragraph-aware message saving**: When saving a message, word-wrapped display lines within the same paragraph are joined back into a single line. Only explicit Enter presses create line breaks in the saved message. This produces cleaner message formatting for recipients.
+- **Reply packet default directory**: Reply packets are now saved to the REP directory within the SlyMail data directory by default, instead of alongside the QWK source file.
+- **Reply directory setting**: The reply packet directory setting in all settings dialogs now opens a directory browser for easier selection.
+- **Theme setting location**: The "Select theme file" option was removed from the Editor Settings (Ctrl-U) dialog since it already exists in the Theme Settings of the config program.
+- **Improved error messages**: Error dialogs now provide more specific and helpful messages when operations fail. Recoverable situations (such as invalid input or missing optional files) are handled gracefully without showing unnecessary error dialogs.
+- **Improved ANSI rendering**: Greatly expanded support for ANSI color and attribute codes when displaying messages. Newly supported: normal/dim intensity, reverse video, conceal/reveal, default colors, bright foreground and background colors, 256-color mode, and truecolor (24-bit RGB). Messages with ANSI art and color formatting now display much more accurately.
+- **Improved quote prefix detection**: The quote prefix detector now correctly identifies all common BBS quote formats including spaced nested quotes (> > ), triple nesting (> > > ), and initials combined with nesting (EO> > ).
 
 ### Fixed
-- **Editor ANSI color integrity**: Overwrite mode no longer corrupts ANSI sequences when the cursor is on an ESC byte (inserts before the sequence instead). Cursor auto-skips past ANSI sequences after typing. Enter key and word wrap no longer split lines inside ANSI sequences. Up/Down/PageUp/PageDown no longer land the cursor inside an ANSI sequence on the target line. Word wrap cursor adjustment after line split now checks for ANSI sequence collision. Final cursor bounds clamp at end of each edit loop iteration now detects and skips past ANSI sequences to prevent the cursor from resting on an escape byte.
-- **Editor arrow key movement over color codes**: Left/Right arrow keys now skip over all consecutive ANSI escape sequences between visible characters in a single keypress. Previously each ANSI sequence required a separate keypress to traverse. Backspace and Delete also now remove one visible character plus all adjacent ANSI sequences in one keystroke, matching the cursor movement behavior.
-- **Editor word wrap width calculation**: `editWidth` was off by one (`editRight - editLeft` instead of `editRight - editLeft + 1`), causing text to wrap one character before the visible line boundary. Word wrap now correctly uses the full available edit area width, so text fills the line completely before wrapping to the next.
-- **Editor word wrap cursor position after space strip**: When word wrap splits a line at a space boundary, the leading space is stripped from the overflow text. The cursor position on the new line now accounts for this stripped character, preventing the cursor from being off by one after wrapping.
-- **Editor word wrap prepend-to-next-line**: Word wrap overflow text is now prepended to the existing next line instead of always inserting a new line. This prevents each wrapped word from ending up on its own separate line when inserting text in the middle of a line. Intelligent space handling ensures no double spaces at join points: trailing spaces are stripped from the truncated line, leading spaces are stripped from the overflow, and a separator space is only added when both sides have content and neither already has a space at the boundary. Multi-level cascade re-wrapping propagates through all subsequent lines that become too long after the prepend.
-- **Editor word pull-up on delete**: When text is deleted via Backspace or Delete and the current line becomes shorter, words from the next line are automatically pulled up to fill the available space. This is the reverse of word-wrap: text flows back upward as space opens up, maintaining natural paragraph flow. If the next line becomes empty after all its words are pulled up, it is removed entirely. Also applies when lines are merged by backspacing at the start of a line or deleting at the end.
-- **Editor color code continuity across lines**: The edit area renderer now tracks a running color attribute state across all lines. Color codes set on one line carry over to subsequent lines, so a color change in the middle of the text correctly affects all following text until the next color code — even across line boundaries. The running state is computed from line 0 through the scroll position for correct rendering at any scroll offset.
-- **Editor line merge space handling**: Backspacing at the start of a line or deleting at the end now intelligently adds a separator space between the joined lines only when both sides have content and neither already has a space at the boundary, preventing missing or double spaces.
-- **Editor initial normal attribute**: New messages and replies now start with an explicit ANSI reset code (`ESC[0m`) at the beginning of the first line. This ensures the message begins with a known "normal" color state, so that color codes inserted later only affect text after them and don't retroactively color existing text that was typed before the color change.
+- **Editor color code handling**: Color codes embedded in message text are now handled correctly during all editing operations. Overwrite mode, Enter, word wrap, cursor movement, backspace, and delete all preserve the integrity of color codes. Arrow keys skip over color codes in a single keypress rather than requiring multiple presses.
+- **Editor flicker eliminated**: Holding down arrow keys no longer causes the screen to flicker. This addresses [issue 14](https://github.com/EricOulashin/SlyMail/issues/14).
+- **Editor word wrap behavior**: Text now wraps correctly when inserting in the middle of a line. Wrapped words flow to the next line's existing content instead of creating a new line for each wrapped word. Deleting text causes words to flow back up from the next line to fill available space. Lines are re-wrapped after being merged by backspace or delete.
+- **Editor subject field cursor**: Pressing Ctrl-S to change the subject now places the cursor at the correct position in both Ice and DCT editor modes.
+- **Quote prefix trailing space**: The trailing space in the configured quote prefix (e.g., " > ") is no longer stripped when loading settings, so quotes display correctly.
+- **Message reader screen clear**: The screen is now fully cleared before displaying a message, preventing remnants of the previous screen from being briefly visible. This addresses [issue 8](https://github.com/EricOulashin/SlyMail/issues/8).
+- **REP save tracking**: On exit, SlyMail only prompts to save the REP packet if there are messages that haven't been saved since the last REP save.
+- **Upload file filter**: When uploading a reply packet to a remote system, the file browser now correctly shows .rep files instead of only .qwk files.
+- **Synchronet poll display**: Polls defined only in VOTING.DAT (common with Synchronet) now appear in the message list at their correct chronological position. Poll vote counts are now tallied correctly.
+- **Vote response filtering**: Vote/ballot response messages are hidden from the message list to reduce clutter. Their vote data is still counted in the tallies shown on the voted-on message.
 
 ## [0.51] - 2026-03-25
 
 ### Added
-- **QWKE (Extended QWK) support**: Offset-based HEADERS.DAT matching for accurate extended To/From/Subject fields, UTF-8 flag, and RFC822 Message-ID parsing. QWKE body kludge parsing (`To:`, `From:`, `Subject:` at message start). REP packets now include HEADERS.DAT for extended fields.
-- **BBS color/attribute code support**: Interprets color codes from multiple BBS software packages in both the message reader and editor:
-  - ANSI escape codes (always enabled)
-  - Synchronet Ctrl-A codes
-  - WWIV heart codes
-  - PCBoard/Wildcat @X codes
-  - Celerity pipe codes
-  - Renegade pipe codes
-- **Per-system attribute code toggles**: Each BBS code type can be individually enabled/disabled via the Attribute Code Toggles sub-dialog in Reader Settings or the `config` utility. These settings affect both the reader and editor.
+- **QWKE (Extended QWK) support**: Improved handling of the extended QWK format, including accurate matching of extended To/From/Subject fields, UTF-8 detection, and message ID tracking. REP packets now include HEADERS.DAT for extended fields.
+- **BBS color/attribute code support**: Interprets color codes from multiple BBS software packages in both the message reader and editor: ANSI escape codes (always enabled), Synchronet Ctrl-A codes, WWIV heart codes, PCBoard/Wildcat @X codes, Celerity pipe codes, and Renegade pipe codes.
+- **Per-system attribute code toggles**: Each BBS color code type can be individually enabled or disabled via the Attribute Code Toggles sub-dialog in Reader Settings or the config utility. These settings affect both the reader and editor.
 - **Strip ANSI codes option**: When enabled, strips all ANSI escape codes from message text for plain display.
-- **Synchronet voting support**: Full support for the VOTING.DAT extension:
-  - Poll display with answer options, vote counts, and percentage bars
-  - Poll ballot UI (press V) to toggle answer selections and cast votes
-  - Up/down voting on regular messages (press V for Up, Down, or Quit prompt)
-  - Vote tallies shown in message header (upvote/downvote counts, net score, user vote indicator)
-  - Votes queued alongside replies and written to VOTING.DAT in REP packets
-  - Poll browser accessible via V from the conference list
-- **File attachment support**: Detects `@ATTACH:` kludge lines in messages, shows an [ATT] indicator in the header, and allows downloading attachments with D or Ctrl-D.
-- **UTF-8 support**: Detects UTF-8 content via HEADERS.DAT flag and automatic byte sequence detection. Displays UTF-8 characters correctly on compatible terminals. Shows a [UTF8] indicator in the message header. Includes CP437-to-UTF-8 conversion for legacy BBS content.
-- **Editor color picker (Ctrl-K)**: Opens a dialog to select foreground (8 normal + 8 bright) and background (8) colors, with a live preview. Inserts ANSI escape codes at the cursor position. Includes an Attributes section with Normal (reset all, `ESC[0m`) and High (bright/bold, `ESC[1m`). Hotkeys: N for Normal, H for High.
-- **ANSI-aware cursor movement in editor**: Left/Right arrow keys skip over ANSI sequences as atomic units. Backspace and Delete remove entire ANSI sequences in one keystroke. Cursor position on screen correctly accounts for zero-width ANSI codes. Word wrap uses display width rather than byte length.
-- **SlyMail data directory**: Settings and data are now stored in `~/.slymail` (Linux/macOS/BSD) or the user's home directory (Windows). The data directory and a `QWK` subdirectory are created automatically on first run. Default QWK browse and REP save directory is now `~/.slymail/QWK`.
-- **Remote systems directory (Ctrl-R)**: Download QWK packets from remote BBSes via FTP or SFTP directly from the file browser. Manage a directory of remote system connections with name, host, port, credentials, and connection type. Browse remote directories, navigate folders, and download files. Remote system entries are persisted to `remote_systems.json`. Uses the system's `curl` command for transfers (no compile-time library dependencies).
-- **Search and filtering** (`/` key): Search conferences by name in the conference list, and search messages by subject, body, from, or to in the message list. Includes an advanced search dialog (Ctrl-A) with date range filtering via a visual calendar date picker. Search results filter the list in place; press Q to clear the filter.
-- **Advanced search date picker**: Calendar-style date selection dialog with `<`/`>` month navigation, editable year field with digit validation, day-of-week headers, and Tab-based focus cycling.
-- **Regex search option**: Toggle in Reader Settings to treat search text as a regular expression (case-insensitive ECMAScript) instead of a plain substring.
-- **Remote systems directory (Ctrl-R)**: FTP and SFTP support for downloading QWK packets from remote BBSes. Scrollable system list with add/edit/delete. Remote file browser with directory navigation. Password input masked with `*` characters. Passwords encrypted (XOR + base64) in `remote_systems.json`. Port input validated to digits only. Spinning progress indicator during downloads. Comprehensive curl error code mapping (~45 codes) with user-friendly messages.
-- **Splash screen toggle**: Setting in Reader Settings and `config` General Settings to enable/disable the startup splash screen.
-- **Command-line interface**: `-qwk_file=<path>` to open a QWK packet directly (bypasses splash screen and file browser), `-v`/`--version` for version info, `-?`/`-help`/`--help`/`/?`/`/help` for help screen. Also supports bare positional argument for backward compatibility.
-- **File browser help screen**: Press `?` or `F1` for a help screen listing available hotkeys.
-- **Remote file browser help screen**: Press `?` or `F1` when connected to a remote system for a help screen with connection info.
+- **Synchronet voting support**: Full support for polls and message voting via the VOTING.DAT extension. Includes poll display with vote counts and percentage bars, ballot selection UI, up/down voting, vote tallies in the message header, and vote queueing in REP packets. Poll browser accessible via V from the conference list.
+- **File attachment support**: Detects file attachments in messages, shows an [ATT] indicator in the message header, and allows downloading attachments with D or Ctrl-D.
+- **UTF-8 support**: Detects and displays UTF-8 characters correctly on compatible terminals. Shows a [UTF8] indicator in the message header. Includes CP437-to-UTF-8 conversion for legacy BBS content.
+- **Editor color picker (Ctrl-K)**: Opens a dialog to select foreground and background colors with a live preview. Inserts ANSI escape codes at the cursor position. Includes Normal (reset) and High (bright/bold) attribute options.
+- **SlyMail data directory**: Settings and data are now stored in `~/.slymail` (Linux/macOS/BSD) or the user's home directory (Windows). The data directory is created automatically on first run.
+- **Remote systems directory (Ctrl-R)**: Download QWK packets from remote BBSes via FTP or SFTP directly from the file browser. Manage remote system connections with name, host, port, credentials, and connection type. Passwords are masked during input and encrypted in the configuration file.
+- **Search and filtering (/ key)**: Search conferences by name or search messages by subject, body, from, or to. Includes an advanced search dialog (Ctrl-A) with date range filtering via a visual calendar date picker. Press Q to clear the filter.
+- **Regex search option**: Toggle in Reader Settings to treat search text as a regular expression instead of a plain substring.
+- **Splash screen toggle**: Setting to enable or disable the startup splash screen.
+- **Command-line interface**: `-qwk_file=<path>` to open a QWK packet directly (bypasses splash screen and file browser), `-v`/`--version` for version info, `-?`/`--help` for help screen.
+- **File browser help screen**: Press ? or F1 in the file browser for a list of available hotkeys.
+- **Remote file browser help screen**: Press ? or F1 when connected to a remote system for a help screen showing available hotkeys and connection info.
 - **M key in message reader**: Returns to the message list, same as Q/C/ESC.
-- New source module: `search.cpp/h`
-- **Cross-platform `getHomeDir()`**: Reliable home directory detection for Windows (`USERPROFILE`/`HOMEDRIVE+HOMEPATH`), Linux, macOS, and BSD (`HOME`).
-- New source modules: `bbs_colors.cpp/h`, `utf8_util.cpp/h`, `voting.cpp/h`, `remote_systems.cpp/h`
-- GitHub Actions CI workflow for Linux and macOS builds
 
 ### Changed
 - **Conference and message list position memory**: Returning from reading a message or from a conference preserves the previously selected position.
-- **Color picker remembers last selection**: Re-opening Ctrl-K in the editor starts with the last selected foreground, background, bright, and section.
-- **Date picker improvements**: Focus starts on calendar; tab order is Calendar → `<` → `>` → Year → OK → Cancel. `<` and `>` buttons shown without brackets. Year field opens a digit-validated text input on Tab or Enter; focus returns to calendar after editing.
-- **Remote system editor**: Selected field background color extends full width across the dialog. DEL key deletes a remote system in addition to D.
-- Download progress spinner shown during FTP/SFTP file transfers.
-- Settings file (`slymail.ini`) is now stored in the SlyMail data directory (`~/.slymail`) instead of alongside the executable.
-- Default directory for QWK file browsing and REP packet saving is now `~/.slymail/QWK`.
-- Help bar at the bottom of the screen uses new color scheme: grey background, red hotkeys, blue regular text, magenta parentheses. Text is horizontally centered across the full terminal width.
-- REP packets now include HEADERS.DAT (for fields > 25 chars) and VOTING.DAT (for queued votes) alongside the message file.
-- Message reader body rendering now parses BBS color codes segment-by-segment for colored output.
-- Q key in conference/message list now clears the active search filter before quitting, so filtered results can be dismissed without leaving the screen.
-- Editor `drawEditArea()` renders ANSI and BBS attribute codes inline for live colored text preview.
+- **Color picker remembers last selection**: Re-opening Ctrl-K starts with the previously selected colors.
+- **Date picker improvements**: Focus starts on the calendar; Tab cycles through the month navigation buttons, year field, and OK/Cancel buttons. The year field accepts digit-only input.
+- **Remote system editor**: Selected field highlighting extends the full width of the dialog. DEL key deletes a remote system entry in addition to D.
+- **Download progress indicator**: A spinning character is shown during FTP/SFTP file transfers.
+- **Settings storage**: The settings file is now stored in the SlyMail data directory instead of alongside the executable.
+- **Help bar appearance**: The help bar at the bottom of the screen uses a new color scheme with grey background, red hotkeys, blue text, and magenta parentheses. Text is horizontally centered.
+- **REP packets include HEADERS.DAT and VOTING.DAT**: Reply packets now include extended headers for long fields and any pending votes.
+- **Q key clears search filter**: In the conference and message lists, pressing Q while a search filter is active clears the filter instead of quitting.
 
 ### Fixed
-- **Vote response filtering**: Messages with QWK status `V` (vote/ballot responses) are hidden from the message list. Their vote data is still tallied into the target message.
-- **Synchronet poll display**: Polls from VOTING.DAT that have no corresponding message in MESSAGES.DAT are now shown as synthetic messages inserted at their chronological position in the conference. Poll results display with Synchronet-style backfill percentage bars (bright white on blue for the filled portion, dim cyan for the remainder).
-- **Vote tallying**: `tallyVotes()` and up/down vote counting now match by `vote.inReplyTo` (the ID of the poll/message being voted on) instead of `vote.msgId` (the vote's own ID). Previously all vote counts were zero.
-- **Synthetic poll messages**: Polls defined only in VOTING.DAT (common with Synchronet) now appear in the message list at their correct chronological position instead of being invisible or appended at the end.
-- **Ctrl-S subject cursor position**: Fixed incorrect cursor placement for subject editing in both Ice mode (was column 12, now column 10) and DCT mode (was column 11, now column 8). Subject input width now dynamically matches the header layout. Also fixed in the ESC menu's subject change handler.
-- HEADERS.DAT parsing now uses byte-offset-based matching instead of fragile string prefix matching, greatly improving accuracy for QWKE packets.
-- QWK message body parsing now allows Ctrl-A (0x01), Ctrl-C (0x03), and ESC (0x1B) bytes through for BBS color code support.
-- Smart 0xE3 handling: distinguishes between QWK newline markers and UTF-8 3-byte lead bytes by checking for valid continuation bytes.
-- `toupper()`/`tolower()`/`isalpha()` calls now cast to `unsigned char` to prevent undefined behavior with extended ASCII characters (portability fix for macOS/BSD).
-- Used `<clocale>` instead of `<locale.h>` for proper C++ header usage.
-- Added missing `<cctype>` includes where character classification functions are used.
+- **Synchronet poll display**: Polls from Synchronet BBSes now appear correctly in the message list at their chronological position, with accurate vote counts and percentage bars.
+- **Subject field cursor**: Fixed incorrect cursor placement when changing the subject with Ctrl-S in both Ice and DCT editor modes.
+- **QWKE header matching**: Extended header fields are now matched accurately by message offset, improving reliability with various QWK packet formats.
+- **UTF-8 detection in QWK bodies**: The QWK parser now correctly distinguishes between QWK newline markers and UTF-8 multi-byte sequences.
+- **macOS/BSD compatibility**: Fixed potential issues with character classification functions on non-Linux platforms.
 
 ## [0.50] - 2026-03-24
 
 ### Added
 - Initial release
 - Cross-platform text-based QWK offline mail reader (Linux, macOS, BSD, Windows)
-- QWK packet parsing: CONTROL.DAT, MESSAGES.DAT, NDX index files, HEADERS.DAT
+- QWK packet parsing with support for CONTROL.DAT, MESSAGES.DAT, NDX index files, and HEADERS.DAT
 - DDMsgReader-inspired message reading UI with scrollable lightbar navigation
 - SlyEdit-inspired message editor with Ice and DCT visual modes
-- Theme support with configurable `.ini` color theme files
+- Theme support with configurable color theme files
 - Quote window for selecting and inserting quoted text
 - Built-in spell checker with multiple English dictionaries
 - Tagline support with random or manual selection
-- REP reply packet creation (ZIP format)
+- REP reply packet creation
 - File browser for selecting QWK packets
-- Standalone `config` utility for configuring settings outside the main app
-- Persistent settings via `slymail.ini`
-- CP437 box-drawing character support via platform abstraction layer
+- Standalone config utility for configuring settings outside the main application
+- Persistent settings
+- CP437 box-drawing character support
 - Windows support via Win32 Console API (Visual Studio 2022 and MinGW/MSYS2)

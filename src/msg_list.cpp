@@ -259,6 +259,10 @@ ConfListResult showConferenceList(QwkPacket& packet, int& selectedConf,
             case 'O':
             case TK_CTRL_L:
                 return ConfListResult::OpenFile;
+            case TK_CTRL_R:
+                return ConfListResult::RemoteSystems;
+            case TK_CTRL_P:
+                return ConfListResult::SaveRep;
             case 'v':
             case 'V':
                 return ConfListResult::Voting;
@@ -308,9 +312,14 @@ ConfListResult showConferenceList(QwkPacket& packet, int& selectedConf,
                 helpLine("Enter", "Open selected conference");
                 helpLine("PageUp/PageDown", "Scroll up/down a page");
                 helpLine("HOME/END", "Jump to first/last conference");
+                helpLine("/", "Search/filter conferences");
+                helpLine("V", "View polls/votes in packet");
                 helpLine("O / Ctrl-L", "Open a different QWK file");
+                helpLine("Ctrl-R", "Remote systems (download QWK)");
+                helpLine("Ctrl-P", "Save REP reply packet");
                 helpLine("S / Ctrl-U", "Settings");
                 helpLine("Q / ESC", "Quit SlyMail");
+                helpLine("? / F1", "This help screen");
                 r += 2;
                 printAt(r, 2, "Press any key to continue...",
                     tAttr(TC_GREEN, TC_BLACK, false));
@@ -619,6 +628,10 @@ MsgListResult showMessageList(QwkConference& conf, int& selectedMsg,
                 return MsgListResult::Settings;
             case TK_CTRL_L:
                 return MsgListResult::OpenFile;
+            case TK_CTRL_R:
+                return MsgListResult::RemoteSystems;
+            case TK_CTRL_P:
+                return MsgListResult::SaveRep;
             case 'q':
             case 'Q':
                 if (isFiltered)
@@ -658,7 +671,7 @@ MsgListResult showMessageList(QwkConference& conf, int& selectedMsg,
                         int targetNum = std::stoi(numStr);
                         for (int j = 0; j < totalMsgs; ++j)
                         {
-                            if (conf.messages[j].number == targetNum)
+                            if (conf.messages[filteredIdx[j]].number == targetNum)
                             {
                                 selected = j;
                                 break;
@@ -667,6 +680,7 @@ MsgListResult showMessageList(QwkConference& conf, int& selectedMsg,
                     }
                     catch (...)
                     {
+                        // Invalid input — just ignore and return to the list
                     }
                 }
                 needFullRedraw = true;  // help bar was overwritten by input prompt
@@ -695,10 +709,14 @@ MsgListResult showMessageList(QwkConference& conf, int& selectedMsg,
                 helpLine("G", "Go to message number");
                 helpLine("PageUp/PageDown", "Scroll up/down a page");
                 helpLine("HOME/END", "Jump to first/last message");
+                helpLine("/", "Search/filter messages");
                 helpLine("Ctrl-L", "Open a different QWK file");
+                helpLine("Ctrl-R", "Remote systems (download QWK)");
+                helpLine("Ctrl-P", "Save REP reply packet");
                 helpLine("S / Ctrl-U", "Settings");
                 helpLine("C / ESC", "Back to conference list");
                 helpLine("Q", "Quit SlyMail");
+                helpLine("? / F1", "This help screen");
                 r += 2;
                 printAt(r, 2, "Press any key to continue...",
                     tAttr(TC_GREEN, TC_BLACK, false));

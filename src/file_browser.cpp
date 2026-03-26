@@ -100,10 +100,24 @@ bool isQwkFile(const string& name)
     return ext == ".qwk";
 }
 
+// Check if a filename matches an extension (case-insensitive)
+static bool hasExtension(const string& name, const string& ext)
+{
+    if (ext.empty() || name.size() < ext.size()) return false;
+    string fileTail = name.substr(name.size() - ext.size());
+    for (auto& c : fileTail) c = static_cast<char>(tolower(static_cast<unsigned char>(c)));
+    string lowerExt = ext;
+    for (auto& c : lowerExt) c = static_cast<char>(tolower(static_cast<unsigned char>(c)));
+    return fileTail == lowerExt;
+}
+
 // File browser dialog styled to match the DDMsgReader look
 string showFileBrowser(const string& startDir,
-                       const string& preSelectFile)
+                       const string& preSelectFile,
+                       const string& fileExtFilter)
 {
+    // Determine which extension to accept
+    string acceptExt = fileExtFilter.empty() ? ".qwk" : fileExtFilter;
     string currentDir = startDir;
     if (currentDir.empty())
     {
@@ -215,7 +229,7 @@ string showFileBrowser(const string& startDir,
                 sizeAttr = tAttr(TC_YELLOW, TC_BLACK, false);
                 dateAttr = tAttr(TC_GREEN, TC_BLACK, false);
             }
-            else if (isQwkFile(entry.name))
+            else if (hasExtension(entry.name, acceptExt))
             {
                 fillRow(y, tAttr(TC_BLACK, TC_BLACK, false));
                 nameAttr = tAttr(TC_GREEN, TC_BLACK, true);
@@ -379,13 +393,13 @@ string showFileBrowser(const string& startDir,
                         scrollOffset = 0;
                         needReloadDir = true;
                     }
-                    else if (isQwkFile(entry.name))
+                    else if (hasExtension(entry.name, acceptExt))
                     {
                         return entry.fullPath;
                     }
                     else
                     {
-                        messageDialog("Info", "Please select a .qwk file");
+                        messageDialog("Info", "Please select a " + acceptExt + " file");
                         needFullRedraw = true;
                     }
                 }
@@ -444,4 +458,162 @@ string showFileBrowser(const string& startDir,
         }
     }
     return "";
+}
+
+// ============================================================
+// Directory chooser — shows only directories
+// ============================================================
+
+string showDirChooser(const string& startDir, const string& title)
+{
+    string currentDir = startDir;
+    if (currentDir.empty())
+    {
+        currentDir = getSlyMailDataDir();
+    }
+
+    int selected = 0;
+    int scrollOffset = 0;
+    bool needFullRedraw = true;
+    vector<FileEntry> entries;
+    bool needReloadDir = true;
+
+    while (true)
+    {
+        if (needReloadDir)
+        {
+            needReloadDir = false;
+            // Only list directories
+            entries.clear();
+            try
+            {
+                for (const auto& entry : fs::directory_iterator(currentDir))
+                {
+                    if (!entry.is_directory()) continue;
+                    FileEntry fe;
+                    fe.name = entry.path().filename().string();
+                    fe.fullPath = entry.path().string();
+                    fe.isDirectory = true;
+                    fe.fileSize = 0;
+                    entries.push_back(fe);
+                }
+            }
+            catch (...) {}
+
+            // Add ".." for parent navigation
+            if (currentDir != "/" && !currentDir.empty())
+            {
+                FileEntry parent;
+                parent.name = "..";
+                parent.fullPath = fs::path(currentDir).parent_path().string();
+                parent.isDirectory = true;
+                parent.fileSize = 0;
+                entries.insert(entries.begin(), parent);
+            }
+            std::sort(entries.begin() + (entries.empty() ? 0 : 1), entries.end());
+            selected = 0;
+            scrollOffset = 0;
+            needFullRedraw = true;
+        }
+
+        int COLS = g_term->getCols();
+        int ROWS = g_term->getRows();
+        int listTop = 3;
+        int listHeight = ROWS - 5;
+        int totalEntries = static_cast<int>(entries.size());
+
+        if (selected < scrollOffset) scrollOffset = selected;
+        if (selected >= scrollOffset + listHeight) scrollOffset = selected - listHeight + 1;
+
+        if (needFullRedraw)
+        {
+            g_term->clear();
+
+            // Title bar
+            printAt(0, 0, " " + title + " ", tAttr(TC_WHITE, TC_BLUE, true));
+            g_term->setAttr(tAttr(TC_WHITE, TC_BLUE, true));
+            g_term->fillRegion(0, static_cast<int>(title.size()) + 2, COLS, ' ');
+
+            // Current directory
+            printAt(1, 0, " " + currentDir, tAttr(TC_CYAN, TC_BLACK, true));
+
+            g_term->setAttr(tAttr(TC_BLUE, TC_BLACK, true));
+            g_term->drawHLine(2, 0, COLS);
+
+            for (int i = 0; i < listHeight && (scrollOffset + i) < totalEntries; ++i)
+            {
+                int idx = scrollOffset + i;
+                int y = listTop + i;
+                bool isSel = (idx == selected);
+                const auto& fe = entries[idx];
+
+                if (isSel)
+                {
+                    fillRow(y, tAttr(TC_WHITE, TC_BLUE, true));
+                }
+                else
+                {
+                    fillRow(y, tAttr(TC_BLACK, TC_BLACK, false));
+                }
+
+                TermAttr nameAttr = isSel ? tAttr(TC_WHITE, TC_BLUE, true)
+                                          : tAttr(TC_YELLOW, TC_BLACK, true);
+                printAt(y, 1, "[" + fe.name + "]", nameAttr);
+            }
+
+            // Help bar
+            drawDDHelpBar(ROWS - 1, "Up/Dn, ",
+                          {{'E', "nter=Open"}, {'S', "elect this dir"}, {'Q', "uit"}});
+
+            // Status
+            printAt(ROWS - 2, 0, " Press S or Enter+select to choose: " + currentDir,
+                    tAttr(TC_GREEN, TC_BLACK, false));
+
+            needFullRedraw = false;
+        }
+
+        g_term->refresh();
+
+        int ch = g_term->getKey();
+        switch (ch)
+        {
+            case TK_UP:
+                if (selected > 0) --selected;
+                needFullRedraw = true;
+                break;
+            case TK_DOWN:
+                if (selected < totalEntries - 1) ++selected;
+                needFullRedraw = true;
+                break;
+            case TK_PGUP:
+                selected -= listHeight;
+                if (selected < 0) selected = 0;
+                needFullRedraw = true;
+                break;
+            case TK_PGDN:
+                selected += listHeight;
+                if (selected >= totalEntries) selected = totalEntries - 1;
+                needFullRedraw = true;
+                break;
+            case TK_ENTER:
+                if (selected >= 0 && selected < totalEntries)
+                {
+                    currentDir = entries[selected].fullPath;
+                    needReloadDir = true;
+                }
+                break;
+            case 's': case 'S':
+            {
+                // Select the current directory
+                string absPath;
+                try { absPath = fs::absolute(currentDir).string(); }
+                catch (...) { absPath = currentDir; }
+                return absPath;
+            }
+            case 'q': case 'Q': case TK_ESCAPE:
+                return "";
+            default:
+                break;
+        }
+    }
 }

@@ -675,9 +675,14 @@ void downloadAttachments(const QwkMessage& msg, const string& extractDir)
                 fs::copy_file(srcPath, dstPath, fs::copy_options::overwrite_existing);
                 ++copied;
             }
+            catch (const fs::filesystem_error& e)
+            {
+                messageDialog("Copy Error",
+                    "Failed to copy " + fname + ": " + string(e.what()));
+            }
             catch (...)
             {
-                // Silently skip files that can't be copied
+                messageDialog("Copy Error", "Failed to copy " + fname);
             }
         }
     }
@@ -1071,6 +1076,11 @@ MsgReadResult showMessageReader(const QwkMessage& msg,
     attrFlags.celerity = settings.attrCelerity;
     attrFlags.renegade = settings.attrRenegade;
     attrFlags.pcboard = settings.attrPCBoard;
+
+    // Clear the screen immediately on entry so no remnants of the
+    // message list are visible while the reader draws its content.
+    g_term->clear();
+    g_term->refresh();
 
     while (true)
     {

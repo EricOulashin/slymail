@@ -15,7 +15,8 @@ HEADERS = $(SRCDIR)/terminal.h $(SRCDIR)/terminal_ncurses.h $(SRCDIR)/terminal_w
           $(SRCDIR)/file_browser.h $(SRCDIR)/msg_list.h $(SRCDIR)/msg_reader.h \
           $(SRCDIR)/msg_editor.h $(SRCDIR)/settings_dialog.h $(SRCDIR)/theme.h \
           $(SRCDIR)/bbs_colors.h $(SRCDIR)/utf8_util.h $(SRCDIR)/voting.h \
-          $(SRCDIR)/remote_systems.h $(SRCDIR)/search.h
+          $(SRCDIR)/remote_systems.h $(SRCDIR)/search.h $(SRCDIR)/text_input.h \
+          $(SRCDIR)/text_utils.h
 
 # Object files
 OBJDIR = obj
@@ -25,7 +26,8 @@ SLYMAIL_OBJECTS = $(OBJDIR)/main.o $(OBJDIR)/qwk.o $(OBJDIR)/settings.o $(OBJDIR
                   $(OBJDIR)/msg_editor.o $(OBJDIR)/settings_dialog.o $(OBJDIR)/terminal.o \
                   $(OBJDIR)/ui_common.o $(OBJDIR)/theme.o $(OBJDIR)/file_browser.o $(OBJDIR)/msg_list.o \
                   $(OBJDIR)/bbs_colors.o $(OBJDIR)/utf8_util.o $(OBJDIR)/voting.o \
-                  $(OBJDIR)/remote_systems.o $(OBJDIR)/search.o
+                  $(OBJDIR)/remote_systems.o $(OBJDIR)/search.o $(OBJDIR)/text_input.o \
+                  $(OBJDIR)/text_utils.o
 
 # Config program objects
 CONFIG_OBJECTS = $(OBJDIR)/config.o $(OBJDIR)/settings.o $(OBJDIR)/settings_dialog.o \
@@ -159,9 +161,43 @@ $(OBJDIR)/remote_systems.o: $(SRCDIR)/remote_systems.cpp $(HEADERS)
 $(OBJDIR)/search.o: $(SRCDIR)/search.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+# Compile text_input.cpp
+$(OBJDIR)/text_input.o: $(SRCDIR)/text_input.cpp $(SRCDIR)/text_input.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Compile text_utils.cpp
+$(OBJDIR)/text_utils.o: $(SRCDIR)/text_utils.cpp $(SRCDIR)/text_utils.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Test executables
+TEST_TEXT_INPUT = test_text_input
+TEST_WRAP_QUOTE = test_wrap_quote_lines
+TEST_TI_OBJECTS = $(OBJDIR)/test_text_input.o $(OBJDIR)/text_input.o $(OBJDIR)/text_utils.o
+TEST_WQ_OBJECTS = $(OBJDIR)/test_wrap_quote_lines.o $(OBJDIR)/text_utils.o
+
+# Build all tests
+test: $(OBJDIR) $(TEST_TEXT_INPUT) $(TEST_WRAP_QUOTE)
+
+$(TEST_TEXT_INPUT): $(TEST_TI_OBJECTS)
+	$(CXX) $(TEST_TI_OBJECTS) -o $(TEST_TEXT_INPUT)
+
+$(TEST_WRAP_QUOTE): $(TEST_WQ_OBJECTS)
+	$(CXX) $(TEST_WQ_OBJECTS) -o $(TEST_WRAP_QUOTE)
+
+$(OBJDIR)/test_text_input.o: tests/test_text_input.cpp $(SRCDIR)/text_input.h $(SRCDIR)/text_utils.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(OBJDIR)/test_wrap_quote_lines.o: tests/test_wrap_quote_lines.cpp $(SRCDIR)/text_utils.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Run all tests
+runtest: test
+	./$(TEST_TEXT_INPUT)
+	./$(TEST_WRAP_QUOTE)
+
 # Clean
 clean:
-	rm -rf $(OBJDIR) $(TARGET) $(CONFIG_TARGET)
+	rm -rf $(OBJDIR) $(TARGET) $(CONFIG_TARGET) $(TEST_TEXT_INPUT) $(TEST_WRAP_QUOTE)
 
 # Install (Linux/Mac/BSD)
 install: $(TARGET) $(CONFIG_TARGET)
@@ -177,4 +213,4 @@ uninstall:
 debug:
 	$(MAKE) DEBUG=1
 
-.PHONY: all clean install uninstall debug
+.PHONY: all clean install uninstall debug test runtest

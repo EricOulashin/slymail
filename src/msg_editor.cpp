@@ -6,278 +6,11 @@
 
 #include "msg_editor.h"
 #include "bbs_colors.h"
+#include "text_utils.h"
 #include <cctype>
 
 using std::string;
 using std::vector;
-
-// ============================================================
-// ANSI-aware helpers for the editor
-// ============================================================
-
-// Return the length of an ANSI escape sequence starting at pos, or 0 if none.
-static int ansiSeqLen(const string& text, int pos)
-{
-    if (pos < 0 || pos >= static_cast<int>(text.size()))
-    {
-        return 0;
-    }
-    if (static_cast<uint8_t>(text[pos]) != 0x1B)
-    {
-        return 0;
-    }
-    if (pos + 1 >= static_cast<int>(text.size()) || text[pos + 1] != '[')
-    {
-        return 0;
-    }
-    // Scan for the final byte (letter in 0x40-0x7E range)
-    int i = pos + 2;
-    while (i < static_cast<int>(text.size()))
-    {
-        char ch = text[i];
-        if (ch >= 0x40 && ch <= 0x7E)
-        {
-            return i - pos + 1; // length including the final byte
-        }
-        if ((ch >= '0' && ch <= '9') || ch == ';')
-        {
-            ++i;
-            continue;
-        }
-        break; // invalid character in sequence
-    }
-    return 0; // unterminated
-}
-
-// Calculate the display column for a byte offset, skipping ANSI sequences.
-// ANSI sequences have zero display width.
-static int byteColToDisplayCol(const string& text, int byteCol)
-{
-    int displayCol = 0;
-    int i = 0;
-    while (i < byteCol && i < static_cast<int>(text.size()))
-    {
-        int seqLen = ansiSeqLen(text, i);
-        if (seqLen > 0)
-        {
-            i += seqLen; // skip the sequence, no display width
-        }
-        else
-        {
-            ++displayCol;
-            ++i;
-        }
-    }
-    return displayCol;
-}
-
-// Move byte offset forward past one visible character.
-// Skips over all consecutive ANSI sequences at the current position first,
-// then advances past one regular character, then skips any trailing ANSI
-// sequences so the cursor lands on the next visible character.
-static int skipForward(const string& text, int pos)
-{
-    int len = static_cast<int>(text.size());
-    if (pos >= len) return pos;
-
-    // Skip any ANSI sequences at current position
-    while (pos < len)
-    {
-        int seqLen = ansiSeqLen(text, pos);
-        if (seqLen > 0)
-            pos += seqLen;
-        else
-            break;
-    }
-
-    // Advance past one visible character
-    if (pos < len) ++pos;
-
-    // Skip any ANSI sequences immediately after
-    while (pos < len)
-    {
-        int seqLen = ansiSeqLen(text, pos);
-        if (seqLen > 0)
-            pos += seqLen;
-        else
-            break;
-    }
-
-    return pos;
-}
-
-// Skip backward over one ANSI sequence ending at pos.
-// Returns the start of that sequence, or pos unchanged if none found.
-static int skipOneSeqBackward(const string& text, int pos)
-{
-    if (pos <= 0) return pos;
-    int endByte = pos - 1;
-    char ch = text[endByte];
-    if (ch >= 0x40 && ch <= 0x7E)
-    {
-        int scan = endByte - 1;
-        while (scan >= 0)
-        {
-            if (static_cast<uint8_t>(text[scan]) == 0x1B && scan + 1 < static_cast<int>(text.size())
-                && text[scan + 1] == '[')
-            {
-                int seqLen = ansiSeqLen(text, scan);
-                if (seqLen > 0 && scan + seqLen == pos)
-                    return scan;
-                break;
-            }
-            char sc = text[scan];
-            if ((sc >= '0' && sc <= '9') || sc == ';' || sc == '[')
-            {
-                --scan;
-                continue;
-            }
-            break;
-        }
-    }
-    return pos; // no sequence found
-}
-
-// Move byte offset backward past one visible character.
-// Skips over all consecutive ANSI sequences before the current position,
-// then moves back one regular character, then skips any further ANSI
-// sequences so the cursor lands on the previous visible character.
-static int skipBackward(const string& text, int pos)
-{
-    if (pos <= 0) return 0;
-
-    // Skip backwards over any ANSI sequences ending at pos
-    while (pos > 0)
-    {
-        int newPos = skipOneSeqBackward(text, pos);
-        if (newPos < pos)
-            pos = newPos;
-        else
-            break;
-    }
-
-    // Move back one visible character
-    if (pos > 0) --pos;
-
-    // Skip backwards over any further ANSI sequences
-    while (pos > 0)
-    {
-        int newPos = skipOneSeqBackward(text, pos);
-        if (newPos < pos)
-            pos = newPos;
-        else
-            break;
-    }
-
-    return pos;
-}
-
-// Erase backward from pos: if right after an ANSI sequence, erase the whole
-// sequence. Otherwise erase 1 byte. Returns the new position.
-static int eraseBackward(string& text, int pos)
-{
-    if (pos <= 0)
-    {
-        return 0;
-    }
-    int newPos = skipBackward(text, pos);
-    int count = pos - newPos;
-    text.erase(newPos, count);
-    return newPos;
-}
-
-// Erase forward from pos: skips over all consecutive ANSI sequences,
-// then erases one visible character, then any trailing ANSI sequences.
-// This mirrors the forward cursor movement behavior.
-static void eraseForward(string& text, int pos)
-{
-    if (pos >= static_cast<int>(text.size()))
-    {
-        return;
-    }
-    // Find where skipForward would land — that's the end of what we erase
-    int endPos = skipForward(text, pos);
-    if (endPos > pos)
-    {
-        text.erase(pos, endPos - pos);
-    }
-}
-
-// Pull words from the next line up to the current line if there's room.
-// This is the reverse of word-wrap: when text is deleted and the current
-// line gets shorter, words from the next line flow back up.
-static void pullUpWords(vector<EditorLine>& lines, int row, int editWidth)
-{
-    if (row < 0 || row + 1 >= static_cast<int>(lines.size())) return;
-
-    string& curLine = lines[row].text;
-    string& nextLine = lines[row + 1].text;
-    if (nextLine.empty()) return;
-
-    int curDispW = byteColToDisplayCol(curLine, static_cast<int>(curLine.size()));
-    if (curDispW >= editWidth) return; // No room
-
-    // Try to pull words from the next line onto this line.
-    // A "word" is text up to and including the next space.
-    size_t pos = 0;
-    while (pos < nextLine.size())
-    {
-        // Find the end of the next word (include trailing space)
-        size_t wordEnd = nextLine.find(' ', pos);
-        if (wordEnd == string::npos)
-        {
-            wordEnd = nextLine.size(); // Last word, no trailing space
-        }
-        else
-        {
-            ++wordEnd; // Include the space
-        }
-
-        string word = nextLine.substr(pos, wordEnd - pos);
-
-        // Calculate display width of current line + separator + this word
-        // If curLine is not empty and doesn't end with space, we need a space
-        string separator;
-        if (!curLine.empty() && curLine.back() != ' ' && pos == 0 && !word.empty() && word[0] != ' ')
-        {
-            separator = " ";
-        }
-
-        string candidate = curLine + separator + word;
-        int candidateDispW = byteColToDisplayCol(candidate, static_cast<int>(candidate.size()));
-
-        if (candidateDispW > editWidth)
-        {
-            break; // Won't fit
-        }
-
-        // It fits — append
-        curLine = candidate;
-        pos = wordEnd;
-    }
-
-    if (pos > 0)
-    {
-        // Remove the pulled text from the next line
-        nextLine = nextLine.substr(pos);
-        // Strip leading spaces from what remains
-        while (!nextLine.empty() && nextLine[0] == ' ')
-        {
-            nextLine = nextLine.substr(1);
-        }
-        // If next line is now empty, remove it
-        if (nextLine.empty())
-        {
-            lines.erase(lines.begin() + row + 1);
-        }
-    }
-
-    // Strip trailing spaces from current line
-    while (!curLine.empty() && curLine.back() == ' ')
-    {
-        curLine.pop_back();
-    }
-}
 
 MessageEditor::MessageEditor()
     : cursorRow(0), cursorCol(0), scrollRow(0)
@@ -436,6 +169,8 @@ void MessageEditor::prepareQuotes(const QwkMessage& msg, const Settings& setting
         prefix = settings.quotePrefix;
     }
 
+    // Build raw quote lines with prefix
+    vector<string> rawQuoteLines;
     std::istringstream stream(msg.body);
     string line;
     while (std::getline(stream, line))
@@ -470,7 +205,21 @@ void MessageEditor::prepareQuotes(const QwkMessage& msg, const Settings& setting
                 line.clear();
             }
         }
-        quoteLines.push_back(prefix + line);
+        rawQuoteLines.push_back(prefix + line);
+    }
+
+    // Re-wrap quote lines to fit within a standard width (default 79 chars).
+    // This ensures prefixed lines don't exceed the typical BBS line length
+    // convention and look properly formatted in the quote window.
+    int quoteMaxWidth = settings.quoteLineWidth;
+    if (quoteMaxWidth <= 0) quoteMaxWidth = 79;
+    if (settings.wrapQuoteLines)
+    {
+        quoteLines = wrapQuoteLines(rawQuoteLines, quoteMaxWidth);
+    }
+    else
+    {
+        quoteLines = rawQuoteLines;
     }
 }
 
@@ -2105,6 +1854,8 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
     g_term->setCursorVisible(true);
 
     bool needFullRedraw = true;
+    bool needEditRedraw = true;  // Whether the edit area content needs redrawing
+    int prevScrollRow = -1;
 
     while (true)
     {
@@ -2130,10 +1881,12 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                 drawQuoteWindow();
             }
             needFullRedraw = false;
+            needEditRedraw = false;
+            prevScrollRow = scrollRow;
         }
-        else
+        else if (needEditRedraw || scrollRow != prevScrollRow)
         {
-            // Partial redraw: only update the edit area and status bar
+            // Content changed or scrolled — redraw the edit area and status bar
             drawEditArea();
             if (currentStyle == EditorStyle::Ice)
             {
@@ -2147,7 +1900,10 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
             {
                 drawQuoteWindow();
             }
+            needEditRedraw = false;
+            prevScrollRow = scrollRow;
         }
+        // else: cursor-only movement — just reposition the cursor, no redraw
 
         // Position cursor — use display column that skips ANSI sequences
         int displayRow = cursorRow - scrollRow;
@@ -2160,6 +1916,9 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
         g_term->refresh();
 
         int ch = g_term->getKey();
+
+        // Assume content changed; cursor-only keys will clear this flag
+        needEditRedraw = true;
 
         if (cursorRow < 0)
         {
@@ -2294,10 +2053,10 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                     {
                         cursorCol = static_cast<int>(lines[cursorRow].text.size());
                     }
-                    // Don't land inside an ANSI sequence
                     int seqUp = ansiSeqLen(lines[cursorRow].text, cursorCol);
                     if (seqUp > 0) cursorCol += seqUp;
                 }
+                needEditRedraw = false; // Cursor-only movement
                 break;
 
             case TK_DOWN:
@@ -2308,10 +2067,10 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                     {
                         cursorCol = static_cast<int>(lines[cursorRow].text.size());
                     }
-                    // Don't land inside an ANSI sequence
                     int seqDn = ansiSeqLen(lines[cursorRow].text, cursorCol);
                     if (seqDn > 0) cursorCol += seqDn;
                 }
+                needEditRedraw = false;
                 break;
 
             case TK_LEFT:
@@ -2324,6 +2083,7 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                     --cursorRow;
                     cursorCol = static_cast<int>(lines[cursorRow].text.size());
                 }
+                needEditRedraw = false;
                 break;
 
             case TK_RIGHT:
@@ -2336,14 +2096,17 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                     ++cursorRow;
                     cursorCol = 0;
                 }
+                needEditRedraw = false;
                 break;
 
             case TK_HOME:
                 cursorCol = 0;
+                needEditRedraw = false;
                 break;
 
             case TK_END:
                 cursorCol = static_cast<int>(lines[cursorRow].text.size());
+                needEditRedraw = false;
                 break;
 
             case TK_PGUP:
@@ -2357,6 +2120,7 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                     cursorCol = static_cast<int>(lines[cursorRow].text.size());
                 }
                 { int sq = ansiSeqLen(lines[cursorRow].text, cursorCol); if (sq > 0) cursorCol += sq; }
+                needEditRedraw = false; // Scroll change is detected separately
                 break;
 
             case TK_PGDN:
@@ -2370,10 +2134,12 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                     cursorCol = static_cast<int>(lines[cursorRow].text.size());
                 }
                 { int sq = ansiSeqLen(lines[cursorRow].text, cursorCol); if (sq > 0) cursorCol += sq; }
+                needEditRedraw = false;
                 break;
 
             case TK_INSERT:
                 insertMode = !insertMode;
+                // Status bar needs to update the INS/OVR indicator
                 break;
 
             case TK_BACKSPACE:

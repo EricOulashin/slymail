@@ -9,6 +9,7 @@
 #include "settings.h"
 #include "settings_dialog.h"
 #include "bbs_colors.h"
+#include "text_input.h"
 #include <chrono>
 
 enum class EditorResult
@@ -17,10 +18,8 @@ enum class EditorResult
     Aborted,
 };
 
-struct EditorLine
-{
-    std::string text;
-};
+// EditorLine is an alias for TextLine from text_input.h
+using EditorLine = TextLine;
 
 // The message editor (SlyEdit-style with ICE and DCT modes)
 class MessageEditor

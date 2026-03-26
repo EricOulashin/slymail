@@ -128,11 +128,11 @@ bool Settings::load()
         }
         else if (key == "quotePrefix")
         {
-            // Preserve leading spaces in quotePrefix (don't use trimmed val)
+            // Preserve both leading and trailing spaces in quotePrefix.
+            // Only strip line-ending characters (\r, \n), NOT spaces or tabs,
+            // because the trailing space in " > " is significant.
             string rawVal = line.substr(eq + 1);
-            // Only trim trailing whitespace/newlines, keep leading spaces
-            while (!rawVal.empty() && (rawVal.back() == ' ' || rawVal.back() == '\t'
-                   || rawVal.back() == '\r' || rawVal.back() == '\n'))
+            while (!rawVal.empty() && (rawVal.back() == '\r' || rawVal.back() == '\n'))
             {
                 rawVal.pop_back();
             }
@@ -201,7 +201,8 @@ bool Settings::save() const
     f << "\n; Maximum width for quote lines (in characters)\n";
     f << "quoteLineWidth=" << quoteLineWidth << "\n";
 
-    f << "\n; Prefix to prepend to quoted lines (e.g. \"> \")\n";
+    f << "\n; Prefix to prepend to quoted lines. Do not use quotes around the value.\n";
+    f << "; The trailing space is significant. Example:  quotePrefix= > \n";
     f << "quotePrefix=" << quotePrefix << "\n";
 
     f << "\n; Enable tagline insertion when saving a message\n";
