@@ -1,3 +1,9 @@
+// SlyMail message editor.
+// Some web pages/links that could be informative:
+// https://zed.dev/blog/building-a-text-editor-in-times-of-ai
+// https://www.finseth.com/craft/craft.pdf
+// https://web.mit.edu/nelhage/Public/the-craft-of-text-editing.pdf
+
 #include "msg_editor.h"
 #include "bbs_colors.h"
 #include <cctype>
@@ -197,6 +203,82 @@ static void eraseForward(string& text, int pos)
     }
 }
 
+// Pull words from the next line up to the current line if there's room.
+// This is the reverse of word-wrap: when text is deleted and the current
+// line gets shorter, words from the next line flow back up.
+static void pullUpWords(vector<EditorLine>& lines, int row, int editWidth)
+{
+    if (row < 0 || row + 1 >= static_cast<int>(lines.size())) return;
+
+    string& curLine = lines[row].text;
+    string& nextLine = lines[row + 1].text;
+    if (nextLine.empty()) return;
+
+    int curDispW = byteColToDisplayCol(curLine, static_cast<int>(curLine.size()));
+    if (curDispW >= editWidth) return; // No room
+
+    // Try to pull words from the next line onto this line.
+    // A "word" is text up to and including the next space.
+    size_t pos = 0;
+    while (pos < nextLine.size())
+    {
+        // Find the end of the next word (include trailing space)
+        size_t wordEnd = nextLine.find(' ', pos);
+        if (wordEnd == string::npos)
+        {
+            wordEnd = nextLine.size(); // Last word, no trailing space
+        }
+        else
+        {
+            ++wordEnd; // Include the space
+        }
+
+        string word = nextLine.substr(pos, wordEnd - pos);
+
+        // Calculate display width of current line + separator + this word
+        // If curLine is not empty and doesn't end with space, we need a space
+        string separator;
+        if (!curLine.empty() && curLine.back() != ' ' && pos == 0 && !word.empty() && word[0] != ' ')
+        {
+            separator = " ";
+        }
+
+        string candidate = curLine + separator + word;
+        int candidateDispW = byteColToDisplayCol(candidate, static_cast<int>(candidate.size()));
+
+        if (candidateDispW > editWidth)
+        {
+            break; // Won't fit
+        }
+
+        // It fits — append
+        curLine = candidate;
+        pos = wordEnd;
+    }
+
+    if (pos > 0)
+    {
+        // Remove the pulled text from the next line
+        nextLine = nextLine.substr(pos);
+        // Strip leading spaces from what remains
+        while (!nextLine.empty() && nextLine[0] == ' ')
+        {
+            nextLine = nextLine.substr(1);
+        }
+        // If next line is now empty, remove it
+        if (nextLine.empty())
+        {
+            lines.erase(lines.begin() + row + 1);
+        }
+    }
+
+    // Strip trailing spaces from current line
+    while (!curLine.empty() && curLine.back() == ' ')
+    {
+        curLine.pop_back();
+    }
+}
+
 MessageEditor::MessageEditor()
     : cursorRow(0), cursorCol(0), scrollRow(0)
     , insertMode(true), currentStyle(EditorStyle::Ice)
@@ -307,7 +389,7 @@ void MessageEditor::calculateLayout()
     editHeight = editBottom - editTop;
     editLeft = 1;
     editRight = g_term->getCols() - 2;
-    editWidth = editRight - editLeft;
+    editWidth = editRight - editLeft + 1; // +1 because both editLeft and editRight are inclusive
 }
 
 void MessageEditor::prepareQuotes(const QwkMessage& msg, const Settings& settings)
@@ -791,6 +873,18 @@ void MessageEditor::drawEditArea()
         effectiveHeight = editHeight - quoteWinHeight;
     }
 
+    // Compute the running color state from line 0 up to scrollRow so that
+    // colors set on previous lines carry over correctly to visible lines.
+    TermAttr runningAttr = textAttr;
+    for (int li = 0; li < scrollRow && li < static_cast<int>(lines.size()); ++li)
+    {
+        if (lines[li].text.find('\x1b') != string::npos)
+        {
+            // Parse the line to advance the color state (don't render)
+            parseBBSColors(lines[li].text, runningAttr, attrFlags);
+        }
+    }
+
     for (int i = 0; i < effectiveHeight; ++i)
     {
         int lineIdx = scrollRow + i;
@@ -811,29 +905,34 @@ void MessageEditor::drawEditArea()
             bool isQuote = (!line.text.empty() &&
                 (line.text[0] == '>' ||
                  (line.text.size() > 2 && line.text.find("> ") < 5)));
-            TermAttr defaultAttr = isQuote ? quoteAttr : textAttr;
+
+            // Use the running color attribute (inherited from previous lines)
+            // unless this is a quote line (which has its own fixed color)
+            TermAttr lineStartAttr = isQuote ? quoteAttr : runningAttr;
 
             // Check if line contains ANSI codes
             bool hasAnsi = (line.text.find('\x1b') != string::npos);
 
-            if (hasAnsi)
+            if (hasAnsi || runningAttr != textAttr)
             {
                 // Parse BBS color codes and render segment by segment
-                TermAttr attr = defaultAttr;
-                // Parse color codes using the attribute toggle settings
+                // Start with the inherited color state
+                TermAttr attr = lineStartAttr;
                 auto segments = parseBBSColors(line.text, attr, attrFlags);
                 int x = editLeft;
                 for (const auto& seg : segments)
                 {
                     if (x >= editRight + 1) break;
-                    string text = seg.text;
-                    if (x + static_cast<int>(text.size()) > editRight + 1)
+                    string segText = seg.text;
+                    if (x + static_cast<int>(segText.size()) > editRight + 1)
                     {
-                        text = text.substr(0, editRight + 1 - x);
+                        segText = segText.substr(0, editRight + 1 - x);
                     }
-                    printAt(y, x, text, seg.attr);
-                    x += static_cast<int>(text.size());
+                    printAt(y, x, segText, seg.attr);
+                    x += static_cast<int>(segText.size());
                 }
+                // Update running attr to the state after this line
+                runningAttr = attr;
             }
             else
             {
@@ -842,8 +941,14 @@ void MessageEditor::drawEditArea()
                 {
                     displayText = displayText.substr(0, editWidth);
                 }
-                printAt(y, editLeft, displayText, defaultAttr);
+                printAt(y, editLeft, displayText, lineStartAttr);
+                // No ANSI codes, running attr stays the same
             }
+        }
+        else
+        {
+            // Past the end of the document — reset running color
+            runningAttr = textAttr;
         }
     }
 }
@@ -1989,32 +2094,59 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
 
     if (lines.empty())
     {
-        lines.push_back(EditorLine{""});
+        // Start with a normal/reset attribute code so the message begins
+        // with a known color state. This ensures that if the user inserts
+        // a color code later, it only affects text after it and doesn't
+        // affect existing text that the new text is being inserted in front of.
+        lines.push_back(EditorLine{"\x1b[0m"});
+        cursorCol = static_cast<int>(lines[0].text.size());
     }
 
     g_term->setCursorVisible(true);
 
+    bool needFullRedraw = true;
+
     while (true)
     {
         g_term->setCursorVisible(true);
-        g_term->clear();
 
-        if (currentStyle == EditorStyle::Ice)
+        if (needFullRedraw)
         {
-            drawIceHeader();
-            drawEditArea();
-            drawIceStatusBar();
+            g_term->clear();
+            if (currentStyle == EditorStyle::Ice)
+            {
+                drawIceHeader();
+                drawEditArea();
+                drawIceStatusBar();
+            }
+            else
+            {
+                drawDctHeader();
+                drawEditArea();
+                drawDctStatusBar();
+            }
+            if (quoteWindowOpen)
+            {
+                drawQuoteWindow();
+            }
+            needFullRedraw = false;
         }
         else
         {
-            drawDctHeader();
+            // Partial redraw: only update the edit area and status bar
             drawEditArea();
-            drawDctStatusBar();
-        }
-
-        if (quoteWindowOpen)
-        {
-            drawQuoteWindow();
+            if (currentStyle == EditorStyle::Ice)
+            {
+                drawIceStatusBar();
+            }
+            else
+            {
+                drawDctStatusBar();
+            }
+            if (quoteWindowOpen)
+            {
+                drawQuoteWindow();
+            }
         }
 
         // Position cursor — use display column that skips ANSI sequences
@@ -2058,10 +2190,12 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
 
             case TK_CTRL_Q:
                 handleQuoteWindow();
+                needFullRedraw = true;
                 break;
 
             case TK_F1:
                 showHelpScreen();
+                needFullRedraw = true;
                 break;
 
             case TK_ESCAPE:
@@ -2148,6 +2282,7 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                     default:
                         break;
                 }
+                needFullRedraw = true;
                 break;
             }
 
@@ -2245,13 +2380,20 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
             case TK_BACKSPACE_8:
                 if (cursorCol > 0)
                 {
-                    // Erase backward: deletes entire ANSI sequence if cursor
-                    // is right after one, otherwise deletes one character
                     cursorCol = eraseBackward(lines[cursorRow].text, cursorCol);
+                    // After deleting, pull words up from the next line if room
+                    pullUpWords(lines, cursorRow, editWidth);
                 }
                 else if (cursorRow > 0)
                 {
                     cursorCol = static_cast<int>(lines[cursorRow - 1].text.size());
+                    // Add a space between joined lines if needed
+                    if (!lines[cursorRow - 1].text.empty() && !lines[cursorRow].text.empty()
+                        && lines[cursorRow - 1].text.back() != ' '
+                        && lines[cursorRow].text[0] != ' ')
+                    {
+                        lines[cursorRow - 1].text += ' ';
+                    }
                     lines[cursorRow - 1].text += lines[cursorRow].text;
                     lines.erase(lines.begin() + cursorRow);
                     --cursorRow;
@@ -2261,12 +2403,19 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
             case TK_DELETE:
                 if (cursorCol < static_cast<int>(lines[cursorRow].text.size()))
                 {
-                    // Erase forward: deletes entire ANSI sequence if cursor
-                    // is at the start of one, otherwise deletes one character
                     eraseForward(lines[cursorRow].text, cursorCol);
+                    // After deleting, pull words up from the next line if room
+                    pullUpWords(lines, cursorRow, editWidth);
                 }
                 else if (cursorRow < static_cast<int>(lines.size()) - 1)
                 {
+                    // Add a space between joined lines if needed
+                    if (!lines[cursorRow].text.empty() && !lines[cursorRow + 1].text.empty()
+                        && lines[cursorRow].text.back() != ' '
+                        && lines[cursorRow + 1].text[0] != ' ')
+                    {
+                        lines[cursorRow].text += ' ';
+                    }
                     lines[cursorRow].text += lines[cursorRow + 1].text;
                     lines.erase(lines.begin() + cursorRow + 1);
                 }
@@ -2289,14 +2438,17 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
 
             case TK_CTRL_G:
                 insertGraphicChar();
+                needFullRedraw = true;
                 break;
 
             case TK_CTRL_K:
                 pickColor();
+                needFullRedraw = true;
                 break;
 
             case TK_CTRL_L:
                 showCommandKeyHelp();
+                needFullRedraw = true;
                 break;
 
             case TK_CTRL_S:
@@ -2327,11 +2479,13 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                 {
                     subjectField = newSubj;
                 }
+                needFullRedraw = true;
                 break;
             }
 
             case TK_CTRL_W:
                 findText();
+                needFullRedraw = true;
                 break;
 
             case TK_CTRL_U:
@@ -2354,6 +2508,7 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                     calculateLayout();
                     generateBorderColors();
                 }
+                needFullRedraw = true;
                 break;
             }
 
@@ -2389,6 +2544,7 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                     lines[cursorRow].text.clear();
                     cursorCol = 0;
                     handleQuoteWindow();
+                    needFullRedraw = true;
                 }
                 else if (upperLine == "/U")
                 {
@@ -2405,12 +2561,14 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                         calculateLayout();
                         generateBorderColors();
                     }
+                    needFullRedraw = true;
                 }
                 else if (upperLine == "/?")
                 {
                     lines[cursorRow].text.clear();
                     cursorCol = 0;
                     showCommandKeyHelp();
+                    needFullRedraw = true;
                 }
                 else
                 {
@@ -2557,19 +2715,130 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                         string overflow = lines[cursorRow].text.substr(wrapPos);
                         lines[cursorRow].text = lines[cursorRow].text.substr(0, wrapPos);
 
-                        if (!overflow.empty() && overflow[0] == ' ')
+                        // Strip trailing spaces from current line
+                        while (!lines[cursorRow].text.empty() && lines[cursorRow].text.back() == ' ')
                         {
-                            overflow = overflow.substr(1);
+                            lines[cursorRow].text.pop_back();
                         }
 
-                        EditorLine newLine;
-                        newLine.text = overflow;
-                        lines.insert(lines.begin() + cursorRow + 1, newLine);
+                        // Strip leading spaces from overflow
+                        int strippedLeading = 0;
+                        while (!overflow.empty() && overflow[0] == ' ')
+                        {
+                            overflow = overflow.substr(1);
+                            ++strippedLeading;
+                        }
 
+                        // Prepend overflow to the next line if one exists,
+                        // otherwise create a new line. Be careful about spaces:
+                        // only add a separating space if both sides have content
+                        // and the join point doesn't already have a space.
+                        int nextLineIdx = cursorRow + 1;
+                        if (nextLineIdx < static_cast<int>(lines.size()) && !overflow.empty())
+                        {
+                            string& nextText = lines[nextLineIdx].text;
+                            if (!nextText.empty())
+                            {
+                                // Only add a space if overflow doesn't end with one
+                                // and nextText doesn't start with one
+                                bool needSpace = true;
+                                if (!overflow.empty() && overflow.back() == ' ') needSpace = false;
+                                if (!nextText.empty() && nextText[0] == ' ') needSpace = false;
+                                nextText = overflow + (needSpace ? " " : "") + nextText;
+                            }
+                            else
+                            {
+                                nextText = overflow;
+                            }
+                        }
+                        else if (!overflow.empty())
+                        {
+                            EditorLine newLine;
+                            newLine.text = overflow;
+                            if (nextLineIdx < static_cast<int>(lines.size()))
+                            {
+                                lines.insert(lines.begin() + nextLineIdx, newLine);
+                            }
+                            else
+                            {
+                                lines.push_back(newLine);
+                            }
+                        }
+
+                        // Adjust cursor position if it was past the wrap point
                         if (cursorCol > static_cast<int>(lines[cursorRow].text.size()))
                         {
-                            cursorCol -= static_cast<int>(lines[cursorRow].text.size());
+                            int offset = cursorCol - static_cast<int>(lines[cursorRow].text.size());
+                            offset -= strippedLeading;
+                            if (offset < 0) offset = 0;
                             ++cursorRow;
+                            cursorCol = offset;
+                            int sq = ansiSeqLen(lines[cursorRow].text, cursorCol);
+                            if (sq > 0) cursorCol += sq;
+                            if (cursorCol > static_cast<int>(lines[cursorRow].text.size()))
+                            {
+                                cursorCol = static_cast<int>(lines[cursorRow].text.size());
+                            }
+                        }
+
+                        // Cascade: re-wrap subsequent lines if they became too long
+                        for (int cascadeRow = cursorRow + 1;
+                             cascadeRow < static_cast<int>(lines.size());
+                             ++cascadeRow)
+                        {
+                            int cDispW = byteColToDisplayCol(
+                                lines[cascadeRow].text,
+                                static_cast<int>(lines[cascadeRow].text.size()));
+                            if (cDispW <= editWidth) break; // Line fits, stop cascading
+
+                            // Find wrap point
+                            int nwp = static_cast<int>(lines[cascadeRow].text.size());
+                            for (int w = nwp; w > 0; --w)
+                            {
+                                if (byteColToDisplayCol(lines[cascadeRow].text, w) <= editWidth
+                                    && lines[cascadeRow].text[w - 1] == ' ')
+                                {
+                                    nwp = w;
+                                    break;
+                                }
+                            }
+                            if (nwp >= static_cast<int>(lines[cascadeRow].text.size())) break;
+
+                            string cOverflow = lines[cascadeRow].text.substr(nwp);
+                            lines[cascadeRow].text = lines[cascadeRow].text.substr(0, nwp);
+                            // Strip trailing/leading spaces
+                            while (!lines[cascadeRow].text.empty() && lines[cascadeRow].text.back() == ' ')
+                            {
+                                lines[cascadeRow].text.pop_back();
+                            }
+                            while (!cOverflow.empty() && cOverflow[0] == ' ')
+                            {
+                                cOverflow = cOverflow.substr(1);
+                            }
+                            if (cOverflow.empty()) break;
+
+                            int afterIdx = cascadeRow + 1;
+                            if (afterIdx < static_cast<int>(lines.size()))
+                            {
+                                string& afterText = lines[afterIdx].text;
+                                if (!afterText.empty())
+                                {
+                                    bool needSp = true;
+                                    if (!cOverflow.empty() && cOverflow.back() == ' ') needSp = false;
+                                    if (!afterText.empty() && afterText[0] == ' ') needSp = false;
+                                    afterText = cOverflow + (needSp ? " " : "") + afterText;
+                                }
+                                else
+                                {
+                                    afterText = cOverflow;
+                                }
+                            }
+                            else
+                            {
+                                EditorLine nl;
+                                nl.text = cOverflow;
+                                lines.push_back(nl);
+                            }
                         }
                     }
                 }
@@ -2591,11 +2860,24 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
             scrollRow = cursorRow - effectiveHeight + 1;
         }
 
+        // Final cursor bounds check
         if (cursorRow >= 0 && cursorRow < static_cast<int>(lines.size()))
         {
             if (cursorCol > static_cast<int>(lines[cursorRow].text.size()))
             {
                 cursorCol = static_cast<int>(lines[cursorRow].text.size());
+            }
+            // If the clamp landed us on an ANSI sequence, skip past it
+            // (unless we're at position 0, which is always valid)
+            if (cursorCol > 0)
+            {
+                int sq = ansiSeqLen(lines[cursorRow].text, cursorCol);
+                if (sq > 0) cursorCol += sq;
+                // Re-clamp after skip
+                if (cursorCol > static_cast<int>(lines[cursorRow].text.size()))
+                {
+                    cursorCol = static_cast<int>(lines[cursorRow].text.size());
+                }
             }
         }
     }
