@@ -193,14 +193,30 @@ static string buildQuoteText(const QwkMessage& msg, const Settings& settings)
 // Run an external editor to compose a message.
 // If initialContent is non-empty, it is written to the temp file before launching the editor.
 // Returns the message body text, or empty string if aborted.
-static string runExternalEditor(const string& editorPath,
-                                const string& initialContent = "")
+// Result from running an external editor
+struct ExtEditorResult
+{
+    string body;           // Message body text (empty if aborted)
+    string resultSubject;  // Subject from RESULT.ED line 2 (may be empty)
+    string editorDetails;  // Editor details from RESULT.ED line 3 (may be empty)
+};
+
+static ExtEditorResult runExternalEditor(const ExternalEditorConfig& edCfg,
+                                         const string& initialContent = "")
 {
     namespace fs = std::filesystem;
+    ExtEditorResult result;
 
     // Create a temporary file in the .slymail directory
     string dataDir = getSlyMailDataDir();
     string tmpFile = dataDir + PATH_SEP_STR + "slymail_edit.tmp";
+    string resultEdFile = dataDir + PATH_SEP_STR + "RESULT.ED";
+
+    // Remove any stale RESULT.ED from a previous session
+    {
+        std::error_code ec;
+        fs::remove(resultEdFile, ec);
+    }
 
     // Create the temp file with optional initial content (e.g. quote lines)
     {
@@ -208,7 +224,7 @@ static string runExternalEditor(const string& editorPath,
         if (!ofs.is_open())
         {
             messageDialog("Error", "Failed to create temporary file.");
-            return "";
+            return result;
         }
         if (!initialContent.empty())
         {
@@ -216,8 +232,38 @@ static string runExternalEditor(const string& editorPath,
         }
     }
 
-    // Build the command line: editor "tmpfile"
-    string cmd = "\"" + editorPath + "\" \"" + tmpFile + "\"";
+    // Build the command line from the editor config
+    // Concatenate startupDir + PATH_SEP + commandLine, and substitute %f
+    string editorCmd = edCfg.commandLine;
+    string fullPath;
+    if (!edCfg.startupDir.empty())
+    {
+        fullPath = edCfg.startupDir;
+        // Only add a separator if startupDir doesn't already end with one
+        if (fullPath.back() != PATH_SEP)
+        {
+            fullPath += PATH_SEP_STR;
+        }
+        fullPath += editorCmd;
+    }
+    else
+    {
+        fullPath = editorCmd;
+    }
+
+    // Replace %f with the quoted temp file path
+    string quotedTmpFile = "\"" + tmpFile + "\"";
+    string cmd;
+    auto fPos = fullPath.find("%f");
+    if (fPos != string::npos)
+    {
+        cmd = fullPath.substr(0, fPos) + quotedTmpFile + fullPath.substr(fPos + 2);
+    }
+    else
+    {
+        // No %f — append the temp file as argument
+        cmd = "\"" + fullPath + "\" " + quotedTmpFile;
+    }
 
     // Suspend the terminal so the external editor can use it
     g_term->shutdown();
@@ -227,7 +273,6 @@ static string runExternalEditor(const string& editorPath,
     // Restore the terminal
     g_term->init();
 
-    string body;
     if (exitCode == 0)
     {
         // Read the temp file contents
@@ -237,14 +282,14 @@ static string runExternalEditor(const string& editorPath,
             string line;
             while (std::getline(ifs, line))
             {
-                if (!body.empty())
+                if (!result.body.empty())
                 {
-                    body += '\n';
+                    result.body += '\n';
                 }
-                body += line;
+                result.body += line;
             }
         }
-        if (body.empty())
+        if (result.body.empty())
         {
             messageDialog("Message Aborted", "The message file was empty. Message not posted.");
         }
@@ -254,11 +299,44 @@ static string runExternalEditor(const string& editorPath,
         messageDialog("Message Aborted", "The external editor did not exit successfully. Message not posted.");
     }
 
+    // Read RESULT.ED if it exists (Synchronet-compatible editor result file)
+    // Line 1: ignored
+    // Line 2: new subject (if editor changed it)
+    // Line 3: editor details/identifier string
+    {
+        std::ifstream rif(resultEdFile);
+        if (rif.is_open())
+        {
+            string line1, line2, line3;
+            if (std::getline(rif, line1))     // Line 1 — ignored
+            {
+                if (std::getline(rif, line2)) // Line 2 — subject
+                {
+                    while (!line2.empty() && (line2.back() == '\r' || line2.back() == ' '))
+                        line2.pop_back();
+                    if (!line2.empty())
+                        result.resultSubject = line2;
+
+                    if (std::getline(rif, line3)) // Line 3 — editor details
+                    {
+                        while (!line3.empty() && (line3.back() == '\r' || line3.back() == ' '))
+                            line3.pop_back();
+                        if (!line3.empty())
+                            result.editorDetails = line3;
+                    }
+                }
+            }
+        }
+        // Clean up RESULT.ED
+        std::error_code ec;
+        fs::remove(resultEdFile, ec);
+    }
+
     // Clean up temp file
     std::error_code ec;
     fs::remove(tmpFile, ec);
 
-    return body;
+    return result;
 }
 
 // Try external editor; if it fails to launch, offer built-in editor fallback.
@@ -271,37 +349,30 @@ static EditorResult tryExternalOrBuiltinReply(
     Settings& settings,
     const string& baseDir)
 {
-    // Determine whether to include quote lines
+    const auto* edCfg = settings.getSelectedEditor();
+    if (!edCfg)
+    {
+        // No editor selected — fall back to built-in
+        return editReply(origMsg, userName, confName, reply, settings, baseDir);
+    }
+
+    // Determine whether to include quote lines based on editor's auto-quote mode
     string initialContent;
-    if (settings.externalEditorQuoting == ExtQuoteMode::Always)
+    if (edCfg->autoQuoteMode == ExtQuoteMode::Always)
     {
         initialContent = buildQuoteText(origMsg, settings);
     }
-    else if (settings.externalEditorQuoting == ExtQuoteMode::Prompt)
+    else if (edCfg->autoQuoteMode == ExtQuoteMode::Prompt)
     {
         if (confirmDialog("Include quoted text from original message?"))
         {
             initialContent = buildQuoteText(origMsg, settings);
         }
     }
-    // ExtQuoteMode::Never: initialContent stays empty
 
-    string body = runExternalEditor(settings.externalEditor, initialContent);
-    if (body.empty())
+    auto edResult = runExternalEditor(*edCfg, initialContent);
+    if (edResult.body.empty())
     {
-        // Check if the editor actually failed to run (not just empty file)
-        // by testing if the editor path is accessible
-        namespace fs = std::filesystem;
-        std::error_code ec;
-        bool editorExists = fs::exists(settings.externalEditor, ec);
-        if (!editorExists)
-        {
-            // Editor not found — offer built-in fallback
-            if (confirmDialog("External editor not found. Use built-in editor?"))
-            {
-                return editReply(origMsg, userName, confName, reply, settings, baseDir);
-            }
-        }
         return EditorResult::Aborted;
     }
 
@@ -309,20 +380,32 @@ static EditorResult tryExternalOrBuiltinReply(
     reply.conference = origMsg.conference;
     reply.to = origMsg.from;
     reply.from = userName;
-    reply.subject = origMsg.subject;
-    if (reply.subject.substr(0, 4) != "Re: " &&
-        reply.subject.substr(0, 3) != "Re:")
+    // Use subject from RESULT.ED if the editor provided one, otherwise derive from original
+    if (!edResult.resultSubject.empty())
     {
-        if (reply.subject.size() > 21)
-        {
-            reply.subject = reply.subject.substr(0, 21);
-        }
-        reply.subject = "Re: " + reply.subject;
+        reply.subject = edResult.resultSubject;
     }
-    reply.body = body;
+    else
+    {
+        reply.subject = origMsg.subject;
+        if (reply.subject.substr(0, 4) != "Re: " &&
+            reply.subject.substr(0, 3) != "Re:")
+        {
+            if (reply.subject.size() > 21)
+            {
+                reply.subject = reply.subject.substr(0, 21);
+            }
+            reply.subject = "Re: " + reply.subject;
+        }
+    }
+    reply.body = edResult.body;
     reply.replyToNum = origMsg.number;
-    reply.editor = string(PROGRAM_NAME) + " " + PROGRAM_VERSION
-                 + " (" + PROGRAM_DATE + ") (external editor)";
+    // Use editor details from RESULT.ED if provided
+    if (!edResult.editorDetails.empty())
+        reply.editor = edResult.editorDetails;
+    else
+        reply.editor = string(PROGRAM_NAME) + " " + PROGRAM_VERSION
+                     + " (" + PROGRAM_DATE + ") (external editor: " + edCfg->name + ")";
     return EditorResult::Saved;
 }
 
@@ -366,30 +449,30 @@ static EditorResult tryExternalOrBuiltinNewMsg(
         return EditorResult::Aborted;
     }
 
-    string body = runExternalEditor(settings.externalEditor);
-    if (body.empty())
+    const auto* edCfg = settings.getSelectedEditor();
+    if (!edCfg)
     {
-        namespace fs = std::filesystem;
-        std::error_code ec;
-        bool editorExists = fs::exists(settings.externalEditor, ec);
-        if (!editorExists)
-        {
-            if (confirmDialog("External editor not found. Use built-in editor?"))
-            {
-                return editNewMessage(userName, confName, confNumber, reply, settings, baseDir);
-            }
-        }
+        return editNewMessage(userName, confName, confNumber, reply, settings, baseDir);
+    }
+
+    auto edResult = runExternalEditor(*edCfg);
+    if (edResult.body.empty())
+    {
         return EditorResult::Aborted;
     }
 
     reply.conference = confNumber;
     reply.to = to;
     reply.from = userName;
-    reply.subject = subj;
-    reply.body = body;
+    // Use subject from RESULT.ED if the editor provided one, otherwise use what user entered
+    reply.subject = !edResult.resultSubject.empty() ? edResult.resultSubject : subj;
+    reply.body = edResult.body;
     reply.replyToNum = 0;
-    reply.editor = string(PROGRAM_NAME) + " " + PROGRAM_VERSION
-                 + " (" + PROGRAM_DATE + ") (external editor)";
+    if (!edResult.editorDetails.empty())
+        reply.editor = edResult.editorDetails;
+    else
+        reply.editor = string(PROGRAM_NAME) + " " + PROGRAM_VERSION
+                     + " (" + PROGRAM_DATE + ") (external editor: " + edCfg->name + ")";
     return EditorResult::Saved;
 }
 
@@ -654,7 +737,7 @@ int main(int argc, char* argv[])
                                         {
                                             QwkReply reply;
                                             EditorResult edResult;
-                                            if (settings.useExternalEditor && !settings.externalEditor.empty())
+                                            if (settings.useExternalEditor && settings.getSelectedEditor())
                                             {
                                                 edResult = tryExternalOrBuiltinReply(
                                                     conf.messages[currentMsg],
@@ -742,7 +825,7 @@ int main(int argc, char* argv[])
                             {
                                 QwkReply reply;
                                 EditorResult edResult;
-                                if (settings.useExternalEditor && !settings.externalEditor.empty())
+                                if (settings.useExternalEditor && settings.getSelectedEditor())
                                 {
                                     edResult = tryExternalOrBuiltinNewMsg(
                                         settings.userName,

@@ -565,15 +565,15 @@ static bool editGeneralSettings(Settings& settings)
     {
         {"Your name (for replies)", &settings.userName, 25},
         {"Reply packet directory",  &settings.replyDir, 60},
-        {"External editor",         &settings.externalEditor, 60},
     };
 
     int strItemCount = static_cast<int>(items.size());
-    // Non-string items: use external editor (toggle), ext editor quoting (cycle), splash screen (toggle)
-    int itemCount = strItemCount + 3;
-    int useExtEditorIdx = strItemCount;
-    int extQuotingIdx = strItemCount + 1;
-    int splashIdx = strItemCount + 2;
+    // Non-string items: use external editor (toggle), external editors list, select editor, splash screen
+    int itemCount = strItemCount + 4;
+    int extEditorsListIdx = strItemCount;
+    int useExtEditorIdx = strItemCount + 1;
+    int selectEditorIdx = strItemCount + 2;
+    int splashIdx = strItemCount + 3;
     int selected = 0;
     bool changed = false;
 
@@ -634,17 +634,16 @@ static bool editGeneralSettings(Settings& settings)
                 printAt(y, dlgX + 2, truncateStr(display, dlgW - 4),
                         isSel ? selAttr : itemAttr);
             }
-            else if (i == extQuotingIdx)
+            else if (i == extEditorsListIdx)
             {
-                // Cycling choice item
                 TermAttr lbl = isSel ? selAttr : itemAttr;
-                printAt(y, dlgX + 2, "External editor quoting", lbl);
-                string qmStr = "Prompt";
-                if (settings.externalEditorQuoting == ExtQuoteMode::Always) qmStr = "Always";
-                else if (settings.externalEditorQuoting == ExtQuoteMode::Never) qmStr = "Never";
-                TermAttr valA = isSel ? selAttr : tAttr(TC_GREEN, TC_BLACK, true);
-                int valCol = dlgX + dlgW - static_cast<int>(qmStr.size()) - 3;
-                printAt(y, valCol, qmStr, valA);
+                printAt(y, dlgX + 2, "External Editors...", lbl);
+            }
+            else if (i == selectEditorIdx)
+            {
+                TermAttr lbl = isSel ? selAttr : itemAttr;
+                string edName = settings.selectedEditor.empty() ? "(none)" : settings.selectedEditor;
+                printAt(y, dlgX + 2, "External Editor: " + edName, lbl);
             }
             else
             {
@@ -724,15 +723,38 @@ static bool editGeneralSettings(Settings& settings)
                     settings.useExternalEditor = !settings.useExternalEditor;
                     changed = true;
                 }
-                else if (selected == extQuotingIdx)
+                else if (selected == extEditorsListIdx)
                 {
-                    // Cycle: Always → Prompt → Never → Always
-                    if (settings.externalEditorQuoting == ExtQuoteMode::Always)
-                        settings.externalEditorQuoting = ExtQuoteMode::Prompt;
-                    else if (settings.externalEditorQuoting == ExtQuoteMode::Prompt)
-                        settings.externalEditorQuoting = ExtQuoteMode::Never;
+                    if (showExternalEditorsList(settings))
+                        changed = true;
+                }
+                else if (selected == selectEditorIdx)
+                {
+                    // Cycle through configured editors (or none)
+                    if (!settings.externalEditors.empty())
+                    {
+                        int curIdx = -1;
+                        for (int j = 0; j < static_cast<int>(settings.externalEditors.size()); ++j)
+                        {
+                            if (settings.externalEditors[j].name == settings.selectedEditor)
+                            { curIdx = j; break; }
+                        }
+                        if (curIdx >= 0)
+                        {
+                            if (curIdx + 1 < static_cast<int>(settings.externalEditors.size()))
+                                settings.selectedEditor = settings.externalEditors[curIdx + 1].name;
+                            else
+                                settings.selectedEditor.clear();
+                        }
+                        else
+                        {
+                            settings.selectedEditor = settings.externalEditors[0].name;
+                        }
+                    }
                     else
-                        settings.externalEditorQuoting = ExtQuoteMode::Always;
+                    {
+                        settings.selectedEditor.clear();
+                    }
                     changed = true;
                 }
                 else if (selected == 1) // Reply packet directory — use directory chooser
@@ -749,30 +771,6 @@ static bool editGeneralSettings(Settings& settings)
                         changed = true;
                     }
                 }
-                else if (selected == 2) // External editor — use file browser
-                {
-                    string startDir = settings.externalEditor;
-                    if (!startDir.empty())
-                    {
-                        auto sep = startDir.find_last_of("/\\");
-                        if (sep != string::npos)
-                            startDir = startDir.substr(0, sep);
-                    }
-                    if (startDir.empty())
-                    {
-#ifdef _WIN32
-                        startDir = "C:\\";
-#else
-                        startDir = "/usr/bin";
-#endif
-                    }
-                    string val = showFileBrowser(startDir, "", "*");
-                    if (!val.empty())
-                    {
-                        settings.externalEditor = val;
-                        changed = true;
-                    }
-                }
                 else
                 {
                     int y = dlgY + 1 + selected;
@@ -786,13 +784,6 @@ static bool editGeneralSettings(Settings& settings)
                 }
                 break;
             }
-            case TK_DELETE:
-                if (selected == 2) // External editor
-                {
-                    settings.externalEditor.clear();
-                    changed = true;
-                }
-                break;
             case TK_ESCAPE:
             case 'q':
             case 'Q':

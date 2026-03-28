@@ -52,9 +52,12 @@ string getSlyMailDataDir()
     try
     {
         fs::create_directories(dataDir);
-        // Also create the QWK and REP subdirectories
+        // Also create standard subdirectories
         fs::create_directories(dataDir + PATH_SEP_STR + "QWK");
         fs::create_directories(dataDir + PATH_SEP_STR + "REP");
+        fs::create_directories(dataDir + PATH_SEP_STR + "config_files");
+        fs::create_directories(dataDir + PATH_SEP_STR + "dictionary_files");
+        fs::create_directories(dataDir + PATH_SEP_STR + "tagline_files");
     }
     catch (const fs::filesystem_error& e)
     {

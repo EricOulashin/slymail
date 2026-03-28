@@ -8,19 +8,6 @@
 
 // ============================================================
 // Editor User Settings Dialog
-// Matches SlyEdit's ChoiceScrollbox user settings dialog:
-//   +--| Setting |-------------------------- Enabled - Page 1 of 1 -+
-//   | Choose UI mode                                                 |
-//   | Taglines                                              [ ]      |
-//   | Spell-check dictionary/dictionaries                            |
-//   | Prompt for spell checker on save                      [ ]      |
-//   | Wrap quote lines to terminal width                    [v]      |
-//   | Quote with author's initials                          [ ]      |
-//   | Indent quote lines containing initials                [ ]      |
-//   | Trim spaces from quote lines                          [ ]      |
-//   | Select theme file                                              |
-//   +-|Up, Dn, Enter=Select/toggle, ?=Help, ESC/Q/Ctrl-U=Close|----+
-//   +---------------------------------------------------------------|
 // ============================================================
 
 // Setting item types
@@ -54,8 +41,7 @@ enum EditorSettingID
 };
 
 // ============================================================
-// showSettingsDialog - Full application settings dialog
-// (accessible from main menu)
+// Reader settings dialog (Ctrl-U in reader mode)
 // ============================================================
 
 // Setting IDs for the full settings dialog
@@ -83,9 +69,9 @@ enum SettingID
     SET_SPLASH_SCREEN,
     SET_USER_NAME,
     SET_REPLY_DIR,
-    SET_EXTERNAL_EDITOR,
     SET_USE_EXTERNAL_EDITOR,
-    SET_EXT_EDITOR_QUOTING,
+    SET_EXTERNAL_EDITORS_LIST,
+    SET_SELECT_EXTERNAL_EDITOR,
     SET_COUNT
 };
 
@@ -106,5 +92,10 @@ std::string showThemeSelector(const std::string& baseDir, EditorStyle currentSty
 bool showEditorSettings(Settings& settings, const std::string& baseDir);
 bool showSettingsDialog(Settings& settings, const std::string& baseDir = "");
 bool showAttrCodeToggles(Settings& settings);
+
+// External editor dialogs
+DropFileType showDropFileTypeSelector(DropFileType current);
+bool showExternalEditorConfig(ExternalEditorConfig& editor);
+bool showExternalEditorsList(Settings& settings);
 
 #endif // SLYMAIL_SETTINGS_DIALOG_H

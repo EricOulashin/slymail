@@ -147,10 +147,13 @@ EditorStyle showUIModeDialog(EditorStyle currentStyle)
 }
 
 // Find available dictionary files in the dictionaries directory
+// Checks ~/.slymail/dictionary_files first, then baseDir/dictionary_files
 vector<string> findDictionaries(const string& baseDir)
 {
     vector<string> dicts;
-    string dictDir = baseDir + PATH_SEP_STR + "dictionary_files";
+    string dictDir = getSlyMailDataDir() + PATH_SEP_STR + "dictionary_files";
+    if (!fs::is_directory(dictDir))
+        dictDir = baseDir + PATH_SEP_STR + "dictionary_files";
     try
     {
         for (auto& entry : fs::directory_iterator(dictDir))
@@ -181,7 +184,9 @@ vector<string> findThemeFiles(const string& baseDir,
                               const string& prefix)
 {
     vector<string> files;
-    string configDir = baseDir + PATH_SEP_STR + "config_files";
+    string configDir = getSlyMailDataDir() + PATH_SEP_STR + "config_files";
+    if (!fs::is_directory(configDir))
+        configDir = baseDir + PATH_SEP_STR + "config_files";
     try
     {
         for (auto& entry : fs::directory_iterator(configDir))
@@ -959,18 +964,13 @@ bool showSettingsDialog(Settings& settings, const string& baseDir)
         items.push_back({"Reply packet directory",
                          settings.replyDir.empty() ? "(current dir)" : settings.replyDir,
                          false, false, SET_REPLY_DIR});
-        items.push_back({"External editor",
-                         settings.externalEditor.empty() ? "(not set)" : settings.externalEditor,
-                         false, false, SET_EXTERNAL_EDITOR});
         items.push_back({"Use external editor",
                          settings.useExternalEditor ? "Y" : "N", true, false, SET_USE_EXTERNAL_EDITOR});
-        {
-            string qmStr = "Prompt";
-            if (settings.externalEditorQuoting == ExtQuoteMode::Always) qmStr = "Always";
-            else if (settings.externalEditorQuoting == ExtQuoteMode::Never) qmStr = "Never";
-            items.push_back({"External editor quoting",
-                             qmStr, false, true, SET_EXT_EDITOR_QUOTING});
-        }
+        items.push_back({"External Editors...",
+                         "", false, true, SET_EXTERNAL_EDITORS_LIST});
+        items.push_back({"External Editor",
+                         settings.selectedEditor.empty() ? "(none)" : settings.selectedEditor,
+                         false, false, SET_SELECT_EXTERNAL_EDITOR});
 
         // Clamp scroll
         if (selected < scrollOffset) scrollOffset = selected;
@@ -1182,49 +1182,53 @@ bool showSettingsDialog(Settings& settings, const string& baseDir)
                         needFullRedraw = true;
                         break;
                     }
-                    case SET_EXTERNAL_EDITOR:
-                    {
-                        string startDir = settings.externalEditor.empty()
-                            ? "/" : settings.externalEditor;
-                        // Extract directory from existing path
-                        auto sep = startDir.find_last_of("/\\");
-                        if (sep != string::npos)
-                        {
-                            startDir = startDir.substr(0, sep);
-                        }
-                        string val = showFileBrowser(startDir, "", "*");
-                        if (!val.empty())
-                        {
-                            settings.externalEditor = val;
-                            changed = true;
-                        }
-                        needFullRedraw = true;
-                        break;
-                    }
                     case SET_USE_EXTERNAL_EDITOR:
                         settings.useExternalEditor = !settings.useExternalEditor;
                         changed = true;
                         needFullRedraw = true;
                         break;
-                    case SET_EXT_EDITOR_QUOTING:
-                        // Cycle: Always → Prompt → Never → Always
-                        if (settings.externalEditorQuoting == ExtQuoteMode::Always)
-                            settings.externalEditorQuoting = ExtQuoteMode::Prompt;
-                        else if (settings.externalEditorQuoting == ExtQuoteMode::Prompt)
-                            settings.externalEditorQuoting = ExtQuoteMode::Never;
+                    case SET_EXTERNAL_EDITORS_LIST:
+                        if (showExternalEditorsList(settings))
+                            changed = true;
+                        needFullRedraw = true;
+                        break;
+                    case SET_SELECT_EXTERNAL_EDITOR:
+                    {
+                        // Cycle through configured editors (or none)
+                        if (settings.externalEditors.empty())
+                        {
+                            settings.selectedEditor.clear();
+                        }
                         else
-                            settings.externalEditorQuoting = ExtQuoteMode::Always;
+                        {
+                            // Find current index
+                            int curIdx = -1;
+                            for (int j = 0; j < static_cast<int>(settings.externalEditors.size()); ++j)
+                            {
+                                if (settings.externalEditors[j].name == settings.selectedEditor)
+                                {
+                                    curIdx = j;
+                                    break;
+                                }
+                            }
+                            // Cycle: current → next → ... → (none) → first → ...
+                            if (curIdx < 0 || curIdx + 1 >= static_cast<int>(settings.externalEditors.size()))
+                            {
+                                // At end or not found → if was valid, go to none; if none, go to first
+                                if (curIdx >= 0)
+                                    settings.selectedEditor.clear();
+                                else
+                                    settings.selectedEditor = settings.externalEditors[0].name;
+                            }
+                            else
+                            {
+                                settings.selectedEditor = settings.externalEditors[curIdx + 1].name;
+                            }
+                        }
                         changed = true;
                         needFullRedraw = true;
                         break;
-                }
-                break;
-            case TK_DELETE:
-                if (items[selected].id == SET_EXTERNAL_EDITOR)
-                {
-                    settings.externalEditor.clear();
-                    changed = true;
-                    needFullRedraw = true;
+                    }
                 }
                 break;
             case 's':
@@ -1394,6 +1398,486 @@ bool showAttrCodeToggles(Settings& settings)
                 return changed;
             default:
                 break;
+        }
+    }
+}
+
+// ============================================================
+// Drop file type selector dialog
+// ============================================================
+DropFileType showDropFileTypeSelector(DropFileType current)
+{
+    struct DFItem { string label; DropFileType type; };
+    vector<DFItem> items = {
+        {"None",       DropFileType::None},
+        {"MSGINF",     DropFileType::MSGINF},
+        {"EDITOR.INF", DropFileType::EDITORINF},
+        {"DOOR.SYS",   DropFileType::DOORSYS},
+        {"DOOR32.SYS", DropFileType::DOOR32SYS},
+    };
+    int totalItems = static_cast<int>(items.size());
+
+    int selected = 0;
+    for (int i = 0; i < totalItems; ++i)
+    {
+        if (items[i].type == current) { selected = i; break; }
+    }
+
+    int dlgW = 30;
+    int dlgH = totalItems + 4;
+    int dlgY = (g_term->getRows() - dlgH) / 2;
+    int dlgX = (g_term->getCols() - dlgW) / 2;
+
+    TermAttr borderAttr = tAttr(TC_GREEN, TC_BLACK, false);
+    TermAttr titleAttr  = tAttr(TC_BLUE, TC_BLACK, true);
+    TermAttr itemAttr   = tAttr(TC_CYAN, TC_BLACK, false);
+    TermAttr selAttr    = tAttr(TC_BLUE, TC_WHITE, false);
+
+    for (;;)
+    {
+        g_term->clear();
+        g_term->setAttr(borderAttr);
+        g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
+        string title = " Drop File Type ";
+        int titleX = dlgX + (dlgW - static_cast<int>(title.size())) / 2;
+        g_term->setAttr(titleAttr);
+        g_term->printStr(dlgY, titleX, title);
+
+        for (int i = 0; i < totalItems; ++i)
+        {
+            int y = dlgY + 1 + i;
+            bool isSel = (i == selected);
+            if (isSel)
+                fillRow(y, selAttr, dlgX + 1, dlgX + dlgW - 1);
+            else
+                fillRow(y, tAttr(TC_BLACK, TC_BLACK, false), dlgX + 1, dlgX + dlgW - 1);
+            printAt(y, dlgX + 3, items[i].label, isSel ? selAttr : itemAttr);
+        }
+
+        int helpY = dlgY + dlgH - 2;
+        g_term->setAttr(borderAttr);
+        g_term->putCP437(helpY, dlgX, CP437_BOX_DRAWINGS_LIGHT_LEFT_T);
+        g_term->drawHLine(helpY, dlgX + 1, dlgW - 2);
+        g_term->putCP437(helpY, dlgX + dlgW - 1, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
+        string helpText = "Enter=Select, ESC=Cancel";
+        g_term->setAttr(titleAttr);
+        g_term->printStr(helpY, dlgX + (dlgW - static_cast<int>(helpText.size())) / 2, helpText);
+
+        g_term->refresh();
+        int ch = g_term->getKey();
+        switch (ch)
+        {
+            case TK_UP:   if (selected > 0) --selected; break;
+            case TK_DOWN: if (selected < totalItems - 1) ++selected; break;
+            case TK_ENTER:
+            case ' ':
+                return items[selected].type;
+            case TK_ESCAPE:
+            case 'q': case 'Q':
+                return current;
+            default: break;
+        }
+    }
+}
+
+// ============================================================
+// External editor configuration dialog
+// ============================================================
+bool showExternalEditorConfig(ExternalEditorConfig& editor)
+{
+    bool changed = false;
+
+    enum { FIELD_NAME, FIELD_STARTUP_DIR, FIELD_CMD_LINE,
+           FIELD_WORDWRAP, FIELD_AUTO_QUOTE, FIELD_DROP_FILE, FIELD_STRIP_KLUDGE,
+           FIELD_COUNT };
+
+    int dlgW = 73;
+    if (dlgW > g_term->getCols() - 4) dlgW = g_term->getCols() - 4;
+    int dlgH = FIELD_COUNT + 6;
+    int dlgY = (g_term->getRows() - dlgH) / 2;
+    int dlgX = (g_term->getCols() - dlgW) / 2;
+    int labelW = 28;
+    int valX = dlgX + labelW + 1;
+    int valW = dlgW - labelW - 3;
+
+    int selected = 0;
+
+    TermAttr borderAttr = tAttr(TC_GREEN, TC_BLACK, false);
+    TermAttr titleAttr  = tAttr(TC_BLUE, TC_BLACK, true);
+    TermAttr itemAttr   = tAttr(TC_CYAN, TC_BLACK, false);
+    TermAttr selAttr    = tAttr(TC_BLUE, TC_WHITE, false);
+    TermAttr valueAttr  = tAttr(TC_WHITE, TC_BLACK, true);
+
+    for (;;)
+    {
+        g_term->clear();
+        g_term->setAttr(borderAttr);
+        g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
+
+        string title = " External Editor ";
+        int tX = dlgX + 3;
+        g_term->setAttr(borderAttr);
+        g_term->putCP437(dlgY, tX, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
+        g_term->setAttr(titleAttr);
+        g_term->printStr(dlgY, tX + 1, title);
+        g_term->setAttr(borderAttr);
+        g_term->putCP437(dlgY, tX + static_cast<int>(title.size()) + 1,
+                         CP437_BOX_DRAWINGS_LIGHT_LEFT_T);
+
+        // Build display values
+        string wrapStr;
+        if (editor.wordWrapQuotedText)
+            wrapStr = "Yes, for " + std::to_string(editor.wordWrapNumCols) + " columns";
+        else
+            wrapStr = "No";
+
+        struct FieldInfo { string label; string value; };
+        vector<FieldInfo> fields = {
+            {"Name:",                 editor.name},
+            {"Startup Directory:",    editor.startupDir.empty() ? "(not set)" : editor.startupDir},
+            {"Command Line:",         editor.commandLine.empty() ? "(not set)" : editor.commandLine},
+            {"Word-wrap Quoted Text:", wrapStr},
+            {"Auto Quoted Text:",     extQuoteModeStr(editor.autoQuoteMode)},
+            {"Editor Info Files:",    dropFileTypeStr(editor.dropFileType)},
+            {"Strip FidoNet Kludges:", editor.stripFidoKludges ? "Yes" : "No"},
+        };
+
+        for (int i = 0; i < FIELD_COUNT; ++i)
+        {
+            int y = dlgY + 1 + i;
+            bool isSel = (i == selected);
+            if (isSel)
+                fillRow(y, selAttr, dlgX + 1, dlgX + dlgW - 1);
+            else
+                fillRow(y, tAttr(TC_BLACK, TC_BLACK, false), dlgX + 1, dlgX + dlgW - 1);
+
+            TermAttr lbl = isSel ? selAttr : itemAttr;
+            printAt(y, dlgX + 2, fields[i].label, lbl);
+            printAt(y, valX, truncateStr(fields[i].value, valW), isSel ? selAttr : valueAttr);
+        }
+
+        // Note about %f
+        int noteY = dlgY + 1 + FIELD_COUNT;
+        fillRow(noteY, tAttr(TC_BLACK, TC_BLACK, false), dlgX + 1, dlgX + dlgW - 1);
+        printAt(noteY, dlgX + 2, "Note: %f = temp filename in command line",
+                tAttr(TC_YELLOW, TC_BLACK, false));
+
+        // Help bar
+        int helpY = dlgY + dlgH - 2;
+        g_term->setAttr(borderAttr);
+        g_term->putCP437(helpY, dlgX, CP437_BOX_DRAWINGS_LIGHT_LEFT_T);
+        g_term->drawHLine(helpY, dlgX + 1, dlgW - 2);
+        g_term->putCP437(helpY, dlgX + dlgW - 1, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
+        string helpText = "Enter=Edit, Del=Clear, ESC=Done";
+        g_term->setAttr(titleAttr);
+        g_term->printStr(helpY, dlgX + (dlgW - static_cast<int>(helpText.size())) / 2, helpText);
+
+        g_term->refresh();
+        int ch = g_term->getKey();
+
+        switch (ch)
+        {
+            case TK_UP:   if (selected > 0) --selected; break;
+            case TK_DOWN: if (selected < FIELD_COUNT - 1) ++selected; break;
+            case TK_DELETE:
+                if (selected == FIELD_STARTUP_DIR)
+                {
+                    editor.startupDir.clear();
+                    changed = true;
+                }
+                else if (selected == FIELD_CMD_LINE)
+                {
+                    editor.commandLine.clear();
+                    changed = true;
+                }
+                break;
+            case TK_ENTER:
+            case ' ':
+            {
+                switch (selected)
+                {
+                    case FIELD_NAME:
+                    {
+                        int y = dlgY + 1 + selected;
+                        string val = getStringInput(y, valX, valW, editor.name, valueAttr);
+                        if (!val.empty())
+                        {
+                            editor.name = val;
+                            changed = true;
+                        }
+                        break;
+                    }
+                    case FIELD_STARTUP_DIR:
+                    {
+                        int y = dlgY + 1 + selected;
+                        string val = getStringInput(y, valX, valW, editor.startupDir, valueAttr);
+                        if (!val.empty())
+                        {
+                            editor.startupDir = val;
+                            changed = true;
+                        }
+                        break;
+                    }
+                    case FIELD_CMD_LINE:
+                    {
+                        // Show file browser, then let user edit the result
+                        string startDir = editor.startupDir;
+                        if (startDir.empty())
+                        {
+#ifdef _WIN32
+                            startDir = "C:\\";
+#else
+                            startDir = "/usr/bin";
+#endif
+                        }
+                        string val = showFileBrowser(startDir, "", "*");
+                        if (!val.empty())
+                        {
+                            // Extract directory and filename
+                            auto sep = val.find_last_of("/\\");
+                            if (sep != string::npos)
+                            {
+                                editor.startupDir = val.substr(0, sep);
+                                editor.commandLine = val.substr(sep + 1);
+                            }
+                            else
+                            {
+                                editor.commandLine = val;
+                            }
+                            changed = true;
+                        }
+                        // Let user edit the command line string
+                        {
+                            int y = dlgY + 1 + selected;
+                            string edited = getStringInput(y, valX, valW, editor.commandLine, valueAttr);
+                            if (!edited.empty())
+                            {
+                                editor.commandLine = edited;
+                                changed = true;
+                            }
+                        }
+                        break;
+                    }
+                    case FIELD_WORDWRAP:
+                    {
+                        // Prompt Yes/No first
+                        if (confirmDialog("Word-wrap quoted text?"))
+                        {
+                            editor.wordWrapQuotedText = true;
+                            // Prompt for column count
+                            int y = dlgY + 1 + selected;
+                            fillRow(y, tAttr(TC_BLACK, TC_BLACK, false), dlgX + 1, dlgX + dlgW - 1);
+                            printAt(y, dlgX + 2, "For how many columns? ", valueAttr);
+                            string numStr = getNumericInput(y, dlgX + 24, 5, valueAttr);
+                            int cols = 79;
+                            if (!numStr.empty())
+                            {
+                                try { cols = std::stoi(numStr); } catch (...) {}
+                            }
+                            if (cols <= 0) cols = 79;
+                            editor.wordWrapNumCols = cols;
+                        }
+                        else
+                        {
+                            editor.wordWrapQuotedText = false;
+                        }
+                        changed = true;
+                        break;
+                    }
+                    case FIELD_AUTO_QUOTE:
+                    {
+                        // Cycle: Always -> Prompt -> Never -> Always
+                        if (editor.autoQuoteMode == ExtQuoteMode::Always)
+                            editor.autoQuoteMode = ExtQuoteMode::Prompt;
+                        else if (editor.autoQuoteMode == ExtQuoteMode::Prompt)
+                            editor.autoQuoteMode = ExtQuoteMode::Never;
+                        else
+                            editor.autoQuoteMode = ExtQuoteMode::Always;
+                        changed = true;
+                        break;
+                    }
+                    case FIELD_DROP_FILE:
+                    {
+                        DropFileType newType = showDropFileTypeSelector(editor.dropFileType);
+                        if (newType != editor.dropFileType)
+                        {
+                            editor.dropFileType = newType;
+                            changed = true;
+                        }
+                        break;
+                    }
+                    case FIELD_STRIP_KLUDGE:
+                        editor.stripFidoKludges = !editor.stripFidoKludges;
+                        changed = true;
+                        break;
+                }
+                break;
+            }
+            case TK_ESCAPE:
+            case 'q': case 'Q':
+                return changed;
+            default: break;
+        }
+    }
+}
+
+// ============================================================
+// External editors list dialog
+// ============================================================
+bool showExternalEditorsList(Settings& settings)
+{
+    int selected = 0;
+    bool changed = false;
+
+    for (;;)
+    {
+        int totalItems = static_cast<int>(settings.externalEditors.size()) + 1; // +1 for "Add new"
+
+        int dlgW = 65;
+        if (dlgW > g_term->getCols() - 4) dlgW = g_term->getCols() - 4;
+        int visibleItems = g_term->getRows() - 10;
+        if (visibleItems > totalItems) visibleItems = totalItems;
+        if (visibleItems < 3) visibleItems = 3;
+        int dlgH = visibleItems + 4;
+        int dlgY = (g_term->getRows() - dlgH) / 2;
+        int dlgX = (g_term->getCols() - dlgW) / 2;
+
+        int scrollOffset = 0;
+        if (selected >= totalItems) selected = totalItems - 1;
+        if (selected < 0) selected = 0;
+        if (selected >= scrollOffset + visibleItems) scrollOffset = selected - visibleItems + 1;
+        if (selected < scrollOffset) scrollOffset = selected;
+
+        TermAttr borderAttr = tAttr(TC_GREEN, TC_BLACK, false);
+        TermAttr titleAttr  = tAttr(TC_BLUE, TC_BLACK, true);
+        TermAttr itemAttr   = tAttr(TC_CYAN, TC_BLACK, false);
+        TermAttr selAttr    = tAttr(TC_BLUE, TC_WHITE, false);
+        TermAttr activeAttr = tAttr(TC_GREEN, TC_BLACK, true);
+
+        g_term->clear();
+        g_term->setAttr(borderAttr);
+        g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
+
+        string title = " External Editors ";
+        int tX = dlgX + 3;
+        g_term->setAttr(borderAttr);
+        g_term->putCP437(dlgY, tX, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
+        g_term->setAttr(titleAttr);
+        g_term->printStr(dlgY, tX + 1, title);
+        g_term->setAttr(borderAttr);
+        g_term->putCP437(dlgY, tX + static_cast<int>(title.size()) + 1,
+                         CP437_BOX_DRAWINGS_LIGHT_LEFT_T);
+
+        for (int i = 0; i < visibleItems; ++i)
+        {
+            int idx = scrollOffset + i;
+            int y = dlgY + 1 + i;
+            bool isSel = (idx == selected);
+
+            if (isSel)
+                fillRow(y, selAttr, dlgX + 1, dlgX + dlgW - 1);
+            else
+                fillRow(y, tAttr(TC_BLACK, TC_BLACK, false), dlgX + 1, dlgX + dlgW - 1);
+
+            if (idx < static_cast<int>(settings.externalEditors.size()))
+            {
+                const auto& ed = settings.externalEditors[idx];
+                string display = ed.name;
+                if (!ed.commandLine.empty())
+                    display += " - " + ed.commandLine;
+                bool isActive = (ed.name == settings.selectedEditor);
+                printAt(y, dlgX + 2, truncateStr(display, dlgW - 10), isSel ? selAttr : itemAttr);
+                if (isActive)
+                    printAt(y, dlgX + dlgW - 5, "[*]", isSel ? selAttr : activeAttr);
+            }
+            else
+            {
+                printAt(y, dlgX + 2, "(Add new editor...)", isSel ? selAttr : itemAttr);
+            }
+        }
+
+        // Scrollbar
+        if (totalItems > visibleItems)
+        {
+            drawScrollbar(dlgY + 1, visibleItems, selected, totalItems,
+                         tAttr(TC_BLACK, TC_BLACK, true),
+                         tAttr(TC_WHITE, TC_BLACK, true));
+        }
+
+        // Help bar
+        int helpY = dlgY + dlgH - 2;
+        g_term->setAttr(borderAttr);
+        g_term->putCP437(helpY, dlgX, CP437_BOX_DRAWINGS_LIGHT_LEFT_T);
+        g_term->drawHLine(helpY, dlgX + 1, dlgW - 2);
+        g_term->putCP437(helpY, dlgX + dlgW - 1, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
+        string helpText = "Enter=Edit, S=Select, D=Delete, ESC=Done";
+        g_term->setAttr(titleAttr);
+        g_term->printStr(helpY, dlgX + (dlgW - static_cast<int>(helpText.size())) / 2, helpText);
+
+        g_term->refresh();
+        int ch = g_term->getKey();
+
+        switch (ch)
+        {
+            case TK_UP:   if (selected > 0) --selected; break;
+            case TK_DOWN: if (selected < totalItems - 1) ++selected; break;
+            case TK_HOME: selected = 0; break;
+            case TK_END:  selected = totalItems - 1; break;
+            case TK_PGUP: selected -= visibleItems; if (selected < 0) selected = 0; break;
+            case TK_PGDN: selected += visibleItems; if (selected >= totalItems) selected = totalItems - 1; break;
+            case TK_ENTER:
+            case ' ':
+            {
+                if (selected >= static_cast<int>(settings.externalEditors.size()))
+                {
+                    // Add new editor
+                    ExternalEditorConfig newEd;
+                    if (showExternalEditorConfig(newEd) && !newEd.name.empty())
+                    {
+                        settings.externalEditors.push_back(newEd);
+                        changed = true;
+                    }
+                }
+                else
+                {
+                    // Edit existing
+                    if (showExternalEditorConfig(settings.externalEditors[selected]))
+                        changed = true;
+                }
+                break;
+            }
+            case 's': case 'S':
+            {
+                if (selected < static_cast<int>(settings.externalEditors.size()))
+                {
+                    settings.selectedEditor = settings.externalEditors[selected].name;
+                    changed = true;
+                }
+                break;
+            }
+            case 'd': case 'D':
+            case TK_DELETE:
+            {
+                if (selected < static_cast<int>(settings.externalEditors.size()))
+                {
+                    string name = settings.externalEditors[selected].name;
+                    if (confirmDialog("Delete editor '" + name + "'?"))
+                    {
+                        settings.externalEditors.erase(
+                            settings.externalEditors.begin() + selected);
+                        if (settings.selectedEditor == name)
+                            settings.selectedEditor.clear();
+                        if (selected >= static_cast<int>(settings.externalEditors.size()) + 1)
+                            selected = static_cast<int>(settings.externalEditors.size());
+                        changed = true;
+                    }
+                }
+                break;
+            }
+            case TK_ESCAPE:
+            case 'q': case 'Q':
+                return changed;
+            default: break;
         }
     }
 }

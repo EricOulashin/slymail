@@ -7,9 +7,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 ## [0.53] - 2026-03-##
 
 ### Added
-- **A setting to only show conferences with new messages**: Addresses[issue 17](https://github.com/EricOulashin/SlyMail/issues/17).
-- **Ability to use an external editor for messages**: Addresses [issue 25](https://github.com/EricOulashin/SlyMail/issues/25).
+- **A setting to only show conferences with new messages**: Addresses [issue 17](https://github.com/EricOulashin/SlyMail/issues/17).
+- **Ability to use an external editor for messages**: Addresses [issue 25](https://github.com/EricOulashin/SlyMail/issues/25) and [issue 27](https://github.com/EricOulashin/SlyMail/issues/27).
 
+### Fixed
+- **Slash commands on the first line work again**: Addresses [issue 22](https://github.com/EricOulashin/SlyMail/issues/22).
+
+## Known Issues
+- **Editor colors not always correct**: This seems to be true at least for the DCT mode quote window
 
 ## [0.52] - 2026-03-26
 

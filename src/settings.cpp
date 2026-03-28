@@ -32,6 +32,24 @@ static string settingsTrimStr(const string& s)
     return s.substr(start, end - start + 1);
 }
 
+// Parse ExtQuoteMode from string
+static ExtQuoteMode parseExtQuoteMode(const string& val)
+{
+    if (val == "Always" || val == "always") return ExtQuoteMode::Always;
+    if (val == "Never" || val == "never") return ExtQuoteMode::Never;
+    return ExtQuoteMode::Prompt;
+}
+
+// Parse DropFileType from string
+static DropFileType parseDropFileType(const string& val)
+{
+    if (val == "MSGINF") return DropFileType::MSGINF;
+    if (val == "EDITORINF" || val == "EDITOR.INF") return DropFileType::EDITORINF;
+    if (val == "DOORSYS" || val == "DOOR.SYS") return DropFileType::DOORSYS;
+    if (val == "DOOR32SYS" || val == "DOOR32.SYS") return DropFileType::DOOR32SYS;
+    return DropFileType::None;
+}
+
 // Constructor with defaults
 Settings::Settings()
     : editorStyle(EditorStyle::Ice)
@@ -63,15 +81,24 @@ Settings::Settings()
     , showSplashScreen(true)
     , userName("")
     , replyDir("")
-    , externalEditor("")
     , useExternalEditor(false)
-    , externalEditorQuoting(ExtQuoteMode::Prompt)
+    , selectedEditor("")
 {
 }
 
 string Settings::getSettingsPath()
 {
     return settingsDir() + PATH_SEP_STR + SETTINGS_FILENAME;
+}
+
+const ExternalEditorConfig* Settings::getSelectedEditor() const
+{
+    if (selectedEditor.empty()) return nullptr;
+    for (const auto& ed : externalEditors)
+    {
+        if (ed.name == selectedEditor) return &ed;
+    }
+    return nullptr;
 }
 
 bool Settings::load()
@@ -84,6 +111,14 @@ bool Settings::load()
     }
 
     sectionOrder.clear();
+    externalEditors.clear();
+
+    string currentSection;
+    ExternalEditorConfig* currentEditor = nullptr;
+
+    // For backward compatibility: detect old-style externalEditor key
+    string legacyEditorPath;
+    ExtQuoteMode legacyQuoteMode = ExtQuoteMode::Prompt;
 
     string line;
     while (std::getline(f, line))
@@ -100,6 +135,20 @@ bool Settings::load()
             {
                 string secName = line.substr(1, closing - 1);
                 sectionOrder.push_back(secName);
+                currentSection = secName;
+
+                // Check for external_editor: sections
+                const string prefix = "external_editor:";
+                if (secName.substr(0, prefix.size()) == prefix)
+                {
+                    externalEditors.push_back(ExternalEditorConfig());
+                    currentEditor = &externalEditors.back();
+                    currentEditor->name = secName.substr(prefix.size());
+                }
+                else
+                {
+                    currentEditor = nullptr;
+                }
             }
             continue;
         }
@@ -117,43 +166,34 @@ bool Settings::load()
         string key = settingsTrimStr(line.substr(0, eq));
         string val = settingsTrimStr(line.substr(eq + 1));
 
+        // If we're inside an external_editor: section, parse editor-specific keys
+        if (currentEditor)
+        {
+            if (key == "startupDir") currentEditor->startupDir = val;
+            else if (key == "commandLine") currentEditor->commandLine = val;
+            else if (key == "wordWrapQuotedText") currentEditor->wordWrapQuotedText = (val == "true" || val == "1");
+            else if (key == "wordWrapNumCols") { try { currentEditor->wordWrapNumCols = std::stoi(val); } catch (...) {} }
+            else if (key == "autoQuoteMode") currentEditor->autoQuoteMode = parseExtQuoteMode(val);
+            else if (key == "dropFileType") currentEditor->dropFileType = parseDropFileType(val);
+            else if (key == "stripFidoKludges") currentEditor->stripFidoKludges = (val == "true" || val == "1");
+            continue;
+        }
+
+        // Standard settings (not inside an external_editor: section)
         if (key == "editorStyle")
         {
-            if (val == "Ice" || val == "ice")
-            {
-                editorStyle = EditorStyle::Ice;
-            }
-            else if (val == "Dct" || val == "dct" || val == "DCT")
-            {
-                editorStyle = EditorStyle::Dct;
-            }
-            else if (val == "Random" || val == "random")
-            {
-                editorStyle = EditorStyle::Random;
-            }
+            if (val == "Ice" || val == "ice") editorStyle = EditorStyle::Ice;
+            else if (val == "Dct" || val == "dct" || val == "DCT") editorStyle = EditorStyle::Dct;
+            else if (val == "Random" || val == "random") editorStyle = EditorStyle::Random;
         }
-        else if (key == "insertMode")
-        {
-            insertMode = (val == "true" || val == "1");
-        }
-        else if (key == "wrapQuoteLines")
-        {
-            wrapQuoteLines = (val == "true" || val == "1");
-        }
-        else if (key == "quoteLineWidth")
-        {
-            try { quoteLineWidth = std::stoi(val); } catch (...) {}
-        }
+        else if (key == "insertMode") { insertMode = (val == "true" || val == "1"); }
+        else if (key == "wrapQuoteLines") { wrapQuoteLines = (val == "true" || val == "1"); }
+        else if (key == "quoteLineWidth") { try { quoteLineWidth = std::stoi(val); } catch (...) {} }
         else if (key == "quotePrefix")
         {
-            // Preserve both leading and trailing spaces in quotePrefix.
-            // Only strip line-ending characters (\r, \n), NOT spaces or tabs,
-            // because the trailing space in " > " is significant.
             string rawVal = line.substr(eq + 1);
             while (!rawVal.empty() && (rawVal.back() == '\r' || rawVal.back() == '\n'))
-            {
                 rawVal.pop_back();
-            }
             quotePrefix = rawVal;
         }
         else if (key == "taglines")          { taglines = (val == "true" || val == "1"); }
@@ -182,16 +222,25 @@ bool Settings::load()
         else if (key == "showSplashScreen")  { showSplashScreen = (val == "true" || val == "1"); }
         else if (key == "userName")          { userName = val; }
         else if (key == "replyDir")          { replyDir = val; }
-        else if (key == "externalEditor")   { externalEditor = val; }
         else if (key == "useExternalEditor") { useExternalEditor = (val == "true" || val == "1"); }
-        else if (key == "externalEditorQuoting")
-        {
-            if (val == "Always" || val == "always") externalEditorQuoting = ExtQuoteMode::Always;
-            else if (val == "Never" || val == "never") externalEditorQuoting = ExtQuoteMode::Never;
-            else externalEditorQuoting = ExtQuoteMode::Prompt;
-        }
+        else if (key == "selectedEditor")    { selectedEditor = val; }
+        // Backward compatibility: old-style single external editor
+        else if (key == "externalEditor")    { legacyEditorPath = val; }
+        else if (key == "externalEditorQuoting") { legacyQuoteMode = parseExtQuoteMode(val); }
     }
     f.close();
+
+    // Backward compatibility: migrate old externalEditor setting
+    if (externalEditors.empty() && !legacyEditorPath.empty())
+    {
+        ExternalEditorConfig migrated;
+        migrated.name = "Default";
+        migrated.commandLine = legacyEditorPath;
+        migrated.autoQuoteMode = legacyQuoteMode;
+        externalEditors.push_back(migrated);
+        selectedEditor = "Default";
+    }
+
     return true;
 }
 
@@ -207,9 +256,13 @@ bool Settings::save() const
     f << "; SlyMail Configuration File\n";
     f << "; This file is automatically generated. Manual edits are preserved.\n\n";
 
-    // Helper: write a section's settings by name
+    // Helper: write a standard section's settings by name
     auto writeSection = [&](const string& sec, bool& needNewline)
     {
+        // Skip external_editor: sections here — they're handled separately
+        if (sec.substr(0, 16) == "external_editor:")
+            return;
+
         if (needNewline) f << "\n";
         needNewline = true;
 
@@ -227,17 +280,10 @@ bool Settings::save() const
             f << "\n; Directory where REP reply packets are saved\n";
             f << "; If empty, REP files are saved in the same directory as the QWK file\n";
             f << "replyDir=" << replyDir << "\n";
-            f << "\n; Path to an external editor program for composing messages\n";
-            f << "externalEditor=" << externalEditor << "\n";
-            f << "\n; Use the external editor instead of the built-in editor\n";
+            f << "\n; Use an external editor instead of the built-in editor\n";
             f << "useExternalEditor=" << (useExternalEditor ? "true" : "false") << "\n";
-            f << "\n; Quoting mode when replying with the external editor: Always, Prompt, or Never\n";
-            {
-                string qm = "Prompt";
-                if (externalEditorQuoting == ExtQuoteMode::Always) qm = "Always";
-                else if (externalEditorQuoting == ExtQuoteMode::Never) qm = "Never";
-                f << "externalEditorQuoting=" << qm << "\n";
-            }
+            f << "\n; Name of the selected external editor (must match an [external_editor:NAME] section)\n";
+            f << "selectedEditor=" << selectedEditor << "\n";
         }
         else if (sec == "Themes")
         {
@@ -336,20 +382,33 @@ bool Settings::save() const
     for (const auto& sec : order)
     {
         writeSection(sec, needNewline);
-        // Mark as written
         for (size_t i = 0; i < defaultOrder.size(); ++i)
         {
             if (defaultOrder[i] == sec) written[i] = true;
         }
     }
 
-    // Append any sections that weren't in the loaded order (e.g. newly added)
+    // Append any standard sections that weren't in the loaded order
     for (size_t i = 0; i < defaultOrder.size(); ++i)
     {
         if (!written[i])
         {
             writeSection(defaultOrder[i], needNewline);
         }
+    }
+
+    // Write external editor sections
+    for (const auto& ed : externalEditors)
+    {
+        if (ed.name.empty()) continue;
+        f << "\n[external_editor:" << ed.name << "]\n";
+        f << "startupDir=" << ed.startupDir << "\n";
+        f << "commandLine=" << ed.commandLine << "\n";
+        f << "wordWrapQuotedText=" << (ed.wordWrapQuotedText ? "true" : "false") << "\n";
+        f << "wordWrapNumCols=" << ed.wordWrapNumCols << "\n";
+        f << "autoQuoteMode=" << extQuoteModeStr(ed.autoQuoteMode) << "\n";
+        f << "dropFileType=" << dropFileTypeStr(ed.dropFileType) << "\n";
+        f << "stripFidoKludges=" << (ed.stripFidoKludges ? "true" : "false") << "\n";
     }
 
     f.close();
@@ -365,4 +424,28 @@ string editorStyleStr(EditorStyle s)
         case EditorStyle::Random: return "Random";
     }
     return "Unknown";
+}
+
+string dropFileTypeStr(DropFileType t)
+{
+    switch (t)
+    {
+        case DropFileType::None:      return "None";
+        case DropFileType::MSGINF:    return "MSGINF";
+        case DropFileType::EDITORINF: return "EDITOR.INF";
+        case DropFileType::DOORSYS:   return "DOOR.SYS";
+        case DropFileType::DOOR32SYS: return "DOOR32.SYS";
+    }
+    return "None";
+}
+
+string extQuoteModeStr(ExtQuoteMode m)
+{
+    switch (m)
+    {
+        case ExtQuoteMode::Always: return "Always";
+        case ExtQuoteMode::Prompt: return "Prompt";
+        case ExtQuoteMode::Never:  return "Never";
+    }
+    return "Prompt";
 }

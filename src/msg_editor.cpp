@@ -7,7 +7,9 @@
 #include "msg_editor.h"
 #include "bbs_colors.h"
 #include "text_utils.h"
+#include "remote_systems.h"
 #include <cctype>
+#include <filesystem>
 
 using std::string;
 using std::vector;
@@ -67,8 +69,19 @@ void MessageEditor::init(const Settings& settings, const string& baseDir)
     attrFlags.renegade = settings.attrRenegade;
     attrFlags.pcboard = settings.attrPCBoard;
 
-    // Load themes
-    string configDir = baseDir.empty() ? "config_files" : baseDir + PATH_SEP_STR + "config_files";
+    // Load themes from the .slymail data directory, falling back to baseDir
+    string dataDir = getSlyMailDataDir();
+    string configDir = dataDir + PATH_SEP_STR + "config_files";
+    // Fall back to baseDir if the data directory config_files doesn't exist
+    {
+        namespace fs = std::filesystem;
+        if (!fs::is_directory(configDir) || fs::is_empty(configDir))
+        {
+            string fallback = baseDir.empty() ? "config_files" : baseDir + PATH_SEP_STR + "config_files";
+            if (fs::is_directory(fallback))
+                configDir = fallback;
+        }
+    }
     string iceFile = settings.iceThemeFile.empty() ? "EditorIceColors_BlueIce.ini" : settings.iceThemeFile;
     string dctFile = settings.dctThemeFile.empty() ? "EditorDCTColors_Default.ini" : settings.dctThemeFile;
     iceTheme = loadIceTheme(configDir + PATH_SEP_STR + iceFile);
@@ -724,12 +737,12 @@ void MessageEditor::drawQuoteWindow()
     }
     else
     {
-        // DCT quote window: black on lightgray border, red text
-        borderAttr = DctColors::quoteBorderC();
-        titleAttr  = DctColors::quoteTitleC();
-        textAttr   = DctColors::quoteText();
-        selAttr    = DctColors::quoteHl();
-        helpAttr   = DctColors::quoteTitleC();
+        // DCT quote window: use loaded theme colors
+        borderAttr = dctTheme.quoteWinBorderColor;
+        titleAttr  = dctTheme.quoteWinBorderTextColor;
+        textAttr   = dctTheme.quoteWinText;
+        selAttr    = dctTheme.quoteLineHighlightColor;
+        helpAttr   = dctTheme.quoteWinBorderTextColor;
     }
 
     quoteWinTop = editTop + editHeight - quoteWinHeight;
@@ -2281,7 +2294,24 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
             case TK_ENTER:
             {
                 // Check for slash commands (only if line contains just the command)
-                string trimmedLine = lines[cursorRow].text;
+                // Strip ANSI escape sequences first so embedded reset codes
+                // (e.g. the initial ESC[0m on line 1) don't prevent detection.
+                string trimmedLine;
+                {
+                    const string& raw = lines[cursorRow].text;
+                    for (size_t ci = 0; ci < raw.size(); ++ci)
+                    {
+                        if (static_cast<uint8_t>(raw[ci]) == 0x1B && ci + 1 < raw.size() && raw[ci + 1] == '[')
+                        {
+                            // Skip ESC[ ... <final byte>
+                            ci += 2;
+                            while (ci < raw.size() && raw[ci] >= 0x20 && raw[ci] <= 0x3F) ++ci;
+                            // ci now points at the final byte (0x40-0x7E) — the loop ++ci skips it
+                            continue;
+                        }
+                        trimmedLine += raw[ci];
+                    }
+                }
                 while (!trimmedLine.empty() && trimmedLine.front() == ' ') trimmedLine.erase(0, 1);
                 while (!trimmedLine.empty() && trimmedLine.back() == ' ') trimmedLine.pop_back();
 

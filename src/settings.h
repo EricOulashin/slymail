@@ -19,6 +19,37 @@ enum class ExtQuoteMode
     Never    // Never include quote lines when replying with external editor
 };
 
+// Drop file types for external message editors
+enum class DropFileType
+{
+    None,       // No drop file
+    MSGINF,     // QuickBBS-style MSGINF (used by SlyEdit)
+    EDITORINF,  // EDITOR.INF (Synchronet standard)
+    DOORSYS,    // DOOR.SYS
+    DOOR32SYS,  // DOOR32.SYS
+};
+
+// Configuration for a single external editor
+struct ExternalEditorConfig
+{
+    std::string  name;
+    std::string  startupDir;
+    std::string  commandLine;        // %f = temp filename substitution
+    bool         wordWrapQuotedText;  // default true
+    int          wordWrapNumCols;     // default 79
+    ExtQuoteMode autoQuoteMode;       // Always/Prompt/Never
+    DropFileType dropFileType;        // default None
+    bool         stripFidoKludges;    // default false
+
+    ExternalEditorConfig()
+        : wordWrapQuotedText(true)
+        , wordWrapNumCols(79)
+        , autoQuoteMode(ExtQuoteMode::Prompt)
+        , dropFileType(DropFileType::None)
+        , stripFidoKludges(false)
+    {}
+};
+
 // The settings INI filename
 extern const char* SETTINGS_FILENAME;
 
@@ -73,9 +104,11 @@ struct Settings
     std::string lastQwkFile;        // Last opened QWK file
     std::string userName;           // User's name for replies
     std::string replyDir;           // Directory for REP packets
-    std::string externalEditor;     // Path to external editor program
     bool        useExternalEditor;  // Use external editor instead of built-in
-    ExtQuoteMode externalEditorQuoting; // Quoting mode when replying with external editor
+    std::string selectedEditor;     // Name of the active external editor
+
+    // External editor configurations
+    std::vector<ExternalEditorConfig> externalEditors;
 
     // Section order as read from the INI file (preserved on save)
     std::vector<std::string> sectionOrder;
@@ -91,9 +124,18 @@ struct Settings
 
     // Save settings to INI file (next to executable) with descriptive comments
     bool save() const;
+
+    // Look up the selected external editor config (or nullptr if none)
+    const ExternalEditorConfig* getSelectedEditor() const;
 };
 
 // Helper to convert EditorStyle to display string
 std::string editorStyleStr(EditorStyle s);
+
+// Helper to convert DropFileType to display string
+std::string dropFileTypeStr(DropFileType t);
+
+// Helper to convert ExtQuoteMode to display string
+std::string extQuoteModeStr(ExtQuoteMode m);
 
 #endif // SLYMAIL_SETTINGS_H
