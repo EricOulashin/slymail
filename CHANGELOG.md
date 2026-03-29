@@ -12,9 +12,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 
 ### Fixed
 - **Slash commands on the first line work again**: Addresses [issue 22](https://github.com/EricOulashin/SlyMail/issues/22).
+- **Quote window for Ice mode looks more like Ice mode**
+- **Theme colors for the quote window work better**
 
-## Known Issues
-- **Editor colors not always correct**: This seems to be true at least for the DCT mode quote window
 
 ## [0.52] - 2026-03-26
 

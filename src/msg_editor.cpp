@@ -761,7 +761,7 @@ void MessageEditor::drawQuoteWindow()
             g_term->putCP437(quoteWinTop, col, CP437_BOX_DRAWINGS_DOUBLE_HORIZONTAL);
         }
         g_term->setAttr(randomBorderColor(iceTheme.borderColor1, iceTheme.borderColor2));
-        g_term->putCP437(quoteWinTop, editWidth, CP437_BOX_DRAWINGS_DOWN_SINGLE_AND_LEFT_DOUBLE);
+        g_term->putCP437(quoteWinTop, editWidth - 1, CP437_BOX_DRAWINGS_DOWN_SINGLE_AND_LEFT_DOUBLE);
         //g_term->putCP437(quoteWinTop, editWidth - 1, CP437_BOX_DRAWINGS_VERTICAL_SINGLE_AND_HORIZONTAL_DOUBLE);
     }
     else
@@ -799,8 +799,7 @@ void MessageEditor::drawQuoteWindow()
         }
     }
 
-    // Scrollbar on the right border if content overflows (SlyEdit for Synchronet doesn't do this)
-    /*
+    // Scrollbar on the right edge if content overflows
     int totalQuoteLines = static_cast<int>(quoteLines.size());
     if (totalQuoteLines > contentHeight)
     {
@@ -809,11 +808,9 @@ void MessageEditor::drawQuoteWindow()
                      tAttr(TC_BLACK, TC_BLACK, true),
                      tAttr(TC_WHITE, TC_BLACK, true));
     }
-    */
 
     // Bottom border with instructions
-    //const int bottomY = quoteWinTop + quoteWinHeight - 1;
-    const int bottomY = quoteWinTop + quoteWinHeight;
+    const int bottomY = quoteWinTop + quoteWinHeight - 1;
     if (currentStyle == EditorStyle::Ice)
     {
         // Ice mode
@@ -1147,19 +1144,17 @@ bool MessageEditor::handleQuoteWindow()
         int qWinTop       = editTop + editHeight - quoteWinHeight;
         int contentHeight = quoteWinHeight - 2;
 
-        // Resolve theme colors for partial row drawing
-        TermAttr qBorderAttr, qTextAttr, qSelAttr;
+        // Use loaded theme colors for partial row drawing
+        TermAttr qTextAttr, qSelAttr;
         if (currentStyle == EditorStyle::Ice)
         {
-            qBorderAttr = IceColors::quoteBorder();
-            qTextAttr   = IceColors::editText();
-            qSelAttr    = IceColors::quoteHl();
+            qTextAttr   = iceTheme.quoteWinText;
+            qSelAttr    = iceTheme.quoteLineHighlightColor;
         }
         else
         {
-            qBorderAttr = DctColors::quoteBorderC();
-            qTextAttr   = DctColors::quoteText();
-            qSelAttr    = DctColors::quoteHl();
+            qTextAttr   = dctTheme.quoteWinText;
+            qSelAttr    = dctTheme.quoteLineHighlightColor;
         }
 
         // Lambda: redraw a single quote-window row
@@ -1187,8 +1182,7 @@ bool MessageEditor::handleQuoteWindow()
             }
         };
 
-        // Lambda: redraw the quote-window scrollbar (SlyEdit for Synchronet doesn't do this)
-        /*
+        // Lambda: redraw the quote-window scrollbar
         auto drawQSB = [&]()
         {
             int totalQL = static_cast<int>(quoteLines.size());
@@ -1199,24 +1193,33 @@ bool MessageEditor::handleQuoteWindow()
                              tAttr(TC_WHITE, TC_BLACK, true));
             }
         };
-        */
 
         // --- Draw decision ---
         bool qScrollChanged = (quoteScroll != prevQScroll);
 
-        if (qNeedFullRedraw || qScrollChanged)
+        if (qNeedFullRedraw)
         {
-            // Full redraw: edit area + complete quote window
+            // Full redraw: edit area + complete quote window (including borders)
             drawEditArea();
             drawQuoteWindow();
             qNeedFullRedraw = false;
+        }
+        else if (qScrollChanged)
+        {
+            // Scroll changed: redraw all quote line rows and scrollbar,
+            // but not the borders
+            for (int qi = 0; qi < contentHeight; ++qi)
+            {
+                drawQRow(quoteScroll + qi);
+            }
+            drawQSB();
         }
         else if (quoteSelected != prevQSel)
         {
             // Partial update: deselect old row, select new row
             drawQRow(prevQSel);
             drawQRow(quoteSelected);
-            //drawQSB();
+            drawQSB();
         }
 
         g_term->refresh();

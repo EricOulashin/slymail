@@ -95,7 +95,6 @@ static bool editReaderSettings(Settings& settings)
         {"Show scrollbar in message reader",                  &settings.useScrollbar},
         {"Only show areas with new mail",                     &settings.onlyShowAreasWithNewMail},
         {"Strip ANSI codes from messages",                    &settings.stripAnsi},
-        {"Use lightbar navigation in message list",           &settings.lightbarMode},
         {"Show messages in reverse order (newest first)",      &settings.reverseOrder},
     };
 
@@ -568,12 +567,13 @@ static bool editGeneralSettings(Settings& settings)
     };
 
     int strItemCount = static_cast<int>(items.size());
-    // Non-string items: use external editor (toggle), external editors list, select editor, splash screen
-    int itemCount = strItemCount + 4;
+    // Non-string items
+    int itemCount = strItemCount + 5;
     int extEditorsListIdx = strItemCount;
     int useExtEditorIdx = strItemCount + 1;
     int selectEditorIdx = strItemCount + 2;
-    int splashIdx = strItemCount + 3;
+    int lightbarIdx = strItemCount + 3;
+    int splashIdx = strItemCount + 4;
     int selected = 0;
     bool changed = false;
 
@@ -660,6 +660,11 @@ static bool editGeneralSettings(Settings& settings)
                     toggleLabel = "Use external editor";
                     toggleVal = settings.useExternalEditor;
                 }
+                else if (i == lightbarIdx)
+                {
+                    toggleLabel = "Use lightbar navigation in message list";
+                    toggleVal = settings.lightbarMode;
+                }
                 TermAttr lbl = isSel ? selAttr : itemAttr;
                 printAt(y, dlgX + 2, toggleLabel, lbl);
                 TermAttr chk = isSel ? selAttr : tAttr(TC_GREEN, TC_BLACK, true);
@@ -721,6 +726,11 @@ static bool editGeneralSettings(Settings& settings)
                 else if (selected == useExtEditorIdx)
                 {
                     settings.useExternalEditor = !settings.useExternalEditor;
+                    changed = true;
+                }
+                else if (selected == lightbarIdx)
+                {
+                    settings.lightbarMode = !settings.lightbarMode;
                     changed = true;
                 }
                 else if (selected == extEditorsListIdx)

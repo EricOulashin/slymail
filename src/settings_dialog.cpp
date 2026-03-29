@@ -732,6 +732,8 @@ bool showEditorSettings(Settings& settings, const string& baseDir)
     {
         if (needFullRedraw)
         {
+        g_term->clear();
+
         // Draw outer box
         g_term->setAttr(borderAttr);
         g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
