@@ -109,6 +109,9 @@ void eraseForward(string& text, int pos)
 void pullUpWords(vector<TextLine>& lines, int row, int editWidth)
 {
     if (row < 0 || row + 1 >= static_cast<int>(lines.size())) return;
+    // Don't pull text from the next line if the current line is a quote line
+    // or if the next line is a quote line (preserve quote line boundaries)
+    if (lines[row].isQuoteLine || lines[row + 1].isQuoteLine) return;
     string& curLine = lines[row].text;
     string& nextLine = lines[row + 1].text;
     if (nextLine.empty()) return;

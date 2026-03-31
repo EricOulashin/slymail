@@ -1,8 +1,8 @@
 ---
 title: "SlyMail User Manual"
 subtitle: "QWK Offline Mail Reader"
-version: "0.53"
-date: "2026-03-29"
+version: "0.54"
+date: "2026-03-31"
 author: "Eric Oulashin"
 ---
 
@@ -19,6 +19,8 @@ SlyMail runs on Linux, macOS, BSD, and Windows.
 ## Getting Started
 
 ### Launching SlyMail
+
+![SlyMail Opening Screen](../screenshots/SlyMail_01_OpeningScreen.png)
 
 Launch SlyMail from the command line:
 
@@ -50,6 +52,7 @@ On first run, SlyMail creates a data directory at `~/.slymail` (on Linux, macOS,
 - `dictionary_files/` - Spell-check dictionaries
 - `tagline_files/` - Tagline files
 - `remote_systems.json` - Saved remote system connections
+- `lastread_<BBSID>.json` - Last-read message pointers per conference
 
 ### The Configuration Program
 
@@ -72,6 +75,8 @@ Settings are saved automatically when you exit each category. Both SlyMail and t
 
 When SlyMail starts, a file browser is displayed for selecting a QWK packet to open.
 
+![File Browser](../screenshots/SlyMail_02_File_Chooser.png)
+
 ### File Browser Keys
 
 | Key | Action |
@@ -87,6 +92,8 @@ When SlyMail starts, a file browser is displayed for selecting a QWK packet to o
 Only `.qwk` files can be selected. Directories are shown in blue and can be navigated into by pressing Enter.
 
 ## Remote Systems (Ctrl-R)
+
+![Remote Systems List](../screenshots/SlyMail_03_remote_system_list.png)
 
 SlyMail can download QWK packets directly from remote BBSes via FTP or SFTP (SSH).
 
@@ -104,7 +111,9 @@ SlyMail uses the system's `curl` command for FTP and SFTP file transfers.
 
 ## Conference List
 
-After opening a QWK packet, the conference list shows all message areas (conferences) with their message counts. If the "Only show areas with new mail" setting is enabled, conferences with zero messages are hidden.
+![Conference List](../screenshots/SlyMail_06_msg_area_list.png)
+
+After opening a QWK packet, the conference list shows all message areas (conferences) with their message counts. A "New" column displays a checkmark next to conferences that have new messages. If the "Only show areas with new mail" setting is enabled, conferences with zero messages are hidden.
 
 ### Conference List Keys
 
@@ -128,7 +137,13 @@ When a search filter is active, pressing **Q** clears the filter instead of quit
 
 ## Message List
 
+![Message List](../screenshots/SlyMail_07_msg_list.png)
+
 The message list shows all messages in the selected conference with columns for message number, from, to, subject, date, and time.
+
+### Last-Read Message Tracking
+
+SlyMail remembers the last message you read in each conference. When you enter a conference, the cursor is automatically positioned at the first unread message (the message after the last one you read). This information is saved per-BBS in the SlyMail data directory.
 
 ### Message List Keys
 
@@ -152,11 +167,15 @@ The message list shows all messages in the selected conference with columns for 
 
 ### Searching Messages
 
+![Message Search](../screenshots/SlyMail_16_msg_search.png)
+
 Press **/** to search messages by subject, body text, sender, or recipient. Press **Ctrl-A** for advanced search, which includes date range filtering with a visual calendar date picker. When a search filter is active, pressing **Q** clears the filter.
 
 The search can use plain substring matching or regular expressions, depending on the "Search using regular expression" setting.
 
 ## Message Reader
+
+![Reading a Message](../screenshots/SlyMail_08_reading_msg.png)
 
 The message reader displays message content with a header showing From, To, Subject, and Date fields.
 
@@ -179,6 +198,8 @@ The message reader displays message content with a header showing From, To, Subj
 
 ### ANSI Art
 
+![ANSI Art](../screenshots/SlyMail_20_reading_ANSI_art.png)
+
 SlyMail renders ANSI art in messages, supporting cursor positioning, colors, and CP437 block characters. Messages containing ANSI cursor control sequences are automatically detected and rendered through a virtual screen buffer for proper display.
 
 ### File Attachments
@@ -196,6 +217,8 @@ SlyMail supports Synchronet-style voting:
 Votes are queued alongside message replies and written to the REP packet.
 
 ## Message Editor
+
+![Message Editor](../screenshots/SlyMail_09_msg_edit_start.png)
 
 The message editor is used for composing replies and new messages. It offers two visual modes inspired by SlyEdit: **Ice** mode and **DCT** mode.
 
@@ -215,6 +238,7 @@ The message editor is used for composing replies and new messages. It offers two
 | Ctrl-Q | Open or close the quote window |
 | Ctrl-K | Open the color picker |
 | Ctrl-G | Insert a CP437 graphic character |
+| Ctrl-O | Import a text file at the cursor position |
 | Ctrl-W | Search for text |
 | Ctrl-S | Change the subject |
 | Ctrl-D | Delete the current line |
@@ -236,6 +260,8 @@ You can also type slash commands on an empty line and press Enter:
 
 ### Quote Window
 
+![Quote Window](../screenshots/SlyMail_10_quote_line_selection.png)
+
 When replying to a message, press **Ctrl-Q** or type `/Q` on an empty line to open the quote window. The quote window shows the original message text with quote prefixes.
 
 | Key | Action |
@@ -251,6 +277,20 @@ If the number of quote lines exceeds the quote window height, a scrollbar appear
 ### Color Picker (Ctrl-K)
 
 Press **Ctrl-K** to open an interactive color picker dialog. Select a foreground color (16 options: 8 normal + 8 bright) and a background color (8 options). A live preview shows the selected combination. Press **Enter** to insert the ANSI color code at the cursor position. Press **N** to insert a reset (normal) code.
+
+### File Import (Ctrl-O)
+
+Press **Ctrl-O** to import the contents of a text file into your message at the current cursor position. A file browser opens to let you select any file. The file's contents are inserted line by line at the cursor, preserving line breaks.
+
+![Editing a message](../screenshots/SlyMail_11_writing_reply_msg.png)
+
+### Quote Line Handling
+
+When replying to a message, lines inserted from the quote window are tracked as quote lines. If you edit a quote line and it wraps, the overflow goes onto a new line (also marked as a quote line) rather than merging with adjacent text. Deleting text from a quote line will not pull text up from the next line if it is also a quote line. This preserves the integrity of quoted text.
+
+### Paragraph-Based Saving
+
+When saving a message, SlyMail joins soft-wrapped lines of newly typed text into single long paragraphs. This allows other people's mail readers to re-wrap the text to fit their own terminal width. Quote lines are always preserved exactly as they appear and are never joined.
 
 ### Empty Messages
 
@@ -280,6 +320,8 @@ When using an external editor, SlyMail creates a temporary file, launches the ed
 ## Settings
 
 ### Reader Settings (Ctrl-U)
+
+![Reader Settings](../screenshots/SlyMail_14_reader_settings.png)
 
 Access reader settings by pressing **Ctrl-U** or **S** from the conference list, message list, or message reader.
 
@@ -505,6 +547,21 @@ If using a Synchronet BBS, the following QWK packet settings are recommended for
 | Extended (QWKE) Packet Format | Yes |
 
 ## Changelog
+
+### Version 0.54 (2026-03-31)
+
+#### Added
+- Last-read message tracking per conference with automatic cursor positioning
+- New message indicator (checkmark column) in the conference list
+- File import in message editor (Ctrl-O) to insert text files at cursor position
+- Quote line tracking to preserve quote line integrity during editing
+- Paragraph-based message saving for better text reflow by recipients
+
+#### Changed
+- Quote line wrapping now respects terminal width when enabled
+
+#### Fixed
+- Quote line editing no longer merges overflow with adjacent lines
 
 ### Version 0.53 (2026-03-29)
 

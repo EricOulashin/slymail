@@ -25,6 +25,7 @@ pre code { background: none; padding: 0; }
 strong { color: #24292e; }
 a { color: #0366d6; text-decoration: none; }
 a:hover { text-decoration: underline; }
+img { max-width: 100%; height: auto; border: 1px solid #dfe2e5; border-radius: 6px; margin: 1em 0; }
 .toc { background-color: #f6f8fa; border: 1px solid #dfe2e5; border-radius: 6px;
        padding: 15px 20px; margin: 1em 0 2em 0; }
 .toc h2 { margin-top: 0; border-bottom: none; font-size: 1.1em; }
@@ -36,15 +37,16 @@ a:hover { text-decoration: underline; }
 @media print {
     body { max-width: none; padding: 0; }
     h1, h2, h3 { page-break-after: avoid; }
-    table, pre { page-break-inside: avoid; }
+    table, pre, img { page-break-inside: avoid; }
+    img { max-width: 80%; }
 }
 </style>
 </head>
 <body>
 <div class="title-block">
 <h1>SlyMail User Manual</h1>
-<p>QWK Offline Mail Reader &mdash; Version 0.53</p>
-<p>2026-03-29</p>
+<p>QWK Offline Mail Reader &mdash; Version 0.54</p>
+<p>2026-03-31</p>
 </div>
 <div class="toc">
 <h2>Table of Contents</h2>
@@ -68,6 +70,7 @@ a:hover { text-decoration: underline; }
 </ul>
 </li>
 <li><a href="#message-list">Message List</a><ul>
+<li><a href="#last-read-message-tracking">Last-Read Message Tracking</a></li>
 <li><a href="#message-list-keys">Message List Keys</a></li>
 <li><a href="#searching-messages">Searching Messages</a></li>
 </ul>
@@ -84,6 +87,9 @@ a:hover { text-decoration: underline; }
 <li><a href="#slash-commands">Slash Commands</a></li>
 <li><a href="#quote-window">Quote Window</a></li>
 <li><a href="#color-picker-ctrl-k">Color Picker (Ctrl-K)</a></li>
+<li><a href="#file-import-ctrl-o">File Import (Ctrl-O)</a></li>
+<li><a href="#quote-line-handling">Quote Line Handling</a></li>
+<li><a href="#paragraph-based-saving">Paragraph-Based Saving</a></li>
 <li><a href="#empty-messages">Empty Messages</a></li>
 <li><a href="#external-editors">External Editors</a></li>
 </ul>
@@ -126,6 +132,7 @@ a:hover { text-decoration: underline; }
 </li>
 <li><a href="#synchronet-bbs-qwk-settings">Synchronet BBS QWK Settings</a></li>
 <li><a href="#changelog">Changelog</a><ul>
+<li><a href="#version-054-2026-03-31">Version 0.54 (2026-03-31)</a></li>
 <li><a href="#version-053-2026-03-29">Version 0.53 (2026-03-29)</a></li>
 <li><a href="#version-052-2026-03-26">Version 0.52 (2026-03-26)</a></li>
 <li><a href="#version-051-2026-03-25">Version 0.51 (2026-03-25)</a></li>
@@ -145,6 +152,7 @@ a:hover { text-decoration: underline; }
 <p>SlyMail runs on Linux, macOS, BSD, and Windows.</p>
 <h2 id="getting-started">Getting Started</h2>
 <h3 id="launching-slymail">Launching SlyMail</h3>
+<p><img alt="SlyMail Opening Screen" src="screenshots/SlyMail_01_OpeningScreen.png" /></p>
 <p>Launch SlyMail from the command line:</p>
 <pre><code>slymail
 </code></pre>
@@ -170,6 +178,7 @@ a:hover { text-decoration: underline; }
 <li><code>dictionary_files/</code> - Spell-check dictionaries</li>
 <li><code>tagline_files/</code> - Tagline files</li>
 <li><code>remote_systems.json</code> - Saved remote system connections</li>
+<li><code>lastread_&lt;BBSID&gt;.json</code> - Last-read message pointers per conference</li>
 </ul>
 <h3 id="the-configuration-program">The Configuration Program</h3>
 <p>SlyMail includes a standalone configuration program called <code>config</code> (or <code>slymail-config</code> if installed via <code>make install</code>). This program provides a text-based interface for configuring all SlyMail settings without opening the main application.</p>
@@ -186,6 +195,7 @@ a:hover { text-decoration: underline; }
 <p>Settings are saved automatically when you exit each category. Both SlyMail and the config program read and write the same <code>slymail.ini</code> file.</p>
 <h2 id="file-browser">File Browser</h2>
 <p>When SlyMail starts, a file browser is displayed for selecting a QWK packet to open.</p>
+<p><img alt="File Browser" src="screenshots/SlyMail_02_File_Chooser.png" /></p>
 <h3 id="file-browser-keys">File Browser Keys</h3>
 <table>
 <thead>
@@ -227,6 +237,7 @@ a:hover { text-decoration: underline; }
 </table>
 <p>Only <code>.qwk</code> files can be selected. Directories are shown in blue and can be navigated into by pressing Enter.</p>
 <h2 id="remote-systems-ctrl-r">Remote Systems (Ctrl-R)</h2>
+<p><img alt="Remote Systems List" src="screenshots/SlyMail_03_remote_system_list.png" /></p>
 <p>SlyMail can download QWK packets directly from remote BBSes via FTP or SFTP (SSH).</p>
 <p>Press <strong>Ctrl-R</strong> from the file browser, conference list, or message list to open the remote systems manager. From here you can:</p>
 <ul>
@@ -239,7 +250,8 @@ a:hover { text-decoration: underline; }
 <p>Remote system entries are saved in <code>remote_systems.json</code> in your SlyMail data directory. The last connection date/time is tracked for each system.</p>
 <p>SlyMail uses the system's <code>curl</code> command for FTP and SFTP file transfers.</p>
 <h2 id="conference-list">Conference List</h2>
-<p>After opening a QWK packet, the conference list shows all message areas (conferences) with their message counts. If the "Only show areas with new mail" setting is enabled, conferences with zero messages are hidden.</p>
+<p><img alt="Conference List" src="screenshots/SlyMail_06_msg_area_list.png" /></p>
+<p>After opening a QWK packet, the conference list shows all message areas (conferences) with their message counts. A "New" column displays a checkmark next to conferences that have new messages. If the "Only show areas with new mail" setting is enabled, conferences with zero messages are hidden.</p>
 <h3 id="conference-list-keys">Conference List Keys</h3>
 <table>
 <thead>
@@ -305,7 +317,10 @@ a:hover { text-decoration: underline; }
 </table>
 <p>When a search filter is active, pressing <strong>Q</strong> clears the filter instead of quitting.</p>
 <h2 id="message-list">Message List</h2>
+<p><img alt="Message List" src="screenshots/SlyMail_07_msg_list.png" /></p>
 <p>The message list shows all messages in the selected conference with columns for message number, from, to, subject, date, and time.</p>
+<h3 id="last-read-message-tracking">Last-Read Message Tracking</h3>
+<p>SlyMail remembers the last message you read in each conference. When you enter a conference, the cursor is automatically positioned at the first unread message (the message after the last one you read). This information is saved per-BBS in the SlyMail data directory.</p>
 <h3 id="message-list-keys">Message List Keys</h3>
 <table>
 <thead>
@@ -378,9 +393,11 @@ a:hover { text-decoration: underline; }
 </tbody>
 </table>
 <h3 id="searching-messages">Searching Messages</h3>
+<p><img alt="Message Search" src="screenshots/SlyMail_16_msg_search.png" /></p>
 <p>Press <strong>/</strong> to search messages by subject, body text, sender, or recipient. Press <strong>Ctrl-A</strong> for advanced search, which includes date range filtering with a visual calendar date picker. When a search filter is active, pressing <strong>Q</strong> clears the filter.</p>
 <p>The search can use plain substring matching or regular expressions, depending on the "Search using regular expression" setting.</p>
 <h2 id="message-reader">Message Reader</h2>
+<p><img alt="Reading a Message" src="screenshots/SlyMail_08_reading_msg.png" /></p>
 <p>The message reader displays message content with a header showing From, To, Subject, and Date fields.</p>
 <h3 id="message-reader-keys">Message Reader Keys</h3>
 <table>
@@ -442,6 +459,7 @@ a:hover { text-decoration: underline; }
 </tbody>
 </table>
 <h3 id="ansi-art">ANSI Art</h3>
+<p><img alt="ANSI Art" src="screenshots/SlyMail_20_reading_ANSI_art.png" /></p>
 <p>SlyMail renders ANSI art in messages, supporting cursor positioning, colors, and CP437 block characters. Messages containing ANSI cursor control sequences are automatically detected and rendered through a virtual screen buffer for proper display.</p>
 <h3 id="file-attachments">File Attachments</h3>
 <p>When a message has file attachments (indicated by <strong>[ATT]</strong> in the header), press <strong>D</strong> or <strong>Ctrl-D</strong> to view and download them. You will be shown a list of attached files with their sizes and prompted to select a destination directory.</p>
@@ -454,6 +472,7 @@ a:hover { text-decoration: underline; }
 </ul>
 <p>Votes are queued alongside message replies and written to the REP packet.</p>
 <h2 id="message-editor">Message Editor</h2>
+<p><img alt="Message Editor" src="screenshots/SlyMail_09_msg_edit_start.png" /></p>
 <p>The message editor is used for composing replies and new messages. It offers two visual modes inspired by SlyEdit: <strong>Ice</strong> mode and <strong>DCT</strong> mode.</p>
 <h3 id="editor-keys">Editor Keys</h3>
 <table>
@@ -511,6 +530,10 @@ a:hover { text-decoration: underline; }
 <tr>
 <td>Ctrl-G</td>
 <td>Insert a CP437 graphic character</td>
+</tr>
+<tr>
+<td>Ctrl-O</td>
+<td>Import a text file at the cursor position</td>
 </tr>
 <tr>
 <td>Ctrl-W</td>
@@ -571,6 +594,7 @@ a:hover { text-decoration: underline; }
 </tbody>
 </table>
 <h3 id="quote-window">Quote Window</h3>
+<p><img alt="Quote Window" src="screenshots/SlyMail_10_quote_line_selection.png" /></p>
 <p>When replying to a message, press <strong>Ctrl-Q</strong> or type <code>/Q</code> on an empty line to open the quote window. The quote window shows the original message text with quote prefixes.</p>
 <table>
 <thead>
@@ -605,6 +629,13 @@ a:hover { text-decoration: underline; }
 <p>If the number of quote lines exceeds the quote window height, a scrollbar appears on the right edge.</p>
 <h3 id="color-picker-ctrl-k">Color Picker (Ctrl-K)</h3>
 <p>Press <strong>Ctrl-K</strong> to open an interactive color picker dialog. Select a foreground color (16 options: 8 normal + 8 bright) and a background color (8 options). A live preview shows the selected combination. Press <strong>Enter</strong> to insert the ANSI color code at the cursor position. Press <strong>N</strong> to insert a reset (normal) code.</p>
+<h3 id="file-import-ctrl-o">File Import (Ctrl-O)</h3>
+<p>Press <strong>Ctrl-O</strong> to import the contents of a text file into your message at the current cursor position. A file browser opens to let you select any file. The file's contents are inserted line by line at the cursor, preserving line breaks.</p>
+<p><img alt="Editing a message" src="screenshots/SlyMail_11_writing_reply_msg.png" /></p>
+<h3 id="quote-line-handling">Quote Line Handling</h3>
+<p>When replying to a message, lines inserted from the quote window are tracked as quote lines. If you edit a quote line and it wraps, the overflow goes onto a new line (also marked as a quote line) rather than merging with adjacent text. Deleting text from a quote line will not pull text up from the next line if it is also a quote line. This preserves the integrity of quoted text.</p>
+<h3 id="paragraph-based-saving">Paragraph-Based Saving</h3>
+<p>When saving a message, SlyMail joins soft-wrapped lines of newly typed text into single long paragraphs. This allows other people's mail readers to re-wrap the text to fit their own terminal width. Quote lines are always preserved exactly as they appear and are never joined.</p>
 <h3 id="empty-messages">Empty Messages</h3>
 <p>If you save a message that has no text content (empty or whitespace only), SlyMail aborts the message and shows a notification instead of posting it.</p>
 <h3 id="external-editors">External Editors</h3>
@@ -628,6 +659,7 @@ a:hover { text-decoration: underline; }
 <p>When using an external editor, SlyMail creates a temporary file, launches the editor, and reads the result when the editor exits. If the editor produces a <code>RESULT.ED</code> file (Synchronet-compatible), SlyMail reads the new subject and editor details from it.</p>
 <h2 id="settings">Settings</h2>
 <h3 id="reader-settings-ctrl-u">Reader Settings (Ctrl-U)</h3>
+<p><img alt="Reader Settings" src="screenshots/SlyMail_14_reader_settings.png" /></p>
 <p>Access reader settings by pressing <strong>Ctrl-U</strong> or <strong>S</strong> from the conference list, message list, or message reader.</p>
 <p>Available settings:</p>
 <ul>
@@ -1012,8 +1044,25 @@ a:hover { text-decoration: underline; }
 </tbody>
 </table>
 <h2 id="changelog">Changelog</h2>
-<h3 id="version-053-2026-03-29">Version 0.53 (2026-03-29)</h3>
+<h3 id="version-054-2026-03-31">Version 0.54 (2026-03-31)</h3>
 <h4 id="added">Added</h4>
+<ul>
+<li>Last-read message tracking per conference with automatic cursor positioning</li>
+<li>New message indicator (checkmark column) in the conference list</li>
+<li>File import in message editor (Ctrl-O) to insert text files at cursor position</li>
+<li>Quote line tracking to preserve quote line integrity during editing</li>
+<li>Paragraph-based message saving for better text reflow by recipients</li>
+</ul>
+<h4 id="changed">Changed</h4>
+<ul>
+<li>Quote line wrapping now respects terminal width when enabled</li>
+</ul>
+<h4 id="fixed">Fixed</h4>
+<ul>
+<li>Quote line editing no longer merges overflow with adjacent lines</li>
+</ul>
+<h3 id="version-053-2026-03-29">Version 0.53 (2026-03-29)</h3>
+<h4 id="added_1">Added</h4>
 <ul>
 <li>Setting to only show conferences with new messages</li>
 <li>External editor support with multiple editor configurations</li>
@@ -1022,7 +1071,7 @@ a:hover { text-decoration: underline; }
 <li>Go-to conference number (G key) in conference list</li>
 <li>Digit-only input validation for Go-to prompts</li>
 </ul>
-<h4 id="fixed">Fixed</h4>
+<h4 id="fixed_1">Fixed</h4>
 <ul>
 <li>Slash commands (/Q, /S, etc.) now work on the first line of the editor</li>
 <li>DCT quote window colors now use the loaded theme correctly</li>
@@ -1030,7 +1079,7 @@ a:hover { text-decoration: underline; }
 <li>Improved screen refresh in settings dialogs</li>
 </ul>
 <h3 id="version-052-2026-03-26">Version 0.52 (2026-03-26)</h3>
-<h4 id="added_1">Added</h4>
+<h4 id="added_2">Added</h4>
 <ul>
 <li>REP directory created automatically</li>
 <li>Save REP packet hotkey (Ctrl-P)</li>
@@ -1038,13 +1087,13 @@ a:hover { text-decoration: underline; }
 <li>Quote line re-wrapping</li>
 <li>Directory chooser for reply packet directory</li>
 </ul>
-<h4 id="changed">Changed</h4>
+<h4 id="changed_1">Changed</h4>
 <ul>
 <li>Faster editor screen updates with reduced flicker</li>
 <li>Paragraph-aware message saving</li>
 <li>Improved ANSI rendering with 256-color and truecolor support</li>
 </ul>
-<h4 id="fixed_1">Fixed</h4>
+<h4 id="fixed_2">Fixed</h4>
 <ul>
 <li>Editor color code handling during all editing operations</li>
 <li>Editor word wrap behavior</li>
@@ -1052,7 +1101,7 @@ a:hover { text-decoration: underline; }
 <li>REP save tracking</li>
 </ul>
 <h3 id="version-051-2026-03-25">Version 0.51 (2026-03-25)</h3>
-<h4 id="added_2">Added</h4>
+<h4 id="added_3">Added</h4>
 <ul>
 <li>QWKE (Extended QWK) support</li>
 <li>BBS color/attribute code support for multiple BBS types</li>

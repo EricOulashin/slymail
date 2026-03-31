@@ -59,7 +59,8 @@ ConfListResult showConferenceList(QwkPacket& packet, int& selectedConf,
 
         const int numW   = 6;
         const int countW = 8;
-        int nameW        = COLS - numW - countW - 4;
+        const int newW   = 4;  // "New" column
+        int nameW        = COLS - numW - countW - newW - 5;
         const int listTop = 4;
         int listHeight   = ROWS - 6;
         int totalConfs   = static_cast<int>(filteredIdx.size());
@@ -79,6 +80,10 @@ ConfListResult showConferenceList(QwkPacket& packet, int& selectedConf,
             bool isSel = (idx == selected);
             const auto& conf = packet.conferences[filteredIdx[idx]];
 
+            bool hasNew = !conf.messages.empty();
+            int msgsCol = COLS - countW - newW - 2;
+            int newCol  = COLS - newW - 1;
+
             if (isSel)
             {
                 fillRow(y, tAttr(TC_BLUE, TC_WHITE, false));
@@ -87,9 +92,14 @@ ConfListResult showConferenceList(QwkPacket& packet, int& selectedConf,
                 printAt(y, 1 + numW + 1,
                         padStr(truncateStr(conf.name, nameW), nameW),
                         tAttr(TC_BLUE, TC_WHITE, false));
-                printAt(y, COLS - countW - 1,
+                printAt(y, msgsCol,
                         padStr(std::to_string(conf.messages.size()), countW),
                         tAttr(TC_GREEN, TC_WHITE, false));
+                if (hasNew)
+                {
+                    g_term->setAttr(tAttr(TC_GREEN, TC_WHITE, true));
+                    g_term->putCP437(y, newCol + 1, CP437_CHECK_MARK);
+                }
             }
             else
             {
@@ -99,9 +109,14 @@ ConfListResult showConferenceList(QwkPacket& packet, int& selectedConf,
                 printAt(y, 1 + numW + 1,
                         padStr(truncateStr(conf.name, nameW), nameW),
                         tAttr(TC_CYAN, TC_BLACK, false));
-                printAt(y, COLS - countW - 1,
+                printAt(y, msgsCol,
                         padStr(std::to_string(conf.messages.size()), countW),
                         tAttr(TC_GREEN, TC_BLACK, false));
+                if (hasNew)
+                {
+                    g_term->setAttr(tAttr(TC_GREEN, TC_BLACK, true));
+                    g_term->putCP437(y, newCol + 1, CP437_CHECK_MARK);
+                }
             }
         };
 
@@ -148,9 +163,12 @@ ConfListResult showConferenceList(QwkPacket& packet, int& selectedConf,
             g_term->putCP437(2, COLS - 1, CP437_BOX_DRAWINGS_LOWER_RIGHT_SINGLE);
 
             TermAttr colAttr = tAttr(TC_CYAN, TC_BLACK, true);
+            int msgsColHdr = COLS - countW - newW - 2;
+            int newColHdr  = COLS - newW - 1;
             printAt(3, 1, padStr("Conf#", numW), colAttr);
             printAt(3, 1 + numW + 1, padStr("Conference Name", nameW), colAttr);
-            printAt(3, COLS - countW - 1, padStr("Msgs", countW), colAttr);
+            printAt(3, msgsColHdr, padStr("Msgs", countW), colAttr);
+            printAt(3, newColHdr, padStr("New", newW), colAttr);
 
             for (int i = 0; i < listHeight && (scrollOffset + i) < totalConfs; ++i)
                 drawRow(scrollOffset + i);
@@ -371,7 +389,8 @@ ConfListResult showConferenceList(QwkPacket& packet, int& selectedConf,
 // Show the message list for a conference (DDMsgReader-style lightbar)
 MsgListResult showMessageList(QwkConference& conf, int& selectedMsg,
                               Settings& settings,
-                              const string& bbsName)
+                              const string& bbsName,
+                              int lastReadMsgNum)
 {
     int selected  = 0;
     int scrollOffset = 0;
@@ -410,6 +429,18 @@ MsgListResult showMessageList(QwkConference& conf, int& selectedMsg,
         if (selected >= totalMsgs && totalMsgs > 0)
         {
             selected = totalMsgs - 1;
+        }
+    }
+    else if (lastReadMsgNum >= 0 && totalMsgs > 0)
+    {
+        // Position at the first message after the last-read message
+        for (int i = 0; i < totalMsgs; ++i)
+        {
+            if (conf.messages[filteredIdx[i]].number > lastReadMsgNum)
+            {
+                selected = i;
+                break;
+            }
         }
     }
 

@@ -18,10 +18,11 @@
 struct TextLine
 {
     std::string text;
-    bool hardBreak;  // true = user pressed Enter; false = created by word wrap
+    bool hardBreak;    // true = user pressed Enter; false = created by word wrap
+    bool isQuoteLine;  // true = line was inserted from the quote window
 
-    TextLine() : hardBreak(false) {}
-    TextLine(const std::string& t, bool hb = false) : text(t), hardBreak(hb) {}
+    TextLine() : hardBreak(false), isQuoteLine(false) {}
+    TextLine(const std::string& t, bool hb = false) : text(t), hardBreak(hb), isQuoteLine(false) {}
 };
 
 // --- ANSI escape sequence helpers ---

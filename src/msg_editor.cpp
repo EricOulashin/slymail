@@ -8,7 +8,9 @@
 #include "bbs_colors.h"
 #include "text_utils.h"
 #include "remote_systems.h"
+#include "file_browser.h"
 #include <cctype>
+#include <fstream>
 #include <filesystem>
 
 using std::string;
@@ -229,19 +231,21 @@ void MessageEditor::prepareQuotes(const QwkMessage& msg, const Settings& setting
         rawQuoteLines.push_back(prefix + line);
     }
 
-    // Re-wrap quote lines to fit within a standard width (default 79 chars).
-    // This ensures prefixed lines don't exceed the typical BBS line length
-    // convention and look properly formatted in the quote window.
-    int quoteMaxWidth = settings.quoteLineWidth;
-    if (quoteMaxWidth <= 0) quoteMaxWidth = 79;
+    // Re-wrap quote lines.
+    // If wrapQuoteLines is enabled, wrap to the terminal width - 1
+    // so the text fits on screen. Otherwise, wrap to the standard 79 columns
+    // (the traditional BBS line width convention).
+    int quoteMaxWidth;
     if (settings.wrapQuoteLines)
     {
-        quoteLines = wrapQuoteLines(rawQuoteLines, quoteMaxWidth);
+        quoteMaxWidth = g_term->getCols() - 1;
+        if (quoteMaxWidth <= 0) quoteMaxWidth = 79;
     }
     else
     {
-        quoteLines = rawQuoteLines;
+        quoteMaxWidth = 79;
     }
+    quoteLines = wrapQuoteLines(rawQuoteLines, quoteMaxWidth);
 }
 
 // ---- ICE-style header drawing ----
@@ -1284,6 +1288,7 @@ bool MessageEditor::handleQuoteWindow()
             {
                 EditorLine ql;
                 ql.text = quoteLines[quoteSelected];
+                ql.isQuoteLine = true;
                 lines.insert(lines.begin() + cursorRow, ql);
                 ++cursorRow;
                 // Auto-advance lightbar down one line (if not at bottom)
@@ -2282,6 +2287,54 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                 needFullRedraw = true;
                 break;
 
+            case TK_CTRL_O:
+            {
+                // Import a text file at the cursor position
+                g_term->setCursorVisible(false);
+                string startDir = getSlyMailDataDir();
+                string filePath = showFileBrowser(startDir, "", "*");
+                if (!filePath.empty())
+                {
+                    std::ifstream ifs(filePath);
+                    if (ifs.is_open())
+                    {
+                        string fileLine;
+                        bool first = true;
+                        while (std::getline(ifs, fileLine))
+                        {
+                            if (!fileLine.empty() && fileLine.back() == '\r')
+                                fileLine.pop_back();
+                            if (first)
+                            {
+                                // Insert into current line at cursor position
+                                lines[cursorRow].text.insert(cursorCol, fileLine);
+                                cursorCol += static_cast<int>(fileLine.size());
+                                first = false;
+                            }
+                            else
+                            {
+                                // Split current line and insert new line
+                                string remainder = lines[cursorRow].text.substr(cursorCol);
+                                lines[cursorRow].text = lines[cursorRow].text.substr(0, cursorCol);
+                                EditorLine newLine;
+                                newLine.text = fileLine + remainder;
+                                newLine.hardBreak = true;
+                                ++cursorRow;
+                                lines.insert(lines.begin() + cursorRow, newLine);
+                                cursorCol = static_cast<int>(fileLine.size());
+                            }
+                        }
+                    }
+                    else
+                    {
+                        messageDialog("Error", "Could not open file.");
+                    }
+                }
+                g_term->setCursorVisible(true);
+                needFullRedraw = true;
+                break;
+            }
+
             case TK_CTRL_K:
                 pickColor();
                 needFullRedraw = true;
@@ -2588,12 +2641,28 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                             ++strippedLeading;
                         }
 
-                        // Prepend overflow to the next line if one exists,
-                        // otherwise create a new line. Be careful about spaces:
-                        // only add a separating space if both sides have content
-                        // and the join point doesn't already have a space.
+                        // Handle overflow: for quote lines, always create a new line
+                        // (never merge with the next line). For normal text, prepend
+                        // to the next line if it exists.
                         int nextLineIdx = cursorRow + 1;
-                        if (nextLineIdx < static_cast<int>(lines.size()) && !overflow.empty())
+                        bool curIsQuote = lines[cursorRow].isQuoteLine;
+
+                        if (curIsQuote && !overflow.empty())
+                        {
+                            // Quote line: push overflow onto a new line, also marked as quote
+                            EditorLine newLine;
+                            newLine.text = overflow;
+                            newLine.isQuoteLine = true;
+                            if (nextLineIdx < static_cast<int>(lines.size()))
+                            {
+                                lines.insert(lines.begin() + nextLineIdx, newLine);
+                            }
+                            else
+                            {
+                                lines.push_back(newLine);
+                            }
+                        }
+                        else if (nextLineIdx < static_cast<int>(lines.size()) && !overflow.empty())
                         {
                             string& nextText = lines[nextLineIdx].text;
                             if (!nextText.empty())
@@ -2744,11 +2813,42 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
 
 string MessageEditor::getBody() const
 {
+    // Build the message body, joining soft-wrapped non-quote paragraphs
+    // into single long lines. Quote lines and hard-break lines are kept as-is.
+    // This allows recipients' readers to re-wrap the text to their own width.
     string body;
+    int cols = g_term->getCols();
+    int shortLineThreshold = cols * 30 / 100; // 30% of terminal width
+
     for (size_t i = 0; i < lines.size(); ++i)
     {
         body += lines[i].text;
+
+        // Determine whether to emit a newline or join with the next line
+        bool emitNewline = true;
         if (i + 1 < lines.size())
+        {
+            // Join conditions: current line is NOT a quote line, next line is
+            // NOT a quote line, current line has no hard break, and the current
+            // line isn't short enough to look like a separate paragraph
+            bool curIsQuote = lines[i].isQuoteLine;
+            bool nextIsQuote = lines[i + 1].isQuoteLine;
+            bool curHasHardBreak = lines[i].hardBreak;
+            bool curIsEmpty = lines[i].text.empty();
+            bool nextIsEmpty = lines[i + 1].text.empty();
+            int curDisplayWidth = byteColToDisplayCol(lines[i].text,
+                static_cast<int>(lines[i].text.size()));
+            bool curIsShort = (curDisplayWidth > 0 && curDisplayWidth <= shortLineThreshold);
+
+            if (!curIsQuote && !nextIsQuote && !curHasHardBreak &&
+                !curIsEmpty && !nextIsEmpty && !curIsShort)
+            {
+                // Join: add a space instead of a newline
+                body += ' ';
+                emitNewline = false;
+            }
+        }
+        if (emitNewline && i + 1 < lines.size())
         {
             body += "\n";
         }

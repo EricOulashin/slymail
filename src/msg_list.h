@@ -38,6 +38,7 @@ ConfListResult showConferenceList(QwkPacket& packet, int& selectedConf,
 // Matches DDMsgReader2 screenshot: Msg#, From, To, Subject, Date, Time columns
 MsgListResult showMessageList(QwkConference& conf, int& selectedMsg,
                               Settings& settings,
-                              const std::string& bbsName);
+                              const std::string& bbsName,
+                              int lastReadMsgNum = -1);
 
 #endif // SLYMAIL_MSG_LIST_H

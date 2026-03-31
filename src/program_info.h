@@ -3,7 +3,7 @@
 
 #define PROGRAM_NAME    "SlyMail"
 #define CONFIG_PROGRAM_NAME "SlyMail Configuration"
-#define PROGRAM_VERSION "0.53"
-#define PROGRAM_DATE    "2026-03-29"
+#define PROGRAM_VERSION "0.54"
+#define PROGRAM_DATE    "2026-03-31"
 
 #endif // SLYMAIL_PROGRAM_INFO_H

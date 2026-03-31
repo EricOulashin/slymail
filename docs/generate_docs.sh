@@ -19,6 +19,7 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 SOURCE="$SCRIPT_DIR/SlyMail_User_Manual.md"
 HTML_DIR="$SCRIPT_DIR/html"
 HTML_OUTPUT="$HTML_DIR/SlyMail_User_Manual.html"
@@ -34,6 +35,13 @@ generate_html() {
     echo "Generating HTML user manual..."
     mkdir -p "$HTML_DIR"
 
+    # Copy screenshots into html/ so relative paths work from the HTML file
+    if [ -d "$PROJECT_DIR/screenshots" ]; then
+        mkdir -p "$HTML_DIR/screenshots"
+        cp -u "$PROJECT_DIR/screenshots/"*.png "$HTML_DIR/screenshots/" 2>/dev/null || true
+        echo "  Copied screenshots to $HTML_DIR/screenshots/"
+    fi
+
     # Try Python markdown first
     if python3 -c "import markdown" 2>/dev/null; then
         python3 << 'PYEOF'
@@ -42,19 +50,30 @@ import re
 import os
 
 script_dir = os.environ.get('SCRIPT_DIR', '.')
-source = os.path.join(script_dir, 'SlyMail_User_Manual.md')
+project_dir = os.environ.get('PROJECT_DIR', '..')
 html_dir = os.path.join(script_dir, 'html')
+source = os.path.join(script_dir, 'SlyMail_User_Manual.md')
 output = os.path.join(html_dir, 'SlyMail_User_Manual.html')
 
 with open(source, 'r') as f:
-    content = f.read()
+    raw = f.read()
+
+# Parse YAML frontmatter for version and date
+version = "0.54"
+date = "2026-03-31"
+fm_match = re.match(r'^---\n(.*?)\n---\n', raw, flags=re.DOTALL)
+if fm_match:
+    fm = fm_match.group(1)
+    vm = re.search(r'version:\s*"?([^"\n]+)"?', fm)
+    dm = re.search(r'date:\s*"?([^"\n]+)"?', fm)
+    if vm: version = vm.group(1).strip()
+    if dm: date = dm.group(1).strip()
 
 # Strip YAML frontmatter
-content = re.sub(r'^---\n.*?\n---\n', '', content, flags=re.DOTALL)
+content = re.sub(r'^---\n.*?\n---\n', '', raw, flags=re.DOTALL)
 
-# Extract version/date from frontmatter if present
-version = "0.53"
-date = "2026-03-29"
+# Fix image paths: ../screenshots/ -> screenshots/ (since we copied them)
+content = content.replace('](../screenshots/', '](screenshots/')
 
 md = markdown.Markdown(extensions=['tables', 'toc', 'fenced_code'],
                        extension_configs={'toc': {'toc_depth': 3}})
@@ -82,6 +101,7 @@ pre code { background: none; padding: 0; }
 strong { color: #24292e; }
 a { color: #0366d6; text-decoration: none; }
 a:hover { text-decoration: underline; }
+img { max-width: 100%; height: auto; border: 1px solid #dfe2e5; border-radius: 6px; margin: 1em 0; }
 .toc { background-color: #f6f8fa; border: 1px solid #dfe2e5; border-radius: 6px;
        padding: 15px 20px; margin: 1em 0 2em 0; }
 .toc h2 { margin-top: 0; border-bottom: none; font-size: 1.1em; }
@@ -93,7 +113,8 @@ a:hover { text-decoration: underline; }
 @media print {
     body { max-width: none; padding: 0; }
     h1, h2, h3 { page-break-after: avoid; }
-    table, pre { page-break-inside: avoid; }
+    table, pre, img { page-break-inside: avoid; }
+    img { max-width: 80%; }
 }
 """
 
@@ -121,10 +142,12 @@ html = f'''<!DOCTYPE html>
 
 with open(output, 'w') as f:
     f.write(html)
-print(f'HTML generated: {output} ({len(html)} bytes)')
+print(f'  HTML generated: {output} ({len(html)} bytes)')
 PYEOF
     elif command -v pandoc &>/dev/null; then
-        pandoc "$SOURCE" \
+        # Preprocess: fix image paths for pandoc
+        sed 's|](../screenshots/|](screenshots/|g' "$SOURCE" > "/tmp/slymail_manual_tmp.md"
+        pandoc "/tmp/slymail_manual_tmp.md" \
             --from markdown \
             --to html5 \
             --standalone \
@@ -132,7 +155,8 @@ PYEOF
             --toc-depth=3 \
             --metadata title="SlyMail User Manual" \
             -o "$HTML_OUTPUT"
-        echo "HTML generated: $HTML_OUTPUT"
+        rm -f /tmp/slymail_manual_tmp.md
+        echo "  HTML generated: $HTML_OUTPUT"
     else
         echo "Error: Neither Python 'markdown' module nor 'pandoc' is available."
         echo "Install one of:"
@@ -155,10 +179,10 @@ generate_pdf() {
         python3 -c "
 from weasyprint import HTML
 import os
-html_file = os.path.join('${SCRIPT_DIR}', 'html', 'SlyMail_User_Manual.html')
+html_file = os.path.join('${HTML_DIR}', 'SlyMail_User_Manual.html')
 pdf_file = os.path.join('${SCRIPT_DIR}', 'SlyMail_User_Manual.pdf')
-HTML(filename=html_file).write_pdf(pdf_file)
-print(f'PDF generated: {pdf_file}')
+HTML(filename=html_file, base_url='${HTML_DIR}').write_pdf(pdf_file)
+print(f'  PDF generated: {pdf_file}')
 "
     elif command -v wkhtmltopdf &>/dev/null; then
         wkhtmltopdf \
@@ -176,7 +200,7 @@ print(f'PDF generated: {pdf_file}')
             --footer-spacing 5 \
             "$HTML_OUTPUT" \
             "$PDF_OUTPUT" 2>/dev/null
-        echo "PDF generated: $PDF_OUTPUT"
+        echo "  PDF generated: $PDF_OUTPUT"
     else
         echo "Warning: Cannot generate PDF."
         echo "Install one of:"
@@ -186,8 +210,9 @@ print(f'PDF generated: {pdf_file}')
     fi
 }
 
-# Export SCRIPT_DIR for Python subprocesses
+# Export dirs for Python subprocesses
 export SCRIPT_DIR
+export PROJECT_DIR
 
 case "${1:-all}" in
     html)

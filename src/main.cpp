@@ -22,6 +22,7 @@
 #include <optional>
 #include <fstream>
 #include <sstream>
+#include <map>
 #include <cstdlib>
 #include <cstdio>
 #include <filesystem>
@@ -107,6 +108,83 @@ static bool isVersionArg(const char* arg)
 {
     return strcmp(arg, "-v") == 0
         || strcmp(arg, "--version") == 0;
+}
+
+// ============================================================
+// Last-read message tracking
+// ============================================================
+
+// Map of conference number -> last-read message number
+static std::map<int, int> lastReadMap;
+static string lastReadFilePath;
+
+static void loadLastRead(const string& dataDir, const string& bbsId)
+{
+    lastReadMap.clear();
+    lastReadFilePath = dataDir + PATH_SEP_STR + "lastread_" + bbsId + ".json";
+    std::ifstream f(lastReadFilePath);
+    if (!f.is_open()) return;
+
+    string content((std::istreambuf_iterator<char>(f)),
+                     std::istreambuf_iterator<char>());
+    f.close();
+
+    // Simple parser: find "conf_num": msg_num pairs
+    size_t pos = 0;
+    while (pos < content.size())
+    {
+        size_t qStart = content.find('"', pos);
+        if (qStart == string::npos) break;
+        size_t qEnd = content.find('"', qStart + 1);
+        if (qEnd == string::npos) break;
+        string key = content.substr(qStart + 1, qEnd - qStart - 1);
+        size_t colon = content.find(':', qEnd + 1);
+        if (colon == string::npos) break;
+        // Find the number after the colon
+        size_t numStart = content.find_first_of("0123456789", colon + 1);
+        if (numStart == string::npos) break;
+        size_t numEnd = content.find_first_not_of("0123456789", numStart);
+        if (numEnd == string::npos) numEnd = content.size();
+        try
+        {
+            int confNum = std::stoi(key);
+            int msgNum = std::stoi(content.substr(numStart, numEnd - numStart));
+            lastReadMap[confNum] = msgNum;
+        }
+        catch (...) {}
+        pos = numEnd;
+    }
+}
+
+static void saveLastRead()
+{
+    if (lastReadFilePath.empty()) return;
+    std::ofstream f(lastReadFilePath);
+    if (!f.is_open()) return;
+    f << "{\n";
+    bool first = true;
+    for (const auto& [confNum, msgNum] : lastReadMap)
+    {
+        if (!first) f << ",\n";
+        f << "  \"" << confNum << "\": " << msgNum;
+        first = false;
+    }
+    f << "\n}\n";
+}
+
+static void updateLastRead(int confNum, int msgNum)
+{
+    auto it = lastReadMap.find(confNum);
+    if (it == lastReadMap.end() || msgNum > it->second)
+    {
+        lastReadMap[confNum] = msgNum;
+    }
+}
+
+static int getLastRead(int confNum)
+{
+    auto it = lastReadMap.find(confNum);
+    return (it != lastReadMap.end()) ? it->second : -1;
 }
 
 // Build quote lines from a message for the external editor.
@@ -652,6 +730,9 @@ int main(int argc, char* argv[])
             // Clear pending replies for new packet
             pendingReplies.clear();
 
+            // Load last-read message pointers for this BBS
+            loadLastRead(dataDir, currentPacket->info.bbsID);
+
 
         }
 
@@ -675,7 +756,8 @@ int main(int argc, char* argv[])
                     while (inMsgList && running)
                     {
                         MsgListResult msgResult = showMessageList(conf, selectedMsg,
-                            settings, currentPacket->info.bbsName);
+                            settings, currentPacket->info.bbsName,
+                            getLastRead(conf.number));
 
                         switch (msgResult)
                         {
@@ -712,6 +794,11 @@ int main(int argc, char* argv[])
                                         currentPacket->extractDir,
                                         &currentPacket->voting,
                                         &lastVote);
+
+                                    // Update last-read pointer
+                                    updateLastRead(conf.number,
+                                        conf.messages[currentMsg].number);
+                                    saveLastRead();
 
                                     switch (readResult)
                                     {
