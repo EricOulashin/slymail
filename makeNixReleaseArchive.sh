@@ -28,11 +28,11 @@ cd ../..
 
 
 # Create the FILE_ID.DIZ for the release package
-#version=$(cat src/program_info.h |grep PROGRAM_VERSION |sed -E 's/^.*PROGRAM_VERSION "(.*)"/\1/g')
-version=$(cat src/program_info.h |grep PROGRAM_VERSION |sed -E 's/^.*PROGRAM_VERSION "(.*)"/\1/g' |sed -E 's/\.//g')
+version=$(cat src/program_info.h |grep PROGRAM_VERSION |sed -E 's/^.*PROGRAM_VERSION "(.*)"/\1/g')
+versionWithoutDot=$(cat src/program_info.h |grep PROGRAM_VERSION |sed -E 's/^.*PROGRAM_VERSION "(.*)"/\1/g' |sed -E 's/\.//g')
 sed "s/<VERSION>/$version/g" FILE_ID_Template.DIZ |sed "s/<OS>/${OSName}/g" |sed "s/<DATE>/$(date '+%Y-%m-%d')/g" >FILE_ID.DIZ
 
 # Make the zip file
-zip -r -9 "SlyMail_${version}_${OSName}.zip" FILE_ID.DIZ "$releaseDirName"
+zip -r -9 "SlyMail_${versionWithoutDot}_${OSName}.zip" FILE_ID.DIZ "$releaseDirName"
 rm -rf "$releaseDirName"
 rm FILE_ID.DIZ
