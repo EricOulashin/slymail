@@ -37,17 +37,15 @@ jobs:
       #- name: Build and run tests
       #  run: make runtest
 
-      - name: Prepare macOS release directory
-        if: matrix.os == 'macos-latest'
+      - name: Prepare release directory
         run: |
           make nixReleaseArc RELEASE_ARC_FLAGS="--no-zip"
 
-      - name: Upload macOS release artifact
-        if: matrix.os == 'macos-latest'
+      - name: Upload release artifact
         uses: actions/upload-artifact@v4
         with:
-          name: SlyMail-macOS-release
-          path: SlyMail_Darwin/
+          name: SlyMail-${{ runner.os }}-release
+          path: SlyMail_*/
           retention-days: 90
 
   build-windows:
