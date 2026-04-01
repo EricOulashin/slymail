@@ -42,12 +42,8 @@ if exist docs\SlyMail_User_Manual.pdf copy /y docs\SlyMail_User_Manual.pdf "%rel
 if exist docs\html xcopy /q /y /e docs\html\* "%releaseDirName%\docs\html\" >nul
 
 REM Create the FILE_ID.DIZ for the release package
-REM Get today's date in YYYY-MM-DD format
-for /f "tokens=2 delims==" %%I in ('wmic os get localdatetime /format:list 2^>nul') do set datetime=%%I
-set TODAY=%datetime:~0,4%-%datetime:~4,2%-%datetime:~6,2%
-
-REM Build FILE_ID.DIZ from template using PowerShell for string replacement
-powershell -Command "(Get-Content 'FILE_ID_Template.DIZ') -replace '<VERSION>','%version%' -replace '<OS>','%OSName%' -replace '<DATE>','%TODAY%' | Set-Content 'FILE_ID.DIZ'"
+REM Get today's date in YYYY-MM-DD format and build FILE_ID.DIZ using PowerShell
+powershell -Command "$today = Get-Date -Format 'yyyy-MM-dd'; (Get-Content 'FILE_ID_Template.DIZ') -replace '<VERSION>','%version%' -replace '<OS>','%OSName%' -replace '<DATE>',$today | Set-Content 'FILE_ID.DIZ'"
 
 REM Make the zip file using tar (available on Windows 10+)
 set zipName=SlyMail_%versionWithoutDot%_%OSName%.zip
