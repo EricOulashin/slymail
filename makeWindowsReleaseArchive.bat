@@ -45,14 +45,17 @@ REM Create the FILE_ID.DIZ for the release package
 REM Get today's date in YYYY-MM-DD format and build FILE_ID.DIZ using PowerShell
 powershell -Command "$today = Get-Date -Format 'yyyy-MM-dd'; (Get-Content 'FILE_ID_Template.DIZ') -replace '<VERSION>','%version%' -replace '<OS>','%OSName%' -replace '<DATE>',$today | Set-Content 'FILE_ID.DIZ'"
 
-REM Make the zip file using tar (available on Windows 10+)
-set zipName=SlyMail_%versionWithoutDot%_%OSName%.zip
-if exist "%zipName%" del "%zipName%"
-tar -a -cf "%zipName%" FILE_ID.DIZ "%releaseDirName%"
-
-REM Clean up
-rmdir /s /q "%releaseDirName%"
-del FILE_ID.DIZ
-
-echo.
-echo Release archive created: %zipName%
+REM Make the zip file (unless --no-zip is passed, e.g. for CI artifact uploads)
+if /i "%~1"=="--no-zip" (
+    copy /y FILE_ID.DIZ "%releaseDirName%\" >nul
+    del FILE_ID.DIZ
+    echo Release directory prepared: %releaseDirName%
+) else (
+    set zipName=SlyMail_%versionWithoutDot%_%OSName%.zip
+    if exist "%zipName%" del "%zipName%"
+    tar -a -cf "%zipName%" FILE_ID.DIZ "%releaseDirName%"
+    rmdir /s /q "%releaseDirName%"
+    del FILE_ID.DIZ
+    echo.
+    echo Release archive created: %zipName%
+)

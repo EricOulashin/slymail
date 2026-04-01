@@ -201,7 +201,7 @@ $(OBJDIR)/test_wrap_quote_lines.o: tests/test_wrap_quote_lines.cpp $(SRCDIR)/tex
 
 # Linux release archive
 nixReleaseArc: $(OBJDIR) $(TARGET) $(CONFIG_TARGET)
-	bash ./makeNixReleaseArchive.sh
+	bash ./makeNixReleaseArchive.sh $(RELEASE_ARC_FLAGS)
 
 # Run all tests
 runtest: test

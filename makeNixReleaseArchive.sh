@@ -32,7 +32,13 @@ version=$(cat src/program_info.h |grep PROGRAM_VERSION |sed -E 's/^.*PROGRAM_VER
 versionWithoutDot=$(cat src/program_info.h |grep PROGRAM_VERSION |sed -E 's/^.*PROGRAM_VERSION "(.*)"/\1/g' |sed -E 's/\.//g')
 sed "s/<VERSION>/$version/g" FILE_ID_Template.DIZ |sed "s/<OS>/${OSName}/g" |sed "s/<DATE>/$(date '+%Y-%m-%d')/g" >FILE_ID.DIZ
 
-# Make the zip file
-zip -r -9 "SlyMail_${versionWithoutDot}_${OSName}.zip" FILE_ID.DIZ "$releaseDirName"
-rm -rf "$releaseDirName"
-rm FILE_ID.DIZ
+# Make the zip file (unless --no-zip is passed, e.g. for CI artifact uploads)
+if [ "$1" = "--no-zip" ]; then
+    cp FILE_ID.DIZ "$releaseDirName/"
+    rm FILE_ID.DIZ
+    echo "Release directory prepared: $releaseDirName"
+else
+    zip -r -9 "SlyMail_${versionWithoutDot}_${OSName}.zip" FILE_ID.DIZ "$releaseDirName"
+    rm -rf "$releaseDirName"
+    rm FILE_ID.DIZ
+fi

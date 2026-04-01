@@ -37,17 +37,17 @@ jobs:
       #- name: Build and run tests
       #  run: make runtest
 
-      - name: Build macOS release archive
+      - name: Prepare macOS release directory
         if: matrix.os == 'macos-latest'
         run: |
-          make nixReleaseArc
+          make nixReleaseArc RELEASE_ARC_FLAGS="--no-zip"
 
       - name: Upload macOS release artifact
         if: matrix.os == 'macos-latest'
         uses: actions/upload-artifact@v4
         with:
           name: SlyMail-macOS-release
-          path: SlyMail_*_Darwin.zip
+          path: SlyMail_Darwin/
           retention-days: 90
 
   build-windows:
@@ -64,13 +64,13 @@ jobs:
       - name: Build Release (x64)
         run: msbuild vs\SlyMail.sln /p:Configuration=Release /p:Platform=x64 /m
 
-      - name: Build Windows release archive
+      - name: Prepare Windows release directory
         shell: cmd
-        run: makeWindowsReleaseArchive.bat
+        run: makeWindowsReleaseArchive.bat --no-zip
 
       - name: Upload Windows release artifact
         uses: actions/upload-artifact@v4
         with:
           name: SlyMail-Windows-release
-          path: SlyMail_*_Windows.zip
+          path: SlyMail_Windows/
           retention-days: 90
