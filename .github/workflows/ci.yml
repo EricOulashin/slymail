@@ -7,8 +7,8 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-test:
-    name: Build and Test (${{ matrix.os }})
+  build-unix:
+    name: Build (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -40,7 +40,6 @@ jobs:
       - name: Build macOS release archive
         if: matrix.os == 'macos-latest'
         run: |
-          # The release script uses 'bash' in the shebang; ensure it works on macOS
           make nixReleaseArc
 
       - name: Upload macOS release artifact
@@ -49,4 +48,29 @@ jobs:
         with:
           name: SlyMail-macOS-release
           path: SlyMail_*_Darwin.zip
+          retention-days: 90
+
+  build-windows:
+    name: Build (Windows)
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build Release (x64)
+        run: msbuild vs\SlyMail.sln /p:Configuration=Release /p:Platform=x64 /m
+
+      - name: Build Windows release archive
+        shell: cmd
+        run: makeWindowsReleaseArchive.bat
+
+      - name: Upload Windows release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SlyMail-Windows-release
+          path: SlyMail_*_Windows.zip
           retention-days: 90
