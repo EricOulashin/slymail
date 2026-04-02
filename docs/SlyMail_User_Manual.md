@@ -556,9 +556,11 @@ If using a Synchronet BBS, the following QWK packet settings are recommended for
 - File import in message editor (Ctrl-O) to insert text files at cursor position
 - Quote line tracking to preserve quote line integrity during editing
 - Paragraph-based message saving for better text reflow by recipients
+- Terminal resize detection: This allows SlyMail to resize its window(s) and contents in response to the terminal window being resized.
 
 #### Changed
 - Quote line wrapping now respects terminal width when enabled
+- Configuration on first start: If the user doesn't have any SlyMail settings yet (i.e., their .slymail directory doesn't exist yet), config will run on startup, and the user's name will be asked before continuing on into configuration settings.
 
 #### Fixed
 - Quote line editing no longer merges overflow with adjacent lines
