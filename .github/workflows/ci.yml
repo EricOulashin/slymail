@@ -37,6 +37,12 @@ jobs:
       #- name: Build and run tests
       #  run: make runtest
 
+      - name: Extract version
+        id: version
+        run: |
+          ver=$(grep 'PROGRAM_VERSION' src/program_info.h | sed -E 's/.*"(.*)".*/\1/' | tr -d '.')
+          echo "ver=$ver" >> "$GITHUB_OUTPUT"
+
       - name: Prepare release directory
         run: |
           make nixReleaseArc RELEASE_ARC_FLAGS="--no-zip"
@@ -44,7 +50,7 @@ jobs:
       - name: Upload release artifact
         uses: actions/upload-artifact@v4
         with:
-          name: SlyMail-${{ runner.os }}-release
+          name: SlyMail-${{ steps.version.outputs.ver }}-${{ runner.os }}
           path: |
             FILE_ID.DIZ
             SlyMail_*/
@@ -64,6 +70,13 @@ jobs:
       - name: Build Release (x64)
         run: msbuild vs\SlyMail.sln /p:Configuration=Release /p:Platform=x64 /m
 
+      - name: Extract version
+        id: version
+        shell: bash
+        run: |
+          ver=$(grep 'PROGRAM_VERSION' src/program_info.h | sed -E 's/.*"(.*)".*/\1/' | tr -d '.')
+          echo "ver=$ver" >> "$GITHUB_OUTPUT"
+
       - name: Prepare Windows release directory
         shell: cmd
         run: makeWindowsReleaseArchive.bat --no-zip
@@ -71,7 +84,7 @@ jobs:
       - name: Upload Windows release artifact
         uses: actions/upload-artifact@v4
         with:
-          name: SlyMail-Windows-release
+          name: SlyMail-${{ steps.version.outputs.ver }}-Windows
           path: |
             FILE_ID.DIZ
             SlyMail_Windows/
