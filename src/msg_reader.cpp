@@ -1380,6 +1380,21 @@ MsgReadResult showMessageReader(const QwkMessage& msg,
             }
             case TK_ENTER:
                 return MsgReadResult::NextMsg;
+            case TK_RESIZE:
+            {
+                // Recompute body lines for new terminal width
+                int newDisplayWidth = settings.useScrollbar
+                    ? g_term->getCols() - 2 : g_term->getCols() - 1;
+                displayWidth = newDisplayWidth;
+                if (!isAnsi && !(msg.isPoll && votingData))
+                {
+                    bodyLines = prepareBodyLines(msg, settings, displayWidth);
+                    totalLines = static_cast<int>(bodyLines.size());
+                    if (scrollPos > totalLines - 1) scrollPos = std::max(0, totalLines - 1);
+                }
+                needFullRedraw = true;
+                break;
+            }
             default:
                 break;
         }

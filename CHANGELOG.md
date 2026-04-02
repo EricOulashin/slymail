@@ -4,7 +4,7 @@ All notable changes to SlyMail are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.54] - 2026-03-31
+## [0.54] - 2026-04-01
 
 ### Added
 - **Last-read message tracking**: SlyMail remembers the last message read in each conference and automatically positions the cursor at the next unread message when entering a conference. Last-read data is stored per-BBS in JSON files in the data directory. Addresses [issue 19](https://github.com/EricOulashin/SlyMail/issues/19).
@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 - **File import in message editor (Ctrl-O)**: Insert the contents of a text file at the cursor position. Opens a file browser to select any file. Addresses [issue 26](https://github.com/EricOulashin/SlyMail/issues/26).
 - **Quote line tracking**: The editor tracks which lines were inserted from the quote window, preserving their integrity during editing (no joining or pulling across quote line boundaries).
 - **Paragraph-based message saving**: Non-quote text is saved as long paragraphs (soft-wrapped lines joined), allowing recipients' readers to re-wrap text to their own terminal width. Quote lines are preserved as-is. Addresses [issue 30](https://github.com/EricOulashin/SlyMail/issues/30).
+- **Terminal resize detection**: This allows SlyVote to resize its window(s) and contents in response to the terminal window being resized.
 
 ### Changed
 - **Quote line wrapping**: When wrapQuoteLines is enabled, quote lines are wrapped to the terminal width minus 1 (instead of a fixed width). When disabled, wraps to the standard 79-column BBS convention. Addresses [issue 21](https://github.com/EricOulashin/SlyMail/issues/21).

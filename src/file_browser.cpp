@@ -455,6 +455,9 @@ string showFileBrowser(const string& startDir,
             case 'Q':
             case TK_ESCAPE:
                 return "";
+            case TK_RESIZE:
+                needFullRedraw = true;
+                break;
             default:
                 break;
         }
@@ -614,6 +617,9 @@ string showDirChooser(const string& startDir, const string& title)
             }
             case 'q': case 'Q': case TK_ESCAPE:
                 return "";
+            case TK_RESIZE:
+                needFullRedraw = true;
+                break;
             default:
                 break;
         }

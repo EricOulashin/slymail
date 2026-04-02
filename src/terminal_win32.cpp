@@ -403,6 +403,25 @@ void Win32Terminal::putCP437(int row, int col, int cp437char)
 
 int Win32Terminal::getKey()
 {
+    // Check if the console window has been resized since last call
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    if (GetConsoleScreenBufferInfo(m_hConsole, &csbi))
+    {
+        int newCols = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+        int newRows = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+        if (newCols != m_cols || newRows != m_rows)
+        {
+            m_cols = newCols;
+            m_rows = newRows;
+            // Reallocate double buffers for the new size
+            CellBuf def = { L' ', 7, 0, false };
+            m_back.assign(static_cast<size_t>(m_rows * m_cols), def);
+            m_front.assign(static_cast<size_t>(m_rows * m_cols), def);
+            m_wbuf.resize(static_cast<size_t>(m_cols));
+            return TK_RESIZE;
+        }
+    }
+
     int ch = _getch();
     if (ch == 0 || ch == 0xE0)
     {

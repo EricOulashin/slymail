@@ -380,6 +380,9 @@ ConfListResult showConferenceList(QwkPacket& packet, int& selectedConf,
                 needFullRedraw = true;   // help screen clobbered the display
                 break;
             }
+            case TK_RESIZE:
+                needFullRedraw = true;
+                break;
             default:
                 break;
         }
@@ -789,6 +792,9 @@ MsgListResult showMessageList(QwkConference& conf, int& selectedMsg,
                 needFullRedraw = true;   // help screen clobbered the display
                 break;
             }
+            case TK_RESIZE:
+                needFullRedraw = true;
+                break;
             default:
                 break;
         }

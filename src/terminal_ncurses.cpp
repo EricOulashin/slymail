@@ -245,6 +245,12 @@ void NCursesTerminal::drawVLine(int row, int col, int len)
 int NCursesTerminal::getKey()
 {
     int ch = getch();
+    if (ch == KEY_RESIZE)
+    {
+        // Terminal was resized — update ncurses internal state
+        // and return TK_RESIZE so the caller can redraw
+        return TK_RESIZE;
+    }
     return mapKey(ch);
 }
 

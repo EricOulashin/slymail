@@ -140,6 +140,9 @@ EditorStyle showUIModeDialog(EditorStyle currentStyle)
             }
             case TK_ESCAPE:
                 return currentStyle;
+            case TK_RESIZE:
+                needFullRedraw = true;
+                break;
             default:
                 break;
         }
@@ -409,6 +412,9 @@ string showThemeSelector(const string& baseDir, EditorStyle currentStyle)
             case 'q':
             case 'Q':
                 return "";
+            case TK_RESIZE:
+                needFullRedraw = true;
+                break;
             default:
                 break;
         }
@@ -636,6 +642,9 @@ string showDictionarySelector(const string& baseDir,
                 }
                 return result;
             }
+            case TK_RESIZE:
+                needFullRedraw = true;
+                break;
             default:
                 break;
         }
@@ -898,6 +907,9 @@ bool showEditorSettings(Settings& settings, const string& baseDir)
                     settings.save();
                 }
                 return changed;
+            case TK_RESIZE:
+                needFullRedraw = true;
+                break;
             default:
                 break;
         }
@@ -1252,6 +1264,9 @@ bool showSettingsDialog(Settings& settings, const string& baseDir)
                     }
                 }
                 return changed;
+            case TK_RESIZE:
+                needFullRedraw = true;
+                break;
             default:
                 break;
         }

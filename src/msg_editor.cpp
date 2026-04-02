@@ -1308,6 +1308,14 @@ bool MessageEditor::handleQuoteWindow()
             case TK_ESCAPE:
                 quoteWindowOpen = false;
                 break;
+            case TK_RESIZE:
+                calculateLayout();
+                generateBorderColors();
+                g_term->clear(); // Clear to erase old borders at previous positions
+                qNeedFullRedraw = true;
+                break;
+            default:
+                break;
         }
     }
     return true;
@@ -2528,6 +2536,12 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                 }
                 break;
             }
+
+            case TK_RESIZE:
+                calculateLayout();
+                generateBorderColors();
+                needFullRedraw = true;
+                break;
 
             default:
                 if (ch >= 32 && ch < 256)
