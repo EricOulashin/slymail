@@ -7,6 +7,11 @@ setlocal enabledelayedexpansion
 set OSName=Windows
 set releaseDirName=SlyMail_%OSName%
 
+REM Generate documentation first
+cd docs
+call generate_docs.bat
+cd ..
+
 REM Extract version from program_info.h
 for /f "tokens=3 delims= " %%a in ('findstr PROGRAM_VERSION src\program_info.h') do set version=%%~a
 REM Remove quotes from version
@@ -39,6 +44,7 @@ copy /y vs\x64\Release\config.exe "%releaseDirName%\" >nul
 
 REM Copy docs (if they exist)
 if exist docs\SlyMail_User_Manual.pdf copy /y docs\SlyMail_User_Manual.pdf "%releaseDirName%\docs\" >nul
+if exist docs\SlyMail_User_Manual.txt copy /y docs\SlyMail_User_Manual.txt "%releaseDirName%\docs\" >nul
 if exist docs\html xcopy /q /y /e docs\html\* "%releaseDirName%\docs\html\" >nul
 
 REM Create the FILE_ID.DIZ for the release package

@@ -2,7 +2,7 @@
 title: "SlyMail User Manual"
 subtitle: "QWK Offline Mail Reader"
 version: "0.54"
-date: "2026-03-31"
+date: "2026-04-02"
 author: "Eric Oulashin"
 ---
 

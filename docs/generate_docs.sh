@@ -1,20 +1,19 @@
 #!/bin/bash
 #
-# generate_docs.sh - Generate HTML and PDF user manual from Markdown source
+# generate_docs.sh - Generate HTML, PDF, and plain text user manual from Markdown source
 #
-# This script converts SlyMail_User_Manual.md to HTML and PDF.
-#
-# Method 1 (Python - preferred): Uses Python 'markdown' and 'weasyprint' packages
+# Prerequisites (Python - preferred):
 #   pip3 install markdown weasyprint
 #
-# Method 2 (pandoc + wkhtmltopdf): Uses system packages
+# Fallback (system packages):
 #   sudo apt-get install pandoc wkhtmltopdf  (Ubuntu/Debian)
 #   brew install pandoc wkhtmltopdf          (macOS)
 #
 # Usage:
-#   ./generate_docs.sh          # Generate both HTML and PDF
+#   ./generate_docs.sh          # Generate all formats (HTML, PDF, text)
 #   ./generate_docs.sh html     # Generate HTML only
 #   ./generate_docs.sh pdf      # Generate PDF only
+#   ./generate_docs.sh text     # Generate plain text only
 
 set -e
 
@@ -24,11 +23,30 @@ SOURCE="$SCRIPT_DIR/SlyMail_User_Manual.md"
 HTML_DIR="$SCRIPT_DIR/html"
 HTML_OUTPUT="$HTML_DIR/SlyMail_User_Manual.html"
 PDF_OUTPUT="$SCRIPT_DIR/SlyMail_User_Manual.pdf"
+TEXT_OUTPUT="$SCRIPT_DIR/SlyMail_User_Manual.txt"
 
 # Check source file exists
 if [ ! -f "$SOURCE" ]; then
     echo "Error: Source file not found: $SOURCE"
     exit 1
+fi
+
+# Export dirs for Python scripts
+export SCRIPT_DIR
+export PROJECT_DIR
+
+# Extract version and date from program_info.h (authoritative source)
+PROGRAM_INFO="$PROJECT_DIR/src/program_info.h"
+if [ -f "$PROGRAM_INFO" ]; then
+    export SLYMAIL_VERSION=$(grep 'PROGRAM_VERSION' "$PROGRAM_INFO" | sed -E 's/.*"(.*)".*/\1/')
+    export SLYMAIL_DATE=$(grep 'PROGRAM_DATE' "$PROGRAM_INFO" | sed -E 's/.*"(.*)".*/\1/')
+    echo "Version: $SLYMAIL_VERSION  Date: $SLYMAIL_DATE (from program_info.h)"
+
+    # Update the Markdown source frontmatter to match program_info.h
+    if [ -n "$SLYMAIL_VERSION" ] && [ -n "$SLYMAIL_DATE" ]; then
+        sed -i "s/^version: .*/version: \"$SLYMAIL_VERSION\"/" "$SOURCE"
+        sed -i "s/^date: .*/date: \"$SLYMAIL_DATE\"/" "$SOURCE"
+    fi
 fi
 
 generate_html() {
@@ -42,110 +60,9 @@ generate_html() {
         echo "  Copied screenshots to $HTML_DIR/screenshots/"
     fi
 
-    # Try Python markdown first
     if python3 -c "import markdown" 2>/dev/null; then
-        python3 << 'PYEOF'
-import markdown
-import re
-import os
-
-script_dir = os.environ.get('SCRIPT_DIR', '.')
-project_dir = os.environ.get('PROJECT_DIR', '..')
-html_dir = os.path.join(script_dir, 'html')
-source = os.path.join(script_dir, 'SlyMail_User_Manual.md')
-output = os.path.join(html_dir, 'SlyMail_User_Manual.html')
-
-with open(source, 'r') as f:
-    raw = f.read()
-
-# Parse YAML frontmatter for version and date
-version = "0.54"
-date = "2026-03-31"
-fm_match = re.match(r'^---\n(.*?)\n---\n', raw, flags=re.DOTALL)
-if fm_match:
-    fm = fm_match.group(1)
-    vm = re.search(r'version:\s*"?([^"\n]+)"?', fm)
-    dm = re.search(r'date:\s*"?([^"\n]+)"?', fm)
-    if vm: version = vm.group(1).strip()
-    if dm: date = dm.group(1).strip()
-
-# Strip YAML frontmatter
-content = re.sub(r'^---\n.*?\n---\n', '', raw, flags=re.DOTALL)
-
-# Fix image paths: ../screenshots/ -> screenshots/ (since we copied them)
-content = content.replace('](../screenshots/', '](screenshots/')
-
-md = markdown.Markdown(extensions=['tables', 'toc', 'fenced_code'],
-                       extension_configs={'toc': {'toc_depth': 3}})
-html_body = md.convert(content)
-toc = md.toc
-
-css = """
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    line-height: 1.6; max-width: 900px; margin: 0 auto; padding: 20px 40px;
-    color: #24292e; background-color: #fff;
-}
-h1 { border-bottom: 2px solid #0366d6; padding-bottom: 0.3em; color: #0366d6; }
-h2 { border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; margin-top: 2em; }
-h3 { color: #0366d6; margin-top: 1.5em; }
-h4 { color: #586069; }
-table { border-collapse: collapse; width: 100%; margin: 1em 0; }
-th, td { border: 1px solid #dfe2e5; padding: 8px 12px; text-align: left; }
-th { background-color: #f6f8fa; font-weight: 600; }
-tr:nth-child(even) { background-color: #f6f8fa; }
-code { background-color: #f6f8fa; padding: 0.2em 0.4em; border-radius: 3px; font-size: 0.9em;
-       font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
-pre { background-color: #f6f8fa; padding: 16px; border-radius: 6px; overflow-x: auto; }
-pre code { background: none; padding: 0; }
-strong { color: #24292e; }
-a { color: #0366d6; text-decoration: none; }
-a:hover { text-decoration: underline; }
-img { max-width: 100%; height: auto; border: 1px solid #dfe2e5; border-radius: 6px; margin: 1em 0; }
-.toc { background-color: #f6f8fa; border: 1px solid #dfe2e5; border-radius: 6px;
-       padding: 15px 20px; margin: 1em 0 2em 0; }
-.toc h2 { margin-top: 0; border-bottom: none; font-size: 1.1em; }
-.toc ul { list-style: none; padding-left: 1.2em; }
-.toc > ul { padding-left: 0; }
-.toc li { margin: 0.3em 0; }
-.title-block { text-align: center; margin-bottom: 2em; padding-bottom: 1em;
-               border-bottom: 2px solid #0366d6; }
-@media print {
-    body { max-width: none; padding: 0; }
-    h1, h2, h3 { page-break-after: avoid; }
-    table, pre, img { page-break-inside: avoid; }
-    img { max-width: 80%; }
-}
-"""
-
-html = f'''<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SlyMail User Manual</title>
-<style>{css}</style>
-</head>
-<body>
-<div class="title-block">
-<h1>SlyMail User Manual</h1>
-<p>QWK Offline Mail Reader &mdash; Version {version}</p>
-<p>{date}</p>
-</div>
-<div class="toc">
-<h2>Table of Contents</h2>
-{toc}
-</div>
-{html_body}
-</body>
-</html>'''
-
-with open(output, 'w') as f:
-    f.write(html)
-print(f'  HTML generated: {output} ({len(html)} bytes)')
-PYEOF
+        python3 "$SCRIPT_DIR/generate_html.py"
     elif command -v pandoc &>/dev/null; then
-        # Preprocess: fix image paths for pandoc
         sed 's|](../screenshots/|](screenshots/|g' "$SOURCE" > "/tmp/slymail_manual_tmp.md"
         pandoc "/tmp/slymail_manual_tmp.md" \
             --from markdown \
@@ -174,7 +91,6 @@ generate_pdf() {
         generate_html
     fi
 
-    # Try weasyprint (Python) first
     if python3 -c "from weasyprint import HTML" 2>/dev/null; then
         python3 -c "
 from weasyprint import HTML
@@ -210,9 +126,10 @@ print(f'  PDF generated: {pdf_file}')
     fi
 }
 
-# Export dirs for Python subprocesses
-export SCRIPT_DIR
-export PROJECT_DIR
+generate_text() {
+    echo "Generating plain text user manual..."
+    python3 "$SCRIPT_DIR/generate_text.py"
+}
 
 case "${1:-all}" in
     html)
@@ -221,12 +138,16 @@ case "${1:-all}" in
     pdf)
         generate_pdf
         ;;
+    text)
+        generate_text
+        ;;
     all)
         generate_html
         generate_pdf
+        generate_text
         ;;
     *)
-        echo "Usage: $0 [html|pdf|all]"
+        echo "Usage: $0 [html|pdf|text|all]"
         exit 1
         ;;
 esac

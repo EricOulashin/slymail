@@ -22,8 +22,9 @@ cp slymail.ini "$releaseDirName"
 cp slymail "$releaseDirName"
 cp config "$releaseDirName"
 cd "$releaseDirName/docs"
-cp ../../docs/SlyMail_User_Manual.pdf .
-cp -rf ../../docs/html .
+cp ../../docs/SlyMail_User_Manual.pdf . 2>/dev/null || true
+cp ../../docs/SlyMail_User_Manual.txt . 2>/dev/null || true
+cp -rf ../../docs/html . 2>/dev/null || true
 cd ../..
 
 
