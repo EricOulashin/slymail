@@ -128,7 +128,11 @@ string showFileBrowser(const string& startDir,
     string currentDir = startDir;
     if (currentDir.empty())
     {
+#ifdef _WIN32
+        char* cwd = _getcwd(nullptr, 0);
+#else
         char* cwd = getcwd(nullptr, 0);
+#endif
         if (cwd)
         {
             currentDir = cwd;

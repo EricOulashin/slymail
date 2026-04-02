@@ -87,6 +87,8 @@
     <ClCompile Include="..\src\theme.cpp" />
     <ClCompile Include="..\src\remote_systems.cpp" />
     <ClCompile Include="..\src\file_browser.cpp" />
+    <ClCompile Include="..\src\terminal.cpp" />
+    <ClCompile Include="..\src\file_dir_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\terminal.h" />
@@ -99,6 +101,9 @@
     <ClInclude Include="..\src\ui_common.h" />
     <ClInclude Include="..\src\settings_dialog.h" />
     <ClInclude Include="..\src\theme.h" />
+    <ClInclude Include="..\src\file_dir_utils.h" />
+    <ClInclude Include="..\src\file_browser.h" />
+    <ClInclude Include="..\src\remote_systems.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

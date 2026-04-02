@@ -98,6 +98,8 @@
     <ClCompile Include="..\src\text_input.cpp" />
     <ClCompile Include="..\src\text_utils.cpp" />
     <ClCompile Include="..\src\ansi_render.cpp" />
+    <ClCompile Include="..\src\terminal.cpp" />
+    <ClCompile Include="..\src\file_dir_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\terminal.h" />
@@ -123,6 +125,7 @@
     <ClInclude Include="..\src\text_input.h" />
     <ClInclude Include="..\src\text_utils.h" />
     <ClInclude Include="..\src\ansi_render.h" />
+    <ClInclude Include="..\src\file_dir_utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
