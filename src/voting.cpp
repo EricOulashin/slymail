@@ -1,4 +1,6 @@
 #include "voting.h"
+#include "ui_common.h"
+#include <filesystem>
 #include <cctype>
 
 using std::string;
@@ -130,6 +132,8 @@ static vector<IniSection> parseIniFile(const string& path)
 
 VotingData parseVotingDat(const string& extractDir)
 {
+    namespace fs = std::filesystem;
+
     VotingData data;
 
     // Find VOTING.DAT (case-insensitive)

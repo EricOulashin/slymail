@@ -27,34 +27,27 @@
 #include <fstream>
 #include <sstream>
 #include <memory>
-#include <filesystem>
 #include <climits>
 
 // Platform-specific headers for getpid(), getcwd(), etc.
 #ifdef _WIN32
     #include <direct.h>
-    #include <windows.h>
-    #include <process.h>
-    #define getcwd _getcwd
-    #define getpid _getpid
+    //#include <windows.h>
+    //#include <process.h>
+    //#define getcwd _getcwd
+    //#define getpid _getpid
 #else
     #include <unistd.h>
     #include <sys/types.h>
 #endif
-
-namespace fs = std::filesystem;
 
 // ============================================================
 // Platform detection
 // ============================================================
 #ifdef _WIN32
     #define SLYMAIL_WINDOWS 1
-    #define PATH_SEP '\\'
-    #define PATH_SEP_STR "\\"
 #else
     #define SLYMAIL_WINDOWS 0
-    #define PATH_SEP '/'
-    #define PATH_SEP_STR "/"
 #endif
 
 // ============================================================
@@ -218,33 +211,11 @@ public:
 
     // --- Box-drawing convenience methods (non-virtual, use putCP437) ---
 
-    virtual void drawHLine(int row, int col, int len)
-    {
-        for (int i = 0; i < len; ++i)
-        {
-            putCP437(row, col + i, CP437_BOX_DRAWINGS_HORIZONTAL_SINGLE);
-        }
-    }
+    virtual void drawHLine(int row, int col, int len);
 
-    virtual void drawVLine(int row, int col, int len)
-    {
-        for (int i = 0; i < len; ++i)
-        {
-            putCP437(row + i, col, CP437_BOX_DRAWINGS_LIGHT_VERTICAL);
-        }
-    }
+    virtual void drawVLine(int row, int col, int len);
 
-    virtual void drawBox(int row, int col, int height, int width)
-    {
-        putCP437(row, col, CP437_BOX_DRAWINGS_UPPER_LEFT_SINGLE);
-        putCP437(row, col + width - 1, CP437_BOX_DRAWINGS_UPPER_RIGHT_SINGLE);
-        putCP437(row + height - 1, col, CP437_BOX_DRAWINGS_LOWER_LEFT_SINGLE);
-        putCP437(row + height - 1, col + width - 1, CP437_BOX_DRAWINGS_LOWER_RIGHT_SINGLE);
-        drawHLine(row, col + 1, width - 2);
-        drawHLine(row + height - 1, col + 1, width - 2);
-        drawVLine(row + 1, col, height - 2);
-        drawVLine(row + 1, col + width - 1, height - 2);
-    }
+    virtual void drawBox(int row, int col, int height, int width);
 
     // --- Input ---
     virtual int getKey() = 0;
@@ -269,159 +240,7 @@ std::unique_ptr<ITerminal> createTerminal();
 
 #if SLYMAIL_WINDOWS
 // Returns true if tar.exe is in the PATH.  Result is cached after the first call.
-inline bool isTarAvailable()
-{
-    static int cached = -1;
-    if (cached < 0)
-    {
-        cached = (system("where tar >NUL 2>&1") == 0) ? 1 : 0;
-    }
-    return cached == 1;
-}
+bool isTarAvailable();
 #endif
-
-// Extract a QWK file (ZIP archive) to a destination directory
-inline std::string extractQwkPacket(const std::string& qwkPath, const std::string& destDir)
-{
-#if SLYMAIL_WINDOWS
-    std::string cmd;
-    if (isTarAvailable())
-    {
-        // tar reads ZIP magic bytes and ignores the file extension, so .qwk
-        // files extract fine without any rename.
-        try { fs::remove_all(destDir); } catch (...) {}
-        fs::create_directories(destDir);
-        cmd = "tar -xf \"" + qwkPath + "\" -C \"" + destDir + "\" >NUL 2>&1";
-    }
-    else
-    {
-        // Fallback: PowerShell's Expand-Archive rejects non-.zip extensions,
-        // so use the .NET ZipFile class which works with any file extension.
-        cmd = "powershell -Command \""
-            "if (Test-Path '" + destDir + "') { Remove-Item '" + destDir + "' -Recurse -Force }; "
-            "Add-Type -AssemblyName System.IO.Compression.FileSystem; "
-            "[System.IO.Compression.ZipFile]::ExtractToDirectory('"
-            + qwkPath + "', '" + destDir + "')\" 2>NUL";
-    }
-#else
-    fs::create_directories(destDir);
-    std::string cmd = "unzip -o -qq \"" + qwkPath + "\" -d \"" + destDir + "\" 2>/dev/null";
-#endif
-    int ret = system(cmd.c_str());
-    if (ret != 0)
-    {
-        return "";
-    }
-    return destDir;
-}
-
-// Create a ZIP archive (for REP packets)
-inline bool createZipArchive(const std::string& zipPath, const std::string& sourceDir)
-{
-    // Convert zipPath to absolute so it works after cd to sourceDir
-    std::string absZipPath = zipPath;
-    try
-    {
-        absZipPath = fs::absolute(zipPath).string();
-    }
-    catch (...)
-    {
-    }
-
-    // Remove existing file first to avoid appending to old archive
-    try
-    {
-        fs::remove(absZipPath);
-    }
-    catch (...)
-    {
-    }
-
-#if SLYMAIL_WINDOWS
-    // Both tar and Compress-Archive need a .zip output extension to produce a
-    // valid ZIP archive.  Create to a temporary .zip path then rename.
-    std::string tmpZip = absZipPath + ".tmp.zip";
-    try { fs::remove(tmpZip); } catch (...) {}
-
-    std::string cmd;
-    if (isTarAvailable())
-    {
-        // tar -a auto-detects ZIP format from the .zip output extension.
-        cmd = "tar -a -c -f \"" + tmpZip + "\" -C \"" + sourceDir + "\" . >NUL 2>&1";
-    }
-    else
-    {
-        // Fallback: PowerShell Compress-Archive.
-        cmd = "powershell -Command \"Compress-Archive -Path '"
-            + sourceDir + PATH_SEP_STR + "*' -DestinationPath '"
-            + tmpZip + "'\" 2>NUL";
-    }
-
-    if (system(cmd.c_str()) != 0)
-    {
-        return false;
-    }
-    try
-    {
-        fs::rename(tmpZip, absZipPath);
-    }
-    catch (...)
-    {
-        try { fs::remove(tmpZip); } catch (...) {}
-        return false;
-    }
-    return true;
-#else
-    std::string cmd = "cd \"" + sourceDir + "\" && zip -j -q \"" + absZipPath + "\" * 2>/dev/null";
-    return system(cmd.c_str()) == 0;
-#endif
-}
-
-// Get user's config directory for settings
-inline std::string getConfigDir()
-{
-#if SLYMAIL_WINDOWS
-    const char* appdata = getenv("APPDATA");
-    if (appdata)
-    {
-        std::string dir = std::string(appdata) + "\\SlyMail";
-        fs::create_directories(dir);
-        return dir;
-    }
-    return ".";
-#else
-    const char* home = getenv("HOME");
-    if (home)
-    {
-        std::string dir = std::string(home) + "/.config/slymail";
-        fs::create_directories(dir);
-        return dir;
-    }
-    return ".";
-#endif
-}
-
-// Get a temporary directory for QWK extraction
-inline std::string getTempDir()
-{
-#if SLYMAIL_WINDOWS
-    char buf[260];
-    GetTempPathA(260, buf);
-    std::string dir = std::string(buf) + "slymail_tmp";
-#else
-    std::string dir = "/tmp/slymail_tmp_" + std::to_string(getpid());
-#endif
-    fs::create_directories(dir);
-    return dir;
-}
-
-// Clean up a temporary directory
-inline void cleanupTempDir(const std::string& dir)
-{
-    if (!dir.empty())
-    {
-        fs::remove_all(dir);
-    }
-}
 
 #endif // SLYMAIL_TERMINAL_H

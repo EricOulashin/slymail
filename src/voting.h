@@ -20,8 +20,6 @@
 //   Votes (hex bitmask), UpVote/DownVote (bool)
 //   WhenWritten, Sender, Conference
 
-#include "terminal.h"
-#include "ui_common.h"
 #include "settings.h"
 #include <string>
 #include <vector>

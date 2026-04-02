@@ -1,9 +1,14 @@
 #include "file_browser.h"
+#include "ui_common.h"
+#include "file_dir_utils.h"
 #include "remote_systems.h"
+#include <filesystem>
 #include <cctype>
 
 using std::string;
 using std::vector;
+
+namespace fs = std::filesystem;
 
 string formatSize(uintmax_t size)
 {

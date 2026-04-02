@@ -1,74 +1,18 @@
 #include "remote_systems.h"
+#include "ui_common.h"
+#include "file_dir_utils.h"
 #include "file_browser.h"
 #include <cctype>
 #include <ctime>
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <filesystem>
 
 using std::string;
 using std::vector;
 
-// ============================================================
-// Cross-platform home directory
-// ============================================================
-
-string getHomeDir()
-{
-#if SLYMAIL_WINDOWS
-    // Try USERPROFILE first (most reliable on Windows)
-    const char* userProfile = getenv("USERPROFILE");
-    if (userProfile && userProfile[0] != '\0')
-    {
-        return userProfile;
-    }
-    // Fallback: HOMEDRIVE + HOMEPATH
-    const char* homeDrive = getenv("HOMEDRIVE");
-    const char* homePath = getenv("HOMEPATH");
-    if (homeDrive && homePath)
-    {
-        return string(homeDrive) + string(homePath);
-    }
-    return "C:\\";
-#else
-    // POSIX: Linux, macOS, BSD, other Unix
-    const char* home = getenv("HOME");
-    if (home && home[0] != '\0')
-    {
-        return home;
-    }
-    return "/tmp";
-#endif
-}
-
-// ============================================================
-// SlyMail data directory
-// ============================================================
-
-string getSlyMailDataDir()
-{
-    string home = getHomeDir();
-    string dataDir = home + PATH_SEP_STR + ".slymail";
-    try
-    {
-        fs::create_directories(dataDir);
-        // Also create standard subdirectories
-        fs::create_directories(dataDir + PATH_SEP_STR + "QWK");
-        fs::create_directories(dataDir + PATH_SEP_STR + "REP");
-        fs::create_directories(dataDir + PATH_SEP_STR + "config_files");
-        fs::create_directories(dataDir + PATH_SEP_STR + "dictionary_files");
-        fs::create_directories(dataDir + PATH_SEP_STR + "tagline_files");
-    }
-    catch (const fs::filesystem_error& e)
-    {
-        fprintf(stderr, "Warning: Could not create data directory: %s\n", e.what());
-    }
-    catch (...)
-    {
-        fprintf(stderr, "Warning: Could not create data directory: %s\n", dataDir.c_str());
-    }
-    return dataDir;
-}
+namespace fs = std::filesystem;
 
 // ============================================================
 // Password obfuscation (XOR + base64)

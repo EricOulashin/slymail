@@ -1,4 +1,5 @@
 #include "search.h"
+#include "ui_common.h"
 #include <cctype>
 #include <ctime>
 #include <algorithm>

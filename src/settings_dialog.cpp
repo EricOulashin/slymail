@@ -1,9 +1,13 @@
 #include "settings_dialog.h"
+#include "ui_common.h"
+#include "file_dir_utils.h"
 #include "file_browser.h"
-#include "remote_systems.h"
+#include <filesystem>
 
 using std::string;
 using std::vector;
+
+namespace fs = std::filesystem;
 
 // ============================================================
 // UI Mode selection dialog

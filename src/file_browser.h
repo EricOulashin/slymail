@@ -2,8 +2,6 @@
 #define SLYMAIL_FILE_BROWSER_H
 
 #include "terminal.h"
-#include "colors.h"
-#include "ui_common.h"
 #include <algorithm>
 
 #if !SLYMAIL_WINDOWS

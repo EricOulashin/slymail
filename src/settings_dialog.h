@@ -1,9 +1,6 @@
 #ifndef SLYMAIL_SETTINGS_DIALOG_H
 #define SLYMAIL_SETTINGS_DIALOG_H
 
-#include "terminal.h"
-#include "colors.h"
-#include "ui_common.h"
 #include "settings.h"
 
 // ============================================================

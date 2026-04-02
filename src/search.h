@@ -6,8 +6,6 @@
 // Provides conference search, message search (with advanced options
 // including date range filtering), and a visual date picker dialog.
 
-#include "terminal.h"
-#include "ui_common.h"
 #include "qwk.h"
 #include "settings.h"
 #include <string>

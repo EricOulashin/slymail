@@ -1,9 +1,6 @@
 #ifndef SLYMAIL_MSG_LIST_H
 #define SLYMAIL_MSG_LIST_H
 
-#include "terminal.h"
-#include "colors.h"
-#include "ui_common.h"
 #include "qwk.h"
 #include "settings.h"
 

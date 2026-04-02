@@ -4,18 +4,21 @@
 // Settings are saved to slymail.ini in the SlyMail data directory (~/.slymail).
 
 #include "terminal.h"
+#include "file_dir_utils.h"
 #include "colors.h"
 #include "ui_common.h"
 #include "settings.h"
 #include "settings_dialog.h"
-#include "remote_systems.h"
 #include "file_browser.h"
 #include "program_info.h"
 
+#include <filesystem>
 #include <ctime>
 
 using std::string;
 using std::vector;
+
+namespace fs = std::filesystem;
 
 
 // ============================================================
@@ -972,7 +975,41 @@ int main(int argc, char* argv[])
 
     // Load settings
     Settings settings;
-    settings.load();
+    bool settingsExist = settings.load();
+
+    // First-run: if no settings file exists, prompt for user name
+    if (!settingsExist)
+    {
+        g_term->clear();
+        int cols = g_term->getCols();
+        int rows = g_term->getRows();
+
+        int boxW = 60;
+        if (boxW > cols - 4) boxW = cols - 4;
+        int boxH = 8;
+        int boxY = (rows - boxH) / 2;
+        int boxX = (cols - boxW) / 2;
+
+        TermAttr borderAttr = tAttr(TC_GREEN, TC_BLACK, false);
+        TermAttr titleAttr  = tAttr(TC_BLUE, TC_BLACK, true);
+        TermAttr textAttr   = tAttr(TC_CYAN, TC_BLACK, false);
+        TermAttr inputAttr  = tAttr(TC_WHITE, TC_BLACK, true);
+
+        drawBox(boxY, boxX, boxH, boxW, borderAttr, " Welcome ", titleAttr);
+
+        printAt(boxY + 2, boxX + 3, "Welcome to SlyMail!", titleAttr);
+        printAt(boxY + 3, boxX + 3, "Please enter the name you intend", textAttr);
+        printAt(boxY + 4, boxX + 3, "to use when writing messages:", textAttr);
+
+        g_term->refresh();
+
+        string name = getStringInput(boxY + 5, boxX + 3, boxW - 6, "", inputAttr);
+        if (!name.empty())
+        {
+            settings.userName = name;
+            settings.save();
+        }
+    }
 
     // Run the configuration menu
     showMainMenu(settings, baseDir);

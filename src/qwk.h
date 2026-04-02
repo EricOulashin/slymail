@@ -1,7 +1,6 @@
 #ifndef SLYMAIL_QWK_H
 #define SLYMAIL_QWK_H
 
-#include "terminal.h"
 #include "voting.h"
 #include <iostream>
 #include <optional>

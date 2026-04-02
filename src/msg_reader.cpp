@@ -1,10 +1,15 @@
 #include "msg_reader.h"
+#include "ui_common.h"
 #include "bbs_colors.h"
+#include "file_dir_utils.h"
 #include "utf8_util.h"
 #include "ansi_render.h"
+#include <filesystem>
 
 using std::string;
 using std::vector;
+
+namespace fs = std::filesystem;
 
 // Determine color for a message body line
 TermAttr getLineAttr(const string& line, const Settings& settings)

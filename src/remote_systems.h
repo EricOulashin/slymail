@@ -8,9 +8,6 @@
 // Uses the system's `curl` command for FTP and `sftp` for SSH transfers.
 // Remote system entries are persisted to a JSON file.
 
-#include "terminal.h"
-#include "ui_common.h"
-#include "settings.h"
 #include <string>
 #include <vector>
 
@@ -65,12 +62,5 @@ std::string connectAndBrowse(RemoteSystem& sys, const std::string& downloadDir);
 // Returns true on success, sets errMsg on failure.
 bool uploadFileToRemote(const RemoteSystem& sys, const std::string& localPath,
                         const std::string& remotePath, std::string& errMsg);
-
-// --- Helper: get the user's home directory (cross-platform) ---
-std::string getHomeDir();
-
-// --- Helper: get the SlyMail data directory (~/.slymail) ---
-// Creates the directory and QWK subdirectory if they don't exist.
-std::string getSlyMailDataDir();
 
 #endif // SLYMAIL_REMOTE_SYSTEMS_H

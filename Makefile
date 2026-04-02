@@ -16,7 +16,7 @@ HEADERS = $(SRCDIR)/terminal.h $(SRCDIR)/terminal_ncurses.h $(SRCDIR)/terminal_w
           $(SRCDIR)/msg_editor.h $(SRCDIR)/settings_dialog.h $(SRCDIR)/theme.h \
           $(SRCDIR)/bbs_colors.h $(SRCDIR)/utf8_util.h $(SRCDIR)/voting.h \
           $(SRCDIR)/remote_systems.h $(SRCDIR)/search.h $(SRCDIR)/text_input.h \
-          $(SRCDIR)/text_utils.h $(SRCDIR)/ansi_render.h
+          $(SRCDIR)/text_utils.h $(SRCDIR)/ansi_render.h $(SRCDIR)/file_dir_utils.h
 
 # Object files
 OBJDIR = obj
@@ -24,6 +24,7 @@ OBJDIR = obj
 # SlyMail objects
 SLYMAIL_OBJECTS = $(OBJDIR)/main.o $(OBJDIR)/qwk.o $(OBJDIR)/settings.o $(OBJDIR)/msg_reader.o \
                   $(OBJDIR)/msg_editor.o $(OBJDIR)/settings_dialog.o $(OBJDIR)/terminal.o \
+                  $(OBJDIR)/terminal_common.o $(OBJDIR)/file_dir_utils.o \
                   $(OBJDIR)/ui_common.o $(OBJDIR)/theme.o $(OBJDIR)/file_browser.o $(OBJDIR)/msg_list.o \
                   $(OBJDIR)/bbs_colors.o $(OBJDIR)/utf8_util.o $(OBJDIR)/voting.o \
                   $(OBJDIR)/remote_systems.o $(OBJDIR)/search.o $(OBJDIR)/text_input.o \
@@ -31,7 +32,8 @@ SLYMAIL_OBJECTS = $(OBJDIR)/main.o $(OBJDIR)/qwk.o $(OBJDIR)/settings.o $(OBJDIR
 
 # Config program objects
 CONFIG_OBJECTS = $(OBJDIR)/config.o $(OBJDIR)/settings.o $(OBJDIR)/settings_dialog.o \
-                 $(OBJDIR)/terminal.o $(OBJDIR)/ui_common.o $(OBJDIR)/theme.o \
+                 $(OBJDIR)/terminal.o $(OBJDIR)/terminal_common.o $(OBJDIR)/file_dir_utils.o \
+                 $(OBJDIR)/ui_common.o $(OBJDIR)/theme.o \
                  $(OBJDIR)/remote_systems.o $(OBJDIR)/file_browser.o
 
 # Compiler
@@ -128,6 +130,14 @@ $(OBJDIR)/settings_dialog.o: $(SRCDIR)/settings_dialog.cpp $(HEADERS)
 
 # Compile terminal implementation (platform-specific)
 $(OBJDIR)/terminal.o: $(TERM_SRC) $(SRCDIR)/terminal.h $(SRCDIR)/terminal_ncurses.h $(SRCDIR)/terminal_win32.h $(SRCDIR)/cp437defs.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Compile terminal.cpp (platform-independent terminal base class methods)
+$(OBJDIR)/terminal_common.o: $(SRCDIR)/terminal.cpp $(SRCDIR)/terminal.h $(SRCDIR)/file_dir_utils.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Compile file_dir_utils.cpp
+$(OBJDIR)/file_dir_utils.o: $(SRCDIR)/file_dir_utils.cpp $(SRCDIR)/file_dir_utils.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Compile ui_common.cpp

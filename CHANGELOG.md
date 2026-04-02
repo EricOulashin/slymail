@@ -4,7 +4,7 @@ All notable changes to SlyMail are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [0.54] - 2026-04-01
+## [0.54] - 2026-04-02
 
 ### Added
 - **Last-read message tracking**: SlyMail remembers the last message read in each conference and automatically positions the cursor at the next unread message when entering a conference. Last-read data is stored per-BBS in JSON files in the data directory. Addresses [issue 19](https://github.com/EricOulashin/SlyMail/issues/19).
@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 
 ### Changed
 - **Quote line wrapping**: When wrapQuoteLines is enabled, quote lines are wrapped to the terminal width minus 1 (instead of a fixed width). When disabled, wraps to the standard 79-column BBS convention. Addresses [issue 21](https://github.com/EricOulashin/SlyMail/issues/21).
+- **Configuration on first start**: If the user doesn't have any SlyMail settings yet (i.e., their .slymail directory doesn't exist yet), config will run on startup, and the user's name will be asked before continuing on into configuration settings.  Addresses [issue 31](https://github.com/EricOulashin/SlyMail/issues/31).
 
 ### Fixed
 - **Quote line integrity**: Editing a quote line no longer merges its overflow with adjacent lines or pulls text from the next quote line.

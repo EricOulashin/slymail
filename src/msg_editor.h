@@ -2,12 +2,9 @@
 #define SLYMAIL_MSG_EDITOR_H
 
 #include "terminal.h"
-#include "colors.h"
-#include "ui_common.h"
 #include "theme.h"
 #include "qwk.h"
 #include "settings.h"
-#include "settings_dialog.h"
 #include "bbs_colors.h"
 #include "text_input.h"
 #include <chrono>

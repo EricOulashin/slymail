@@ -1,5 +1,7 @@
 #include "qwk.h"
 #include "utf8_util.h"
+#include "file_dir_utils.h"
+#include <filesystem>
 #include <cctype>
 #include <cstdio>
 
@@ -10,6 +12,8 @@ using std::ifstream;
 using std::ofstream;
 using std::map;
 using std::istringstream;
+
+namespace fs = std::filesystem;
 
 // Parse CONTROL.DAT file
 bool parseControlDat(const std::string& path, QwkPacketInfo& info,

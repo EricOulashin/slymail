@@ -5,9 +5,12 @@
 // https://web.mit.edu/nelhage/Public/the-craft-of-text-editing.pdf
 
 #include "msg_editor.h"
+#include "ui_common.h"
+#include "colors.h"
+#include "settings_dialog.h"
 #include "bbs_colors.h"
 #include "text_utils.h"
-#include "remote_systems.h"
+#include "file_dir_utils.h"
 #include "file_browser.h"
 #include <cctype>
 #include <fstream>
@@ -57,6 +60,8 @@ static TermAttr cachedBorderColor(int idx, const vector<int>& pattern,
 
 void MessageEditor::init(const Settings& settings, const string& baseDir)
 {
+    namespace fs = std::filesystem;
+
     insertMode = settings.insertMode;
     currentStyle = settings.editorStyle;
     if (currentStyle == EditorStyle::Random)

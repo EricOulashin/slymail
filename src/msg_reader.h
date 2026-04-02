@@ -2,11 +2,8 @@
 #define SLYMAIL_MSG_READER_H
 
 #include "terminal.h"
-#include "colors.h"
-#include "ui_common.h"
 #include "qwk.h"
 #include "settings.h"
-#include "bbs_colors.h"
 
 // Result from the message reader
 enum class MsgReadResult

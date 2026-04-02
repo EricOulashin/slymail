@@ -2,9 +2,10 @@
 // A cross-platform text-based QWK offline mail reader
 // UI inspired by DDMsgReader.js (reading) and SlyEdit.js (editing)
 //
-// Copyright (C) 2024 - Licensed under MIT License
+// Copyright (C) 2026 - Licensed under MIT License
 
 #include "terminal.h"
+#include "file_dir_utils.h"
 #include "qwk.h"
 #include "settings.h"
 #include "ui_common.h"
@@ -30,6 +31,8 @@
 using std::string;
 using std::vector;
 using std::optional;
+
+namespace fs = std::filesystem;
 
 // Show the splash/title screen
 void showSplashScreen()
@@ -599,7 +602,38 @@ int main(int argc, char* argv[])
 
     // Load settings
     Settings settings;
-    settings.load();
+    bool settingsExist = settings.load();
+
+    // First-run: if no settings file exists, launch the config program
+    // so the user can do initial configuration (including entering their name)
+    if (!settingsExist)
+    {
+        // Find the config executable next to the slymail executable
+        string configProgram;
+#ifdef _WIN32
+        configProgram = baseDir + PATH_SEP_STR + "config.exe";
+#else
+        configProgram = baseDir + PATH_SEP_STR + "config";
+#endif
+        // Check if the config program exists
+        std::error_code ec;
+        if (fs::exists(configProgram, ec))
+        {
+            // Suspend the terminal so the config program can use it
+            g_term->shutdown();
+
+            // Run the config program
+            string cmd = "\"" + configProgram + "\"";
+            int configResult = std::system(cmd.c_str());
+            (void)configResult;
+
+            // Restore the terminal
+            g_term->init();
+
+            // Reload settings after the config program has saved them
+            settings.load();
+        }
+    }
 
     // Parse command-line parameters before showing splash screen
     // Supports: -name=value format (e.g., -qwk_file=/path/to/file.qwk)

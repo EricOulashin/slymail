@@ -1,4 +1,5 @@
 #include "msg_list.h"
+#include "ui_common.h"
 #include "search.h"
 
 using std::string;
