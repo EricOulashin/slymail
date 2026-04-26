@@ -1,5 +1,6 @@
 #include "search.h"
 #include "ui_common.h"
+#include "i18n.h"
 #include <cctype>
 #include <ctime>
 #include <algorithm>
@@ -175,7 +176,7 @@ bool showDatePicker(SimpleDate& result, const SimpleDate& initial)
         g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
 
         // Title: "Select Date"
-        string title = " Select Date ";
+        string title = string(" ") + _("Select Date") + " ";
         int titleX = dlgX + (dlgW - static_cast<int>(title.size())) / 2;
         g_term->setAttr(borderAttr);
         g_term->drawHLine(dlgY, dlgX + 1, dlgW - 2);
@@ -230,11 +231,11 @@ bool showDatePicker(SimpleDate& result, const SimpleDate& initial)
         int btnY = dlgY + dlgH - 3;
         int okX = dlgX + dlgW - 20;
         int cancelX = dlgX + dlgW - 11;
-        printAt(btnY, okX, " OK ", (focus == 4) ? btnFocusAttr : btnAttr);
-        printAt(btnY, cancelX, " Cancel ", (focus == 5) ? btnFocusAttr : btnAttr);
+        printAt(btnY, okX, _(" OK "), (focus == 4) ? btnFocusAttr : btnAttr);
+        printAt(btnY, cancelX, _(" Cancel "), (focus == 5) ? btnFocusAttr : btnAttr);
 
         // Help
-        printAt(dlgY + dlgH - 1, dlgX + 2, "Arrows,Tab,Enter,ESC",
+        printAt(dlgY + dlgH - 1, dlgX + 2, _("Arrows,Tab,Enter,ESC"),
                 tAttr(TC_CYAN, TC_BLUE, false));
 
         g_term->refresh();
@@ -440,7 +441,7 @@ string showConfSearchPrompt(bool& clearSearch)
     int cols = g_term->getCols();
 
     fillRow(y, tAttr(TC_BLACK, TC_BLACK, false));
-    printAt(y, 0, "Search: ", tAttr(TC_CYAN, TC_BLACK, true));
+    printAt(y, 0, _("Search: "), tAttr(TC_CYAN, TC_BLACK, true));
 
     // Use getStringInput — Ctrl-C inside it returns empty string via TK_CTRL_C
     string text = getStringInput(y, 8, cols - 10, "", tAttr(TC_WHITE, TC_BLACK, true));
@@ -484,11 +485,11 @@ bool showMsgSearchDialog(MsgSearchParams& params, const Settings& settings,
     TermAttr checkAttr = tAttr(TC_GREEN, TC_BLACK, true);
 
     static const char* fieldNames[] = {
-        "Subject only",
-        "Body only",
-        "Subject and Body",
-        "From name",
-        "To name"
+        N_("Subject only"),
+        N_("Body only"),
+        N_("Subject and Body"),
+        N_("From name"),
+        N_("To name")
     };
     int fieldSel = static_cast<int>(params.field);
     int selected = 0; // 0-4=field, 5=search text prompt
@@ -500,9 +501,9 @@ bool showMsgSearchDialog(MsgSearchParams& params, const Settings& settings,
         {
             fillRow(dlgY + r, tAttr(TC_BLACK, TC_BLACK, false), dlgX, dlgX + dlgW);
         }
-        drawBox(dlgY, dlgX, dlgH, dlgW, borderAttr, "Search Messages", borderAttr);
+        drawBox(dlgY, dlgX, dlgH, dlgW, borderAttr, _("Search Messages"), borderAttr);
 
-        printAt(dlgY + 1, dlgX + 2, "Search in:", labelAttr);
+        printAt(dlgY + 1, dlgX + 2, _("Search in:"), labelAttr);
 
         for (int i = 0; i < 5; ++i)
         {
@@ -517,7 +518,7 @@ bool showMsgSearchDialog(MsgSearchParams& params, const Settings& settings,
             }
 
             string checkMark = isChecked ? "(*) " : "( ) ";
-            printAt(y, dlgX + 3, checkMark + fieldNames[i], lbl);
+            printAt(y, dlgX + 3, checkMark + _(fieldNames[i]), lbl);
         }
 
         // Search text field
@@ -525,15 +526,15 @@ bool showMsgSearchDialog(MsgSearchParams& params, const Settings& settings,
             int y = dlgY + 8;
             bool isSel = (selected == 5);
             TermAttr lbl = isSel ? selAttr : normalAttr;
-            printAt(y, dlgX + 2, "Text: ", labelAttr);
+            printAt(y, dlgX + 2, _("Text: "), labelAttr);
             string displayText = params.searchText;
-            if (displayText.empty()) displayText = "(enter search text)";
+            if (displayText.empty()) displayText = _("(enter search text)");
             printAt(y, dlgX + 8, displayText, lbl);
         }
 
         // Help
-        printAt(dlgY + 10, dlgX + 2, "Up/Dn=Select, Space=Toggle field", helpAttr);
-        printAt(dlgY + 11, dlgX + 2, "Enter=Search, Ctrl-A=Advanced, ESC/Ctrl-C=Cancel", helpAttr);
+        printAt(dlgY + 10, dlgX + 2, _("Up/Dn=Select, Space=Toggle field"), helpAttr);
+        printAt(dlgY + 11, dlgX + 2, _("Enter=Search, Ctrl-A=Advanced, ESC/Ctrl-C=Cancel"), helpAttr);
 
         g_term->refresh();
 
@@ -560,7 +561,7 @@ bool showMsgSearchDialog(MsgSearchParams& params, const Settings& settings,
                 }
                 // Prompt for search text
                 int textY = dlgY + 8;
-                printAt(textY, dlgX + 2, "Text: ", labelAttr);
+                printAt(textY, dlgX + 2, _("Text: "), labelAttr);
                 string text = getStringInput(textY, dlgX + 8, dlgW - 12,
                                               params.searchText,
                                               tAttr(TC_WHITE, TC_BLACK, true));
@@ -599,10 +600,10 @@ bool showMsgSearchDialog(MsgSearchParams& params, const Settings& settings,
                     {
                         fillRow(advY + r, tAttr(TC_BLACK, TC_BLACK, false), advX, advX + advW);
                     }
-                    drawBox(advY, advX, advH, advW, borderAttr, "Advanced Search", borderAttr);
+                    drawBox(advY, advX, advH, advW, borderAttr, _("Advanced Search"), borderAttr);
 
                     // Field selector
-                    printAt(advY + 1, advX + 2, "Search in:", labelAttr);
+                    printAt(advY + 1, advX + 2, _("Search in:"), labelAttr);
                     for (int i = 0; i < 5; ++i)
                     {
                         bool isChecked = (advFieldSel == i);
@@ -612,17 +613,18 @@ bool showMsgSearchDialog(MsgSearchParams& params, const Settings& settings,
                         int fx = advX + 3 + i * 10;
                         if (fx + 8 > advX + advW - 2) break;
                         // Short labels for compact display
-                        static const char* shortNames[] = {"Subj", "Body", "Both", "From", "To"};
+                        static const char* shortNames[] = {
+                            N_("Subj"), N_("Body"), N_("Both"), N_("From"), N_("To")};
                         printAt(advY + 2, fx, radio, isChecked ? checkAttr : normalAttr);
-                        printAt(advY + 2, fx + 4, shortNames[i], lbl);
+                        printAt(advY + 2, fx + 4, _(shortNames[i]), lbl);
                     }
 
                     // Text field
                     {
                         int y = advY + 4;
                         bool isSel = (advSelected == 1);
-                        printAt(y, advX + 2, "Search text:", labelAttr);
-                        string dt = advText.empty() ? "(enter text)" : advText;
+                        printAt(y, advX + 2, _("Search text:"), labelAttr);
+                        string dt = advText.empty() ? _("(enter text)") : advText;
                         printAt(y, advX + 15, dt, isSel ? selAttr : normalAttr);
                     }
 
@@ -630,12 +632,12 @@ bool showMsgSearchDialog(MsgSearchParams& params, const Settings& settings,
                     {
                         int y = advY + 6;
                         bool isSel = (advSelected == 2);
-                        printAt(y, advX + 2, "Start date:", labelAttr);
-                        string ds = advStartDate.isEmpty() ? "(none - no limit)" : advStartDate.toIsoStr();
+                        printAt(y, advX + 2, _("Start date:"), labelAttr);
+                        string ds = advStartDate.isEmpty() ? _("(none - no limit)") : advStartDate.toIsoStr();
                         printAt(y, advX + 15, ds, isSel ? selAttr : normalAttr);
                         if (isSel)
                         {
-                            printAt(y, advX + 36, "[Enter=Pick]", helpAttr);
+                            printAt(y, advX + 36, _("[Enter=Pick]"), helpAttr);
                         }
                     }
 
@@ -643,12 +645,12 @@ bool showMsgSearchDialog(MsgSearchParams& params, const Settings& settings,
                     {
                         int y = advY + 8;
                         bool isSel = (advSelected == 3);
-                        printAt(y, advX + 2, "End date:  ", labelAttr);
-                        string ds = advEndDate.isEmpty() ? "(none - no limit)" : advEndDate.toIsoStr();
+                        printAt(y, advX + 2, _("End date:  "), labelAttr);
+                        string ds = advEndDate.isEmpty() ? _("(none - no limit)") : advEndDate.toIsoStr();
                         printAt(y, advX + 15, ds, isSel ? selAttr : normalAttr);
                         if (isSel)
                         {
-                            printAt(y, advX + 36, "[Enter=Pick]", helpAttr);
+                            printAt(y, advX + 36, _("[Enter=Pick]"), helpAttr);
                         }
                     }
 
@@ -656,14 +658,14 @@ bool showMsgSearchDialog(MsgSearchParams& params, const Settings& settings,
                     {
                         int y = advY + 10;
                         bool isSel = (advSelected == 4);
-                        printAt(y, advX + (advW - 10) / 2, "[ Search ]",
+                        printAt(y, advX + (advW - 10) / 2, _("[ Search ]"),
                                 isSel ? selAttr : labelAttr);
                     }
 
                     // Help
-                    printAt(advY + 12, advX + 2, "Up/Dn=Move, Enter=Edit/Pick, Tab=Field", helpAttr);
-                    printAt(advY + 13, advX + 2, "Space=Toggle field, Del=Clear date", helpAttr);
-                    printAt(advY + 14, advX + 2, "ESC/Ctrl-C=Cancel", helpAttr);
+                    printAt(advY + 12, advX + 2, _("Up/Dn=Move, Enter=Edit/Pick, Tab=Field"), helpAttr);
+                    printAt(advY + 13, advX + 2, _("Space=Toggle field, Del=Clear date"), helpAttr);
+                    printAt(advY + 14, advX + 2, _("ESC/Ctrl-C=Cancel"), helpAttr);
 
                     g_term->refresh();
 
@@ -727,7 +729,7 @@ bool showMsgSearchDialog(MsgSearchParams& params, const Settings& settings,
                                 // Execute search
                                 if (advText.empty())
                                 {
-                                    messageDialog("Search", "Please enter search text.");
+                                    messageDialog(_("Search"), _("Please enter search text."));
                                 }
                                 else
                                 {

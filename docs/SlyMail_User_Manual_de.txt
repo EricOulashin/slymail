@@ -1,0 +1,891 @@
+                              SlyMail User Manual
+                            QWK Offline Mail Reader
+                                  Version 0.55
+                            Release date: 2026-04-09
+
+                                       by
+
+                                 Eric Oulashin
+
+Contents
+========
+ 1. Einführung
+ 2. Erste Schritte
+    2.1. SlyMail starten
+    2.2. Das SlyMail-Datenverzeichnis
+    2.3. Das Konfigurationsprogramm
+ 3. Dateibrowser
+    3.1. Dateibrowser-Tasten
+ 4. Remote-Systeme (Ctrl-R)
+ 5. Konferenzliste
+    5.1. Konferenzlisten-Tasten
+ 6. Nachrichtenliste
+    6.1. Nachverfolgung zuletzt gelesener Nachrichten
+    6.2. Nachrichtenlisten-Tasten
+    6.3. Nachrichten suchen
+ 7. Nachrichten-Reader
+    7.1. Nachrichten-Reader-Tasten
+    7.2. ANSI-Kunst
+    7.3. Dateianhänge
+    7.4. Abstimmungen und Umfragen
+ 8. Nachrichten-Editor
+    8.1. Editor-Tasten
+    8.2. Schrägstrich-Befehle
+    8.3. Zitatfenster
+    8.4. Farbauswahl (Ctrl-K)
+    8.5. Dateiimport (Ctrl-O)
+    8.6. Behandlung von Zitat-Zeilen
+    8.7. Absatzbasiertes Speichern
+    8.8. Leere Nachrichten
+    8.9. Externe Editoren
+ 9. Einstellungen
+    9.1. Reader-Einstellungen (Ctrl-U)
+    9.2. Editor-Einstellungen (Ctrl-U im Editor)
+10. BBS-Farbcode-Unterstützung
+11. Farbthemen
+    11.1. Ice-Themen
+    11.2. DCT-Themen
+    11.3. Thema-Farbformat
+12. Rechtschreibprüfung
+    12.1. Wörterbücher
+    12.2. Verwendung der Rechtschreibprüfung
+13. Taglines
+    13.1. Einrichtung
+    13.2. Verwendung
+14. REP-Antwortpakete
+    14.1. REP-Pakete speichern
+    14.2. REP-Paketinhalt
+15. UTF-8-Unterstützung
+16. Einstellungsdatei-Referenz
+    16.1. [General]
+    16.2. [Reader]
+    16.3. [MessageList]
+    16.4. [Editor]
+    16.5. [Themes]
+17. Synchronet BBS-QWK-Einstellungen
+18. Änderungsprotokoll
+    18.1. Version 0.54 (2026-03-31)
+    18.2. Version 0.53 (2026-03-29)
+    18.3. Version 0.52 (2026-03-26)
+    18.4. Version 0.51 (2026-03-25)
+    18.5. Version 0.50 (2026-03-24)
+
+(Maschinelle Übersetzung — für das englische Original siehe
+SlyMail_User_Manual.md)
+
+-------------------------------------------------------------------------------
+title: "SlyMail Benutzerhandbuch"
+subtitle: "QWK Offline-Mail-Reader"
+version: "0.54"
+date: "2026-04-02"
+author: "Eric Oulashin"
+-------------------------------------------------------------------------------
+
+1. Einführung
+=============
+
+SlyMail ist ein plattformübergreifender, textbasierter Offline-Mail-Reader für
+das QWK-Paketformat. QWK-Pakete werden verwendet, um Nachrichten auf Bulletin-
+Board-Systemen (BBSes) auszutauschen. SlyMail bietet eine voll ausgestattete
+Oberfläche zum Lesen, Suchen und Beantworten von Nachrichten aus QWK-Mail-
+Paketen.
+
+Die Benutzeroberfläche ist inspiriert vom Digital Distortion Message Reader
+(DDMsgReader) für das Lesen von Nachrichten und SlyEdit für das Bearbeiten von
+Nachrichten, beide ursprünglich für Synchronet BBS erstellt.
+
+SlyMail läuft auf Linux, macOS, BSD und Windows.
+
+2. Erste Schritte
+=================
+
+2.1. SlyMail starten
+--------------------
+
+Starten Sie SlyMail über die Befehlszeile:
+
+    slymail
+
+Dies zeigt den Begrüßungsbildschirm (falls aktiviert) und öffnet den
+Dateibrowser zur Auswahl eines QWK-Pakets.
+
+Um ein bestimmtes QWK-Paket direkt zu öffnen:
+
+    slymail MYBBS.qwk
+
+Oder verwenden Sie den benannten Parameter:
+
+    slymail -qwk_file=/path/to/MYBBS.qwk
+
+Weitere Befehlszeilenoptionen:
+
+  - -v oder --version - Versionsinformationen anzeigen
+  - -? oder --help - Hilfe anzeigen
+
+2.2. Das SlyMail-Datenverzeichnis
+---------------------------------
+
+Beim ersten Start erstellt SlyMail ein Datenverzeichnis unter ~/.slymail (auf
+Linux, macOS und BSD) oder in Ihrem Heimatverzeichnis unter Windows. Dieses
+Verzeichnis enthält:
+
+  - slymail.ini - Ihre Einstellungen
+  - QWK/ - Standardverzeichnis für QWK-Mail-Pakete
+  - REP/ - Standardverzeichnis für Antwortpakete
+  - config_files/ - Farbthema-Dateien
+  - dictionary_files/ - Rechtschreibprüfungs-Wörterbücher
+  - tagline_files/ - Tagline-Dateien
+  - remote_systems.json - Gespeicherte Remote-Systemverbindungen
+  - lastread_<BBSID>.json - Zuletzt-gelesen-Zeiger pro Konferenz
+
+2.3. Das Konfigurationsprogramm
+-------------------------------
+
+SlyMail enthält ein eigenständiges Konfigurationsprogramm namens config (oder
+slymail-config bei Installation über make install). Dieses Programm bietet eine
+textbasierte Oberfläche zur Konfiguration aller SlyMail-Einstellungen ohne
+Öffnen der Hauptanwendung.
+
+Starten Sie es über die Befehlszeile:
+
+    config
+
+Das Konfigurationsprogramm bietet folgende Kategorien:
+
+  - Editor-Einstellungen - Editor-Stil, Taglines, Rechtschreibprüfung,
+    Zitatoptionen, Themenauswahl
+  - Reader-Einstellungen - Kludge-Zeilen, Abrisszeilen, Scrollbalken, ANSI-
+    Entfernung, umgekehrte Reihenfolge, Attributcode-Umschalter
+  - Themen-Einstellungen - Ice- und DCT-Farbthema-Dateien auswählen
+  - Allgemeine Einstellungen - Ihr Name für Antworten, Antwortpaket-
+    Verzeichnis, externe Editor-Konfiguration, Lightbar-Modus,
+    Begrüßungsbildschirm
+
+Einstellungen werden beim Verlassen jeder Kategorie automatisch gespeichert.
+Sowohl SlyMail als auch das Konfigurationsprogramm lesen und schreiben dieselbe
+slymail.ini-Datei.
+
+3. Dateibrowser
+===============
+
+Wenn SlyMail startet, wird ein Dateibrowser zur Auswahl eines zu öffnenden QWK-
+Pakets angezeigt.
+
+3.1. Dateibrowser-Tasten
+------------------------
+
+Taste             Aktion
+----------------  -------------------------------------------
+Auf / Ab          Dateien und Verzeichnisse navigieren
+Enter             Verzeichnis öffnen oder QWK-Datei auswählen
+BildAuf / BildAb  Dateiliste scrollen
+Pos1 / Ende       Zum ersten oder letzten Eintrag springen
+Ctrl-R            Das Remote-System-Verzeichnis öffnen
+Q / ESC           SlyMail beenden
+? / F1            Hilfe
+
+Es können nur .qwk-Dateien ausgewählt werden. Verzeichnisse werden in Blau
+angezeigt und können durch Drücken von Enter aufgerufen werden.
+
+4. Remote-Systeme (Ctrl-R)
+==========================
+
+SlyMail kann QWK-Pakete direkt von entfernten BBSes über FTP oder SFTP (SSH)
+herunterladen.
+
+Drücken Sie Ctrl-R im Dateibrowser, der Konferenzliste oder der
+Nachrichtenliste, um den Remote-System-Manager zu öffnen. Von hier aus können
+Sie:
+
+  - Ein neues Remote-System mit Hostname, Port, Verbindungstyp (FTP oder SSH),
+    Benutzername, Passwort, passivem FTP-Umschalter und anfänglichem Remote-
+    Pfad hinzufügen
+  - Bestehende Einträge bearbeiten oder löschen
+  - Sich mit einem Remote-System verbinden und seine Verzeichnisse durchsuchen
+  - QWK-Dateien direkt in Ihr QWK/-Verzeichnis herunterladen
+  - REP-Antwortpakete auf das Remote-System hochladen
+
+Remote-System-Einträge werden in remote_systems.json in Ihrem SlyMail-
+Datenverzeichnis gespeichert. Das letzte Verbindungsdatum/-uhrzeit wird für
+jedes System nachverfolgt.
+
+SlyMail verwendet den curl-Befehl des Systems für FTP- und SFTP-
+Dateiübertragungen.
+
+5. Konferenzliste
+=================
+
+Nach dem Öffnen eines QWK-Pakets zeigt die Konferenzliste alle
+Nachrichtenbereiche (Konferenzen) mit ihrer Nachrichtenanzahl. Eine Spalte
+„Neu" zeigt ein Häkchen neben Konferenzen mit neuen Nachrichten. Wenn die
+Einstellung „Nur Bereiche mit neuen Nachrichten anzeigen" aktiviert ist, werden
+Konferenzen ohne Nachrichten ausgeblendet.
+
+5.1. Konferenzlisten-Tasten
+---------------------------
+
+Taste             Aktion
+----------------  --------------------------------------------
+Auf / Ab          Konferenzen navigieren
+BildAuf / BildAb  Liste scrollen
+Pos1 / Ende       Zur ersten oder letzten Konferenz springen
+Enter (E)         Die ausgewählte Konferenz öffnen
+G                 Zu einer bestimmten Konferenznummer springen
+/                 Konferenzen nach Name suchen
+V                 Umfragen und Abstimmungen im Paket anzeigen
+O / Ctrl-L        Eine andere QWK-Datei öffnen
+Ctrl-R            Remote-Systeme öffnen
+Ctrl-P            Das REP-Antwortpaket speichern
+S / Ctrl-U        Einstellungen öffnen
+Q / ESC           SlyMail beenden
+? / F1            Hilfe
+
+Wenn ein Suchfilter aktiv ist, löscht das Drücken von Q den Filter anstatt zu
+beenden.
+
+6. Nachrichtenliste
+===================
+
+Die Nachrichtenliste zeigt alle Nachrichten in der ausgewählten Konferenz mit
+Spalten für Nachrichtennummer, Von, An, Betreff, Datum und Uhrzeit.
+
+6.1. Nachverfolgung zuletzt gelesener Nachrichten
+-------------------------------------------------
+
+SlyMail merkt sich die letzte Nachricht, die Sie in jeder Konferenz gelesen
+haben. Wenn Sie eine Konferenz betreten, wird der Cursor automatisch auf die
+erste ungelesene Nachricht (die Nachricht nach der zuletzt gelesenen)
+positioniert. Diese Information wird pro BBS im SlyMail-Datenverzeichnis
+gespeichert.
+
+6.2. Nachrichtenlisten-Tasten
+-----------------------------
+
+Taste             Aktion
+----------------  ----------------------------------------------
+Auf / Ab          Nachrichten navigieren
+BildAuf / BildAb  Liste scrollen
+Pos1 / Ende       Zur ersten oder letzten Nachricht springen
+Enter / R         Die ausgewählte Nachricht lesen
+N                 Eine neue Nachricht schreiben
+G                 Zu einer bestimmten Nachrichtennummer springen
+/                 Nachrichten suchen
+Ctrl-A            Erweiterte Suche (mit Datumsbereich)
+Ctrl-L            Eine andere QWK-Datei öffnen
+Ctrl-R            Remote-Systeme öffnen
+Ctrl-P            Das REP-Antwortpaket speichern
+S / Ctrl-U        Einstellungen öffnen
+C / ESC           Zurück zur Konferenzliste
+Q                 Beenden
+? / F1            Hilfe
+
+6.3. Nachrichten suchen
+-----------------------
+
+Drücken Sie /, um Nachrichten nach Betreff, Nachrichtentext, Absender oder
+Empfänger zu suchen. Drücken Sie Ctrl-A für die erweiterte Suche, die eine
+Datumsbereichsfilterung mit einem visuellen Kalender-Datumsauswähler enthält.
+Wenn ein Suchfilter aktiv ist, löscht das Drücken von Q den Filter.
+
+Die Suche kann einfache Teilzeichenfolgen oder reguläre Ausdrücke verwenden,
+abhängig von der Einstellung „Suche mit regulärem Ausdruck".
+
+7. Nachrichten-Reader
+=====================
+
+Der Nachrichten-Reader zeigt den Nachrichteninhalt mit einem Kopfzeilen-
+Abschnitt mit Von-, An-, Betreff- und Datumsfeldern.
+
+7.1. Nachrichten-Reader-Tasten
+------------------------------
+
+Taste             Aktion
+----------------  ------------------------------------------------------------
+Auf / Ab          Nachrichteninhalt scrollen
+BildAuf / BildAb  Seite auf oder ab
+Pos1 / Ende       Zum Anfang oder Ende springen
+Links / Rechts    Vorherige oder nächste Nachricht
+F / L             Erste oder letzte Nachricht
+R                 Auf die Nachricht antworten
+V                 Abstimmen (Hoch-/Runter-Abstimmung oder Umfrage-Stimmzettel)
+D / Ctrl-D        Dateianhänge herunterladen
+H                 Detaillierte Nachrichtenkopfzeile anzeigen
+S / Ctrl-U        Einstellungen öffnen
+C / Q / ESC / M   Zurück zur Nachrichtenliste
+? / F1            Hilfe
+
+7.2. ANSI-Kunst
+---------------
+
+SlyMail rendert ANSI-Kunst in Nachrichten und unterstützt Cursorpositionierung,
+Farben und CP437-Blockzeichen. Nachrichten mit ANSI-Cursor-Steuersequenzen
+werden automatisch erkannt und über einen virtuellen Bildschirmpuffer für die
+korrekte Anzeige gerendert.
+
+7.3. Dateianhänge
+-----------------
+
+Wenn eine Nachricht Dateianhänge hat (durch [ATT] in der Kopfzeile angezeigt),
+drücken Sie D oder Ctrl-D, um diese anzuzeigen und herunterzuladen. Ihnen wird
+eine Liste der angehängten Dateien mit ihren Größen angezeigt, und Sie werden
+nach einem Zielverzeichnis gefragt.
+
+7.4. Abstimmungen und Umfragen
+------------------------------
+
+SlyMail unterstützt Abstimmungen im Synchronet-Stil:
+
+  - Umfragen: Als Umfragen identifizierte Nachrichten zeigen Antwortoptionen
+    mit Stimmenzählungen und Prozentbalken. Drücken Sie V, um einen
+    Stimmzettel-Dialog zu öffnen, in dem Sie Ihre Auswahl umschalten und Ihre
+    Stimme abgeben können.
+  - Hoch-/Runter-Abstimmungen: Für reguläre Nachrichten drücken Sie V, um hoch-
+    oder runterzustimmen. Aktuelle Stimmauszählungen und Nettopunktestand
+    werden in der Kopfzeile angezeigt.
+  - Umfragen-Browser: Drücken Sie V aus der Konferenzliste, um alle Umfragen im
+    Paket zu durchsuchen.
+
+Abstimmungen werden zusammen mit Nachrichtenantworten in die Warteschlange
+gestellt und in das REP-Paket geschrieben.
+
+8. Nachrichten-Editor
+=====================
+
+Der Nachrichten-Editor wird zum Verfassen von Antworten und neuen Nachrichten
+verwendet. Er bietet zwei visuelle Modi, inspiriert von SlyEdit: Ice-Modus und
+DCT-Modus.
+
+8.1. Editor-Tasten
+------------------
+
+Taste             Aktion
+----------------  -------------------------------------------
+Pfeiltasten       Cursor bewegen
+Pos1 / Ende       Zeilenanfang oder -ende
+BildAuf / BildAb  Seite auf oder ab
+Insert            Einfügen/Überschreiben-Modus umschalten
+Entf              Zeichen an Cursorposition löschen
+Rücktaste         Zeichen vor dem Cursor löschen
+ESC               Editor-Menü öffnen
+Ctrl-Z            Nachricht speichern
+Ctrl-A            Nachricht abbrechen
+Ctrl-Q            Zitatfenster öffnen oder schließen
+Ctrl-K            Farbauswahl öffnen
+Ctrl-G            CP437-Grafikzeichen einfügen
+Ctrl-O            Textdatei an der Cursorposition importieren
+Ctrl-W            Text suchen
+Ctrl-S            Betreff ändern
+Ctrl-D            Aktuelle Zeile löschen
+Ctrl-T            Textersetzungen auflisten
+Ctrl-U            Editor-Einstellungen öffnen
+F1                Hilfebildschirm
+
+8.2. Schrägstrich-Befehle
+-------------------------
+
+Sie können auch Schrägstrich-Befehle in einer leeren Zeile eingeben und Enter
+drücken:
+
+Befehl  Aktion
+------  ---------------------------
+/S      Nachricht speichern
+/A      Nachricht abbrechen
+/Q      Zitatfenster öffnen
+/U      Editor-Einstellungen öffnen
+/?      Hilfe anzeigen
+
+8.3. Zitatfenster
+-----------------
+
+Beim Antworten auf eine Nachricht drücken Sie Ctrl-Q oder tippen Sie /Q in
+einer leeren Zeile, um das Zitatfenster zu öffnen. Das Zitatfenster zeigt den
+ursprünglichen Nachrichtentext mit Zitatpräfixen.
+
+Taste             Aktion
+----------------  ------------------------------------------------------
+Auf / Ab          Zitat-Zeilen navigieren
+BildAuf / BildAb  Seite auf oder ab
+Pos1 / Ende       Zur ersten oder letzten Zeile springen
+Enter             Die ausgewählte Zitat-Zeile in Ihre Nachricht einfügen
+Ctrl-Q / ESC      Zitatfenster schließen
+
+Wenn die Anzahl der Zitat-Zeilen die Zitatfensterhöhe überschreitet, erscheint
+ein Scrollbalken am rechten Rand.
+
+8.4. Farbauswahl (Ctrl-K)
+-------------------------
+
+Drücken Sie Ctrl-K, um einen interaktiven Farbauswahl-Dialog zu öffnen. Wählen
+Sie eine Vordergrundfarbe (16 Optionen: 8 normal + 8 hell) und eine
+Hintergrundfarbe (8 Optionen). Eine Live-Vorschau zeigt die ausgewählte
+Kombination. Drücken Sie Enter, um den ANSI-Farbcode an der Cursorposition
+einzufügen. Drücken Sie N, um einen Reset-Code (normal) einzufügen.
+
+8.5. Dateiimport (Ctrl-O)
+-------------------------
+
+Drücken Sie Ctrl-O, um den Inhalt einer Textdatei an der aktuellen
+Cursorposition in Ihre Nachricht zu importieren. Ein Dateibrowser öffnet sich,
+mit dem Sie eine beliebige Datei auswählen können. Der Inhalt der Datei wird
+zeilenweise an der Cursorposition eingefügt, wobei Zeilenumbrüche erhalten
+bleiben.
+
+8.6. Behandlung von Zitat-Zeilen
+--------------------------------
+
+Beim Antworten auf eine Nachricht werden Zeilen, die aus dem Zitatfenster
+eingefügt werden, als Zitat-Zeilen verfolgt. Wenn Sie eine Zitat-Zeile
+bearbeiten und sie umgebrochen wird, geht der Überlauf in eine neue Zeile
+(ebenfalls als Zitat-Zeile markiert), anstatt mit dem angrenzenden Text zu
+verschmelzen. Das Löschen von Text aus einer Zitat-Zeile zieht keinen Text von
+der nächsten Zeile hoch, wenn diese ebenfalls eine Zitat-Zeile ist. Dies
+bewahrt die Integrität des zitierten Textes.
+
+8.7. Absatzbasiertes Speichern
+------------------------------
+
+Beim Speichern einer Nachricht verbindet SlyMail weich umgebrochene Zeilen neu
+getippten Textes zu einzelnen langen Absätzen. Dies ermöglicht es anderen Mail-
+Readern, den Text an ihre eigene Terminalbreite anzupassen. Zitat-Zeilen werden
+immer genau so erhalten, wie sie erscheinen, und werden niemals verbunden.
+
+8.8. Leere Nachrichten
+----------------------
+
+Wenn Sie eine Nachricht speichern, die keinen Textinhalt hat (leer oder nur
+Leerzeichen), bricht SlyMail die Nachricht ab und zeigt eine Benachrichtigung
+an, anstatt sie zu veröffentlichen.
+
+8.9. Externe Editoren
+---------------------
+
+SlyMail unterstützt die Verwendung externer Texteditoren anstelle des
+eingebauten Editors. Um einen externen Editor zu konfigurieren:
+
+  1. Öffnen Sie die Einstellungen (Ctrl-U oder das Konfigurationsprogramm)
+  2. Gehen Sie zu Externe Editoren..., um Editoren hinzuzufügen und zu
+     konfigurieren
+  3. Setzen Sie den Externen Editor, um auszuwählen, welcher konfigurierte
+     Editor verwendet werden soll
+  4. Aktivieren Sie Externen Editor verwenden
+
+Jeder externe Editor kann konfiguriert werden mit:
+
+  - Name - Ein beschreibender Name für den Editor
+  - Startverzeichnis - Das Verzeichnis, das die Editor-ausführbare Datei
+    enthält
+  - Befehlszeile - Der auszuführende Befehl (verwenden Sie %f für den
+    temporären Dateipfad)
+  - Zitat-Text umbrechen - Ob zitierter Text umgebrochen werden soll und die
+    Spaltenbreite
+  - Automatischer Zitattext - Zitate immer einschließen, jedes Mal nachfragen
+    oder niemals einschließen
+  - Editor-Informationsdateien - Drop-Datei-Typ (Keine, MSGINF, EDITOR.INF,
+    DOOR.SYS, DOOR32.SYS)
+  - FidoNet-Kludges entfernen - FidoNet-Steuerungszeilen aus zitiertem Text
+    entfernen
+
+Beim Verwenden eines externen Editors erstellt SlyMail eine temporäre Datei,
+startet den Editor und liest das Ergebnis, wenn der Editor beendet wird. Wenn
+der Editor eine RESULT.ED-Datei produziert (Synchronet-kompatibel), liest
+SlyMail den neuen Betreff und die Editordetails daraus.
+
+9. Einstellungen
+================
+
+9.1. Reader-Einstellungen (Ctrl-U)
+----------------------------------
+
+Greifen Sie auf Reader-Einstellungen zu, indem Sie Ctrl-U oder S aus der
+Konferenzliste, Nachrichtenliste oder dem Nachrichten-Reader drücken.
+
+Verfügbare Einstellungen:
+
+  - Kludge-Zeilen anzeigen - Kludge-/Steuerungszeilen in Nachrichten anzeigen
+    oder ausblenden
+  - Abriss-/Ursprungszeilen anzeigen - Abriss- und Ursprungszeilen anzeigen
+    oder ausblenden
+  - Scrollbalken im Reader - Scrollbalken anzeigen oder ausblenden
+  - Nur Bereiche mit neuen Nachrichten anzeigen - Konferenzen ohne Nachrichten
+    ausblenden
+  - ANSI-Codes aus Nachrichten entfernen - Alle ANSI-Escape-Sequenzen entfernen
+  - Attributcode-Umschalter - BBS-Farbcode-Interpretation pro Typ
+    aktivieren/deaktivieren
+  - Suche mit regulärem Ausdruck - Regex für Suchen verwenden
+  - Nachrichten in umgekehrter Reihenfolge auflisten - Neueste Nachrichten
+    zuerst anzeigen
+  - Begrüßungsbildschirm beim Start anzeigen - Den Begrüßungsbildschirm
+    umschalten
+  - Antwortpaket-Verzeichnis - Das Verzeichnis zum Speichern von REP-Paketen
+    festlegen
+  - Externen Editor verwenden - Externen Editor-Modus aktivieren
+  - Externe Editoren... - Externe Editoren konfigurieren
+  - Externer Editor - Auswählen, welcher konfigurierte Editor verwendet werden
+    soll
+
+Drücken Sie S, um Einstellungen zu speichern, oder ESC/Q, um zu schließen (mit
+einer Aufforderung zum Speichern, wenn Änderungen vorgenommen wurden).
+
+9.2. Editor-Einstellungen (Ctrl-U im Editor)
+--------------------------------------------
+
+Greifen Sie auf Editor-Einstellungen zu, indem Sie Ctrl-U drücken, während Sie
+sich im Nachrichten-Editor befinden.
+
+Verfügbare Einstellungen:
+
+  - UI-Modus wählen - Zwischen Ice-, DCT- und Zufallsstilen wechseln
+  - Taglines - Tagline-Einfügung beim Speichern aktivieren
+  - Rechtschreibprüfungs-Wörterbuch/Wörterbücher - Auswählen, welche
+    Wörterbücher verwendet werden sollen
+  - Beim Speichern zur Rechtschreibprüfung auffordern - Rechtschreibprüfungs-
+    Aufforderung aktivieren
+  - Zitat-Zeilen auf Terminalbreite umbrechen - Zitierte Zeilen mit
+    Zeilenumbruch versehen
+  - Mit Initialen des Autors zitieren - Initialen-basierte Zitatpräfixe
+    verwenden
+  - Zitat-Zeilen mit Initialen einrücken - Leerzeichen vor Initialen hinzufügen
+  - Leerzeichen aus Zitat-Zeilen entfernen - Führende Leerzeichen aus Zitaten
+    entfernen
+
+10. BBS-Farbcode-Unterstützung
+==============================
+
+SlyMail interpretiert Farb- und Attributcodes aus mehreren BBS-Softwarepaketen:
+
+  - ANSI-Escape-Codes - Immer aktiviert; Standard-SGR-Sequenzen
+  - Synchronet Ctrl-A-Codes - Ctrl-A + Attributzeichen
+  - WWIV-Herz-Codes - Ctrl-C + Ziffer 0-9
+  - PCBoard/Wildcat @X-Codes - @X gefolgt von zwei Hexziffern
+  - Celerity-Pipe-Codes - Pipe + Buchstabe
+  - Renegade-Pipe-Codes - Pipe + zweistellige Zahl
+
+Jeder Code-Typ kann einzeln über das Untermenü Attributcode-Umschalter in den
+Einstellungen aktiviert oder deaktiviert werden.
+
+11. Farbthemen
+==============
+
+Der Editor von SlyMail verwendet konfigurierbare Farbthemen, die aus .ini-
+Dateien im Verzeichnis config_files/ geladen werden.
+
+11.1. Ice-Themen
+----------------
+
+Ice-Themen steuern das Erscheinungsbild des Ice-Editor-Modus:
+
+  - BlueIce (Standard)
+  - EmeraldCity
+  - FieryInferno
+  - Fire-N-Ice
+  - GeneralClean
+  - GenericBlue
+  - PurpleHaze
+  - ShadesOfGrey
+
+11.2. DCT-Themen
+----------------
+
+DCT-Themen steuern das Erscheinungsbild des DCT-Editor-Modus:
+
+  - Default
+  - Default-Modified
+  - Midnight
+
+11.3. Thema-Farbformat
+----------------------
+
+Thema-Farben verwenden ein kompaktes Format basierend auf Synchronet-
+Attributcodes:
+
+  - n - Normal (alle Attribute zurücksetzen)
+  - Vordergrund-Buchstaben: k=schwarz, r=rot, g=grün, y=gelb, b=blau,
+    m=magenta, c=cyan, w=weiß
+  - h - Hohe/helle Intensität
+  - Hintergrund-Ziffern: 0=schwarz, 1=rot, 2=grün, 3=braun, 4=blau, 5=magenta,
+    6=cyan, 7=hellgrau
+
+Beispiele: nbh = helles Blau, n4wh = helles Weiß auf blauem Hintergrund, nk7 =
+schwarz auf hellgrau
+
+12. Rechtschreibprüfung
+=======================
+
+SlyMail enthält eine eingebaute Rechtschreibprüfung mit einfachen Textdateien
+als Wörterbücher.
+
+12.1. Wörterbücher
+------------------
+
+Wörterbuchdateien werden in dictionary_files/ gespeichert:
+
+  - dictionary_en.txt - Englisch (allgemein)
+  - dictionary_en-US-supplemental.txt - US-Englisch-Ergänzung
+  - dictionary_en-GB-supplemental.txt - Britisch-Englisch-Ergänzung
+  - dictionary_en-AU-supplemental.txt - Australisch-Englisch-Ergänzung
+  - dictionary_en-CA-supplemental.txt - Kanadisch-Englisch-Ergänzung
+
+Mehrere Wörterbücher können gleichzeitig ausgewählt werden, um eine kombinierte
+Wortabdeckung zu erhalten.
+
+12.2. Verwendung der Rechtschreibprüfung
+----------------------------------------
+
+Aktivieren Sie „Beim Speichern zur Rechtschreibprüfung auffordern" in den
+Einstellungen. Wenn Sie eine Nachricht speichern, scannt die
+Rechtschreibprüfung nach falsch geschriebenen Wörtern und zeigt Optionen für
+jedes an:
+
+  - Ersetzen - Ein Ersatzwort eingeben
+  - Überspringen - Dieses Wort überspringen
+  - Beenden - Rechtschreibprüfung beenden
+
+13. Taglines
+============
+
+Taglines sind kurze Zitate oder Sprüche, die beim Speichern an Nachrichten
+angehängt werden.
+
+13.1. Einrichtung
+-----------------
+
+  1. „Taglines" in den Editor-Einstellungen aktivieren
+  2. Taglines in tagline_files/taglines.txt platzieren, eine pro Zeile
+  3. Zeilen, die mit # oder ; beginnen, werden als Kommentare behandelt
+
+13.2. Verwendung
+----------------
+
+Beim Speichern einer Nachricht mit aktivierten Taglines werden Sie
+aufgefordert, eine bestimmte Tagline auszuwählen oder eine zufällige zu wählen.
+Die ausgewählte Tagline wird Ihrer Nachricht mit dem Präfix ... angehängt.
+
+14. REP-Antwortpakete
+=====================
+
+Wenn Sie Antworten oder neue Nachrichten schreiben, werden sie als ausstehend
+in die Warteschlange gestellt. Abstimmungen (Umfrage-Stimmzettel, Hoch-/Runter-
+Abstimmungen) werden ebenfalls in die Warteschlange gestellt.
+
+14.1. REP-Pakete speichern
+--------------------------
+
+  - Drücken Sie Ctrl-P aus der Konferenz- oder Nachrichtenliste, um das REP-
+    Paket jederzeit zu speichern
+  - SlyMail fordert nach dem Verfassen einer Nachricht zum Speichern auf
+  - Beim Beenden fordert SlyMail auf, alle ungespeicherten ausstehenden
+    Elemente zu speichern
+
+Das REP-Paket wird als <BBS-ID>.rep in Ihrem konfigurierten Antwortverzeichnis
+(standardmäßig ~/.slymail/REP/) gespeichert. Laden Sie diese Datei zurück auf
+das BBS hoch, um Ihre Antworten zu veröffentlichen.
+
+14.2. REP-Paketinhalt
+---------------------
+
+  - Nachrichtenantworten im Standard-QWK-Format
+  - HEADERS.DAT für erweiterte Felder, die 25 Zeichen überschreiten
+  - VOTING.DAT für ausstehende Abstimmungen (Synchronet-kompatibel)
+
+15. UTF-8-Unterstützung
+=======================
+
+SlyMail erkennt und zeigt UTF-8-Inhalte korrekt an:
+
+  - UTF-8-Nachrichten werden über HEADERS.DAT-Flags und automatische Byte-
+    Sequenz-Analyse erkannt
+  - Ein [UTF8]-Indikator erscheint in der Nachrichtenkopfzeile für
+    UTF-8-Nachrichten
+  - CP437-Zeichen aus veralteten BBS-Inhalten werden in ihre Unicode-
+    Entsprechungen für die korrekte Anzeige in modernen Terminals konvertiert
+
+16. Einstellungsdatei-Referenz
+==============================
+
+Einstellungen werden in slymail.ini im SlyMail-Datenverzeichnis gespeichert.
+Die Datei verwendet das INI-Format mit Abschnitten:
+
+16.1. [General]
+---------------
+
+Einstellung        Standard  Beschreibung
+-----------------  --------  -------------------------------------------
+showSplashScreen   true      Begrüßungsbildschirm beim Start anzeigen
+userName           (leer)    Ihr Name für das Von-Feld in Antworten
+replyDir           (leer)    Verzeichnis zum Speichern von REP-Paketen
+useExternalEditor  false     Externen Editor statt eingebautem verwenden
+selectedEditor     (leer)    Name des ausgewählten externen Editors
+
+16.2. [Reader]
+--------------
+
+Einstellung               Standard  Beschreibung
+------------------------  --------  -------------------------------------------
+showKludgeLines           false     Kludge-/Steuerungszeilen anzeigen
+showTearLine              true      Abriss- und Ursprungszeilen anzeigen
+useScrollbar              true      Scrollbalken im Nachrichten-Reader anzeigen
+onlyShowAreasWithNewMail  false     Leere Konferenzen ausblenden
+stripAnsi                 false     ANSI-Codes aus Nachrichten entfernen
+attrSynchronet            true      Synchronet Ctrl-A-Codes interpretieren
+attrWWIV                  true      WWIV-Herz-Codes interpretieren
+attrCelerity              true      Celerity-Pipe-Codes interpretieren
+attrRenegade              true      Renegade-Pipe-Codes interpretieren
+attrPCBoard               true      PCBoard/Wildcat @X-Codes interpretieren
+useRegexSearch            false     Regex für Suchen verwenden
+
+16.3. [MessageList]
+-------------------
+
+Einstellung   Standard  Beschreibung
+------------  --------  -------------------------------------------
+lightbarMode  true      Lightbar-Navigation in der Nachrichtenliste
+reverseOrder  false     Neueste Nachrichten zuerst anzeigen
+
+16.4. [Editor]
+--------------
+
+Einstellung          Standard         Beschreibung
+-------------------  ---------------  -------------------------------------------------
+editorStyle          Ice              Editor-Modus: Ice, Dct oder Random
+insertMode           true             Standard-Einfügemodus
+wrapQuoteLines       true             Zitierte Zeilen umbrechen
+quoteLineWidth       76               Maximale Breite für Zitat-Zeilen
+quotePrefix          > (Leerzeichen)  Zitat-Zeilenpräfix
+taglines             false            Tagline-Einfügung aktivieren
+promptSpellCheck     false            Beim Speichern zur Rechtschreibprüfung auffordern
+quoteWithInitials    false            Autorinitialen im Zitatpräfix verwenden
+indentQuoteInitials  true             Leerzeichen vor Initialen hinzufügen
+trimQuoteSpaces      false            Leerzeichen aus Zitat-Zeilen entfernen
+
+16.5. [Themes]
+--------------
+
+Einstellung   Standard                     Beschreibung
+------------  ---------------------------  ---------------------
+iceThemeFile  EditorIceColors_BlueIce.ini  Ice-Modus-Thema-Datei
+dctThemeFile  EditorDCTColors_Default.ini  DCT-Modus-Thema-Datei
+
+17. Synchronet BBS-QWK-Einstellungen
+====================================
+
+Bei Verwendung eines Synchronet-BBS werden die folgenden QWK-Paketeinstellungen
+für die beste Kompatibilität mit SlyMail empfohlen:
+
+Einstellung                    Empfohlener Wert
+-----------------------------  ----------------
+Ctrl-A Color Codes             Leave in
+Archive Type                   ZIP
+Include File Attachments       Yes
+Include Index Files            Yes
+Include Control Files          Yes
+Include VOTING.DAT File        Yes
+Include HEADERS.DAT File       Yes
+Include UTF-8 Characters       Yes
+Extended (QWKE) Packet Format  Yes
+
+18. Änderungsprotokoll
+======================
+
+18.1. Version 0.54 (2026-03-31)
+-------------------------------
+
+Hinzugefügt
+-----------
+  - Nachverfolgung der zuletzt gelesenen Nachricht pro Konferenz mit
+    automatischer Cursorpositionierung
+  - Neue Nachrichtenanzeige (Häkchen-Spalte) in der Konferenzliste
+  - Dateiimport im Nachrichten-Editor (Ctrl-O), um Textdateien an der
+    Cursorposition einzufügen
+  - Zitat-Zeilen-Nachverfolgung zur Bewahrung der Zitat-Zeilen-Integrität
+    während der Bearbeitung
+  - Absatzbasiertes Nachrichtenspeichern für besseren Textumfluss durch
+    Empfänger
+  - Terminal-Größenänderungserkennung: Dies ermöglicht es SlyMail, seine
+    Fenster und Inhalte als Reaktion auf die Größenänderung des
+    Terminalfensters anzupassen.
+
+Geändert
+--------
+  - Zitat-Zeilenumbruch berücksichtigt nun die Terminalbreite, wenn aktiviert
+  - Konfiguration beim ersten Start: Wenn der Benutzer noch keine SlyMail-
+    Einstellungen hat (d. h. sein .slymail-Verzeichnis existiert noch nicht),
+    wird config beim Start ausgeführt und der Benutzername wird abgefragt,
+    bevor er in die Konfigurationseinstellungen übergeht.
+
+Behoben
+-------
+  - Die Bearbeitung von Zitat-Zeilen führt nicht mehr dazu, dass Überlauf mit
+    benachbarten Zeilen verschmilzt
+
+18.2. Version 0.53 (2026-03-29)
+-------------------------------
+
+Hinzugefügt
+-----------
+  - Einstellung, um nur Konferenzen mit neuen Nachrichten anzuzeigen
+  - Unterstützung für externe Editoren mit mehreren Editor-Konfigurationen
+  - Unterstützung für Drop-Datei-Typen (MSGINF, EDITOR.INF, DOOR.SYS,
+    DOOR32.SYS)
+  - RESULT.ED-Analyse nach dem Beenden des externen Editors
+  - Zu Konferenznummer springen (G-Taste) in der Konferenzliste
+  - Nur-Ziffern-Eingabevalidierung für Zu-Eingabeaufforderungen
+
+Behoben
+-------
+  - Schrägstrich-Befehle (/Q, /S, usw.) funktionieren jetzt in der ersten Zeile
+    des Editors
+  - DCT-Zitatfenster-Farben verwenden jetzt das geladene Thema korrekt
+  - Zitatfenster-Scrollbalken für lange Zitatlisten wiederhergestellt
+  - Verbesserte Bildschirmaktualisierung in Einstellungsdialogen
+
+18.3. Version 0.52 (2026-03-26)
+-------------------------------
+
+Hinzugefügt
+-----------
+  - REP-Verzeichnis wird automatisch erstellt
+  - REP-Paket-Hotkey speichern (Ctrl-P)
+  - Antwortpakete auf Remote-Systeme hochladen
+  - Zitat-Zeilen-Neuumbruch
+  - Verzeichnisauswahl für Antwortpaket-Verzeichnis
+
+Geändert
+--------
+  - Schnellere Editor-Bildschirmaktualisierungen mit reduziertem Flimmern
+  - Absatzbewusstes Nachrichtenspeichern
+  - Verbesserte ANSI-Darstellung mit 256-Farben- und Truecolor-Unterstützung
+
+Behoben
+-------
+  - Editor-Farbcode-Behandlung bei allen Bearbeitungsoperationen
+  - Editor-Zeilenumbruch-Verhalten
+  - Zitat-Präfix-Nachfolge-Leerzeichen-Beibehaltung
+  - REP-Speichernachverfolgung
+
+18.4. Version 0.51 (2026-03-25)
+-------------------------------
+
+Hinzugefügt
+-----------
+  - QWKE-Unterstützung (erweitertes QWK)
+  - BBS-Farb-/Attributcode-Unterstützung für mehrere BBS-Typen
+  - Synchronet-Abstimmungsunterstützung (Umfragen und Hoch-/Runter-
+    Abstimmungen)
+  - Dateianhang-Unterstützung
+  - UTF-8-Unterstützung
+  - Farbauswahl (Ctrl-K)
+  - Remote-System-Verzeichnis (Ctrl-R)
+  - Suche und Filterung mit erweiterter Suche
+  - Begrüßungsbildschirm-Umschalter
+
+18.5. Version 0.50 (2026-03-24)
+-------------------------------
+
+  - Erstveröffentlichung
+  - Plattformübergreifender QWK-Offline-Mail-Reader
+  - DDMsgReader-inspirierte Leseoberfläche
+  - SlyEdit-inspirierter Nachrichten-Editor mit Ice- und DCT-Modi
+  - Themen-Unterstützung, Rechtschreibprüfung und Taglines
+  - REP-Antwortpaketerstellung
+  - Dateibrowser und eigenständiges Konfigurationsdienstprogramm
+

@@ -66,3 +66,6 @@ docs/html/screenshots/
 
 # QWK packet filenames
 DIGDIST.qwk
+
+# FILE_ID.DIZ is generated based on a template
+FILE_ID.DIZ

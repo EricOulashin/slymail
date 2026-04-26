@@ -18,6 +18,7 @@
 #include "voting.h"
 #include "remote_systems.h"
 #include "text_utils.h"
+#include "i18n.h"
 
 #include <ctime>
 #include <optional>
@@ -71,7 +72,7 @@ void showSplashScreen()
         tAttr(TC_GREEN, TC_BLACK, false));
 
     printCentered(centerY + 11,
-        "Press any key to continue...",
+        _("Press any key to continue..."),
         tAttr(TC_YELLOW, TC_BLACK, false));
 
     g_term->refresh();
@@ -307,7 +308,7 @@ static ExtEditorResult runExternalEditor(const ExternalEditorConfig& edCfg,
         std::ofstream ofs(tmpFile, std::ios::trunc);
         if (!ofs.is_open())
         {
-            messageDialog("Error", "Failed to create temporary file.");
+            messageDialog(_("Error"), _("Failed to create temporary file."));
             return result;
         }
         if (!initialContent.empty())
@@ -373,8 +374,8 @@ static ExtEditorResult runExternalEditor(const ExternalEditorConfig& edCfg,
     if (exitCode != 0)
     {
         aborted = true;
-        messageDialog("Message Aborted",
-            "The external editor exited with a non-zero status. Message not posted.");
+        messageDialog(_("Message Aborted"),
+            _("The external editor exited with a non-zero status. Message not posted."));
     }
     else
     {
@@ -409,8 +410,8 @@ static ExtEditorResult runExternalEditor(const ExternalEditorConfig& edCfg,
         {
             aborted = true;
             result.body.clear();
-            messageDialog("Message Aborted",
-                "The message was not changed in the editor. Message not posted.");
+            messageDialog(_("Message Aborted"),
+                _("The message was not changed in the editor. Message not posted."));
         }
     }
 
@@ -489,7 +490,7 @@ static EditorResult tryExternalOrBuiltinReply(
     }
     else if (edCfg->autoQuoteMode == ExtQuoteMode::Prompt)
     {
-        if (confirmDialog("Include quoted text from original message?"))
+        if (confirmDialog(_("Include quoted text from original message?")))
         {
             initialContent = buildQuoteText(origMsg, settings);
         }
@@ -554,12 +555,12 @@ static EditorResult tryExternalOrBuiltinNewMsg(
     int boxY = (rows - boxH) / 2;
     int boxX = (cols - boxW) / 2;
 
-    drawBox(boxY, boxX, boxH, boxW, borderAttr, "New Message", borderAttr);
+    drawBox(boxY, boxX, boxH, boxW, borderAttr, _("New Message"), borderAttr);
 
-    printAt(boxY + 2, boxX + 3, "Conference: " + confName,
+    printAt(boxY + 2, boxX + 3, _("Conference: ") + confName,
         tAttr(TC_GREEN, TC_BLACK, false));
 
-    printAt(boxY + 4, boxX + 3, "     To: ", tAttr(TC_CYAN, TC_BLACK, true));
+    printAt(boxY + 4, boxX + 3, _("     To: "), tAttr(TC_CYAN, TC_BLACK, true));
     string to = getStringInput(boxY + 4, boxX + 12, 25, "All",
         tAttr(TC_WHITE, TC_BLACK, true));
     if (to.empty())
@@ -567,7 +568,7 @@ static EditorResult tryExternalOrBuiltinNewMsg(
         return EditorResult::Aborted;
     }
 
-    printAt(boxY + 5, boxX + 3, "Subject: ", tAttr(TC_CYAN, TC_BLACK, true));
+    printAt(boxY + 5, boxX + 3, _("Subject: "), tAttr(TC_CYAN, TC_BLACK, true));
     string subj = getStringInput(boxY + 5, boxX + 12, 25, "",
         tAttr(TC_WHITE, TC_BLACK, true));
     if (subj.empty())
@@ -650,6 +651,10 @@ int main(int argc, char* argv[])
     Settings settings;
     bool settingsExist = settings.load();
 
+    // Initialize gettext — must happen before any translatable string is used.
+    // Locale .mo files live in locale/ next to the executable.
+    i18n_init(baseDir + PATH_SEP_STR + "locale", settings.language);
+
     // First-run: if no settings file exists, launch the config program
     // so the user can do initial configuration (including entering their name)
     if (!settingsExist)
@@ -727,12 +732,12 @@ int main(int argc, char* argv[])
     {
         if (pendingReplies.empty() && pendingVotes.empty())
         {
-            messageDialog("REP Packet", "No pending messages or votes to save.");
+            messageDialog(_("REP Packet"), _("No pending messages or votes to save."));
             return false;
         }
         if (!currentPacket.has_value())
         {
-            messageDialog("Error", "No QWK packet loaded.");
+            messageDialog(_("Error"), _("No QWK packet loaded."));
             return false;
         }
         string repDir = settings.replyDir;
@@ -741,13 +746,13 @@ int main(int argc, char* argv[])
         if (createRepPacket(repFile, currentPacket->info.bbsID,
                             settings.userName, pendingReplies, pendingVotes))
         {
-            messageDialog("REP Saved", "Reply packet saved: " + repFile);
+            messageDialog(_("REP Saved"), _("Reply packet saved: ") + repFile);
             repPacketSaved = true;
             return true;
         }
         else
         {
-            messageDialog("Error", "Failed to create REP packet.");
+            messageDialog(_("Error"), _("Failed to create REP packet."));
             return false;
         }
     };
@@ -787,7 +792,7 @@ int main(int argc, char* argv[])
 
             // Show loading message
             g_term->clear();
-            printCentered(g_term->getRows() / 2, "Loading QWK packet...",
+            printCentered(g_term->getRows() / 2, _("Loading QWK packet..."),
                 tAttr(TC_CYAN, TC_BLACK, true));
             printCentered(g_term->getRows() / 2 + 1, qwkFile,
                 tAttr(TC_WHITE, TC_BLACK, false));
@@ -797,7 +802,7 @@ int main(int argc, char* argv[])
             currentPacket = parseQwkFile(qwkFile);
             if (!currentPacket.has_value())
             {
-                messageDialog("Error", "Failed to open or parse QWK file.");
+                messageDialog(_("Error"), _("Failed to open or parse QWK file."));
                 continue;
             }
 
@@ -947,11 +952,11 @@ int main(int argc, char* argv[])
                                             {
                                                 pendingReplies.push_back(reply);
                                                 repPacketSaved = false;
-                                                messageDialog("Reply Saved",
-                                                    "Reply queued. " +
+                                                messageDialog(_("Reply Saved"),
+                                                    _("Reply queued. ") +
                                                     std::to_string(pendingReplies.size()) +
-                                                    " pending reply(s).");
-                                                if (confirmDialog("Save REP packet now?"))
+                                                    _(" pending reply(s)."));
+                                                if (confirmDialog(_("Save REP packet now?")))
                                                 {
                                                     saveRepPacket();
                                                 }
@@ -980,15 +985,15 @@ int main(int argc, char* argv[])
                                             }
                                             string voteDesc;
                                             if (lastVote.upVote)
-                                                voteDesc = "Up-vote";
+                                                voteDesc = _("Up-vote");
                                             else if (lastVote.downVote)
-                                                voteDesc = "Down-vote";
+                                                voteDesc = _("Down-vote");
                                             else
-                                                voteDesc = "Poll vote";
-                                            messageDialog("Vote Queued",
-                                                voteDesc + " queued. " +
+                                                voteDesc = _("Poll vote");
+                                            messageDialog(_("Vote Queued"),
+                                                voteDesc + _(" queued. ") +
                                                 std::to_string(pendingVotes.size()) +
-                                                " pending vote(s).");
+                                                _(" pending vote(s)."));
                                             break;
                                         }
                                         case MsgReadResult::Settings:
@@ -1035,11 +1040,11 @@ int main(int argc, char* argv[])
                                 {
                                     pendingReplies.push_back(reply);
                                     repPacketSaved = false;
-                                    messageDialog("Message Saved",
-                                        "Message queued. " +
+                                    messageDialog(_("Message Saved"),
+                                        _("Message queued. ") +
                                         std::to_string(pendingReplies.size()) +
-                                        " pending message(s).");
-                                    if (confirmDialog("Save REP packet now?"))
+                                        _(" pending message(s)."));
+                                    if (confirmDialog(_("Save REP packet now?")))
                                     {
                                         saveRepPacket();
                                     }
@@ -1065,7 +1070,7 @@ int main(int argc, char* argv[])
                                 // by resetting the packet
                                 if (!pendingReplies.empty())
                                 {
-                                    if (confirmDialog("Save pending replies before opening new file?"))
+                                    if (confirmDialog(_("Save pending replies before opening new file?")))
                                     {
                                         string repDir = settings.replyDir;
                                         if (repDir.empty())
@@ -1095,7 +1100,7 @@ int main(int argc, char* argv[])
                                 {
                                     if (!pendingReplies.empty() || !pendingVotes.empty())
                                     {
-                                        if (confirmDialog("Save pending items before opening new file?"))
+                                        if (confirmDialog(_("Save pending items before opening new file?")))
                                         {
                                             string repDir = settings.replyDir;
                                             if (repDir.empty()) repDir = dataDir + PATH_SEP_STR + "REP";
@@ -1133,7 +1138,7 @@ int main(int argc, char* argv[])
                     // Save pending replies first if any
                     if (!pendingReplies.empty())
                     {
-                        if (confirmDialog("Save pending replies before opening new file?"))
+                        if (confirmDialog(_("Save pending replies before opening new file?")))
                         {
                             string repDir = settings.replyDir;
                             if (repDir.empty())
@@ -1146,12 +1151,12 @@ int main(int argc, char* argv[])
                                                settings.userName, pendingReplies,
                                                pendingVotes))
                             {
-                                messageDialog("REP Saved",
-                                    "Reply packet saved: " + repFile);
+                                messageDialog(_("REP Saved"),
+                                    _("Reply packet saved: ") + repFile);
                             }
                             else
                             {
-                                messageDialog("Error", "Failed to create REP packet.");
+                                messageDialog(_("Error"), _("Failed to create REP packet."));
                             }
                         }
                         pendingReplies.clear();
@@ -1173,7 +1178,7 @@ int main(int argc, char* argv[])
                         // Save pending replies first
                         if (!pendingReplies.empty() || !pendingVotes.empty())
                         {
-                            if (confirmDialog("Save pending items before opening new file?"))
+                            if (confirmDialog(_("Save pending items before opening new file?")))
                             {
                                 string repDir = settings.replyDir;
                                 if (repDir.empty()) repDir = dataDir + PATH_SEP_STR + "REP";
@@ -1201,7 +1206,7 @@ int main(int argc, char* argv[])
                     }
                     else
                     {
-                        messageDialog("Voting", "No polls/votes found in this packet.");
+                        messageDialog(_("Voting"), _("No polls/votes found in this packet."));
                     }
                     break;
                 case ConfListResult::Settings:
@@ -1221,7 +1226,7 @@ int main(int argc, char* argv[])
         if (!running && !repPacketSaved && (!pendingReplies.empty() || !pendingVotes.empty()))
         {
             int totalPending = static_cast<int>(pendingReplies.size() + pendingVotes.size());
-            if (confirmDialog("Save " + std::to_string(totalPending) + " unsaved item(s) to REP packet?"))
+            if (confirmDialog(_("Save ") + std::to_string(totalPending) + _(" unsaved item(s) to REP packet?")))
             {
                 string repDir = settings.replyDir;
                 if (repDir.empty())
@@ -1236,14 +1241,14 @@ int main(int argc, char* argv[])
                 if (createRepPacket(repFile, bbsID, settings.userName, pendingReplies, pendingVotes))
                 {
                     // Brief message before exit
-                    printCentered(g_term->getRows() / 2, "REP packet saved: " + repFile,
+                    printCentered(g_term->getRows() / 2, _("REP packet saved: ") + repFile,
                         tAttr(TC_GREEN, TC_BLACK, true));
                     g_term->refresh();
                     g_term->napMillis(1500);
                 }
                 else
                 {
-                    messageDialog("Error", "Failed to create REP packet.");
+                    messageDialog(_("Error"), _("Failed to create REP packet."));
                 }
             }
         }

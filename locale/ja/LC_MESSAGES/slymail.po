@@ -1,0 +1,646 @@
+# SlyMail translations for Japanese
+# Machine-generated translation
+msgid ""
+msgstr ""
+"Project-Id-Version: slymail\n"
+"PO-Revision-Date: 2026-04-26\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: main.cpp:75
+#: msg_list.cpp:728
+#: msg_list.cpp:1153
+msgid "Press any key to continue..."
+msgstr "何かキーを押して続けてください..."
+
+#: main.cpp:311
+#: main.cpp:740
+#: main.cpp:755
+msgid "Error"
+msgstr "エラー"
+
+#: main.cpp:311
+msgid "Failed to create temporary file."
+msgstr "一時ファイルの作成に失敗しました。"
+
+#: main.cpp:377
+#: main.cpp:413
+msgid "Message Aborted"
+msgstr "メッセージを中断しました"
+
+#: main.cpp:378
+msgid "The external editor exited with a non-zero status. Message not posted."
+msgstr "外部エディターがゼロ以外の終了コードで終了しました。メッセージは投稿されませんでした。"
+
+#: main.cpp:414
+msgid "The message was not changed in the editor. Message not posted."
+msgstr "エディターでメッセージが変更されませんでした。メッセージは投稿されませんでした。"
+
+#: main.cpp:493
+msgid "Include quoted text from original message?"
+msgstr "元のメッセージからの引用テキストを含めますか？"
+
+#: main.cpp:558
+msgid "New Message"
+msgstr "新しいメッセージ"
+
+#: main.cpp:560
+msgid "Conference: "
+msgstr "カンファレンス: "
+
+#: main.cpp:563
+msgid "     To: "
+msgstr "     宛先: "
+
+#: main.cpp:571
+msgid "Subject: "
+msgstr "件名: "
+
+#: main.cpp:735
+msgid "REP Packet"
+msgstr "REP パケット"
+
+#: main.cpp:735
+msgid "No pending messages or votes to save."
+msgstr "保存する保留中のメッセージまたは投票はありません。"
+
+#: main.cpp:740
+msgid "No QWK packet loaded."
+msgstr "QWK パケットが読み込まれていません。"
+
+#: main.cpp:749
+msgid "REP Saved"
+msgstr "REP を保存しました"
+
+#: main.cpp:749
+msgid "Reply packet saved: "
+msgstr "返信パケットを保存しました: "
+
+#: main.cpp:755
+msgid "Failed to create REP packet."
+msgstr "REP パケットの作成に失敗しました。"
+
+#: main.cpp:795
+msgid "Loading QWK packet..."
+msgstr "QWK パケットを読み込んでいます..."
+
+#: main.cpp:805
+msgid "Failed to open or parse QWK file."
+msgstr "QWK ファイルのオープンまたは解析に失敗しました。"
+
+#: main.cpp:955
+msgid "Reply Saved"
+msgstr "返信を保存しました"
+
+#: main.cpp:956
+msgid "Reply queued. "
+msgstr "返信をキューに追加しました。 "
+
+#: main.cpp:958
+msgid " pending reply(s)."
+msgstr " 件の返信が保留中です。"
+
+#: main.cpp:959
+#: main.cpp:1047
+msgid "Save REP packet now?"
+msgstr "今すぐ REP パケットを保存しますか？"
+
+#: main.cpp:988
+msgid "Up-vote"
+msgstr "賛成票"
+
+#: main.cpp:990
+msgid "Down-vote"
+msgstr "反対票"
+
+#: main.cpp:992
+msgid "Poll vote"
+msgstr "アンケート投票"
+
+#: main.cpp:993
+msgid "Vote Queued"
+msgstr "投票をキューに追加しました"
+
+#: main.cpp:994
+msgid " queued. "
+msgstr " をキューに追加しました。 "
+
+#: main.cpp:996
+msgid " pending vote(s)."
+msgstr " 件の投票が保留中です。"
+
+#: main.cpp:1043
+msgid "Message Saved"
+msgstr "メッセージを保存しました"
+
+#: main.cpp:1044
+msgid "Message queued. "
+msgstr "メッセージをキューに追加しました。 "
+
+#: main.cpp:1046
+msgid " pending message(s)."
+msgstr " 件のメッセージが保留中です。"
+
+#: main.cpp:1073
+msgid "Save pending replies before opening new file?"
+msgstr "新しいファイルを開く前に保留中の返信を保存しますか？"
+
+#: main.cpp:1103
+msgid "Save pending items before opening new file?"
+msgstr "新しいファイルを開く前に保留中のアイテムを保存しますか？"
+
+#: msg_list.cpp:88
+msgid "Could not create temp file for external editor."
+msgstr "外部エディター用の一時ファイルを作成できませんでした。"
+
+#: msg_list.cpp:117
+msgid "Could not read back edited file."
+msgstr "編集済みファイルを読み返すことができませんでした。"
+
+#: msg_list.cpp:152
+msgid "Edit Pending"
+msgstr "編集保留"
+
+#: msg_list.cpp:152
+msgid "No messages have been written this session."
+msgstr "このセッションではメッセージが書かれていません。"
+
+#: msg_list.cpp:196
+msgid "Edit Pending Messages"
+msgstr "保留中のメッセージを編集"
+
+#: msg_list.cpp:205
+#: msg_list.cpp:904
+msgid "To"
+msgstr "宛先"
+
+#: msg_list.cpp:206
+#: msg_list.cpp:905
+msgid "Subject"
+msgstr "件名"
+
+#: msg_list.cpp:207
+#: msg_list.cpp:906
+msgid "Date"
+msgstr "日付"
+
+#: msg_list.cpp:208
+#: msg_list.cpp:907
+msgid "Time"
+msgstr "時刻"
+
+#: msg_list.cpp:252
+#: msg_list.cpp:521
+#: msg_list.cpp:921
+msgid "Up/Dn/PgUp/PgDn/HOME/END, "
+msgstr "Up/Dn/PgUp/PgDn/HOME/END, "
+
+#: msg_list.cpp:253
+msgid "nter=Edit"
+msgstr "Enter=編集"
+
+#: msg_list.cpp:253
+msgid "uit/ESC"
+msgstr "Q/ESC=終了"
+
+#: msg_list.cpp:494
+msgid "Sysop: "
+msgstr "管理者: "
+
+#: msg_list.cpp:496
+msgid "User: "
+msgstr "ユーザー: "
+
+#: msg_list.cpp:498
+#: msg_list.cpp:916
+#: msg_list.cpp:930
+msgid "msgs"
+msgstr "件"
+
+#: msg_list.cpp:510
+msgid "Conf#"
+msgstr "カンファレンス番号"
+
+#: msg_list.cpp:511
+msgid "Conference Name"
+msgstr "カンファレンス名"
+
+#: msg_list.cpp:512
+msgid "Msgs"
+msgstr "件数"
+
+#: msg_list.cpp:513
+msgid "New"
+msgstr "新着"
+
+#: msg_list.cpp:522
+#: msg_list.cpp:922
+msgid "dit pending"
+msgstr "E=保留中を編集"
+
+#: msg_list.cpp:522
+#: msg_list.cpp:613
+#: msg_list.cpp:922
+msgid "Search"
+msgstr "検索"
+
+#: msg_list.cpp:522
+#: msg_list.cpp:923
+msgid "o to #"
+msgstr "G=番号へ移動"
+
+#: msg_list.cpp:523
+msgid "pen file"
+msgstr "O=ファイルを開く"
+
+#: msg_list.cpp:523
+msgid "ettings"
+msgstr "S=設定"
+
+#: msg_list.cpp:523
+#: msg_list.cpp:923
+msgid "uit"
+msgstr "Q=終了"
+
+#: msg_list.cpp:528
+#: msg_list.cpp:928
+msgid "Filter:"
+msgstr "フィルター:"
+
+#: msg_list.cpp:613
+msgid "No conferences found matching the search."
+msgstr "検索に一致するカンファレンスが見つかりませんでした。"
+
+#: msg_list.cpp:653
+msgid "Go to conf #: "
+msgstr "カンファレンス番号へ移動: "
+
+#: msg_list.cpp:704
+msgid "Conference List Help"
+msgstr "カンファレンスリストのヘルプ"
+
+#: msg_list.cpp:714
+msgid "Navigate conferences"
+msgstr "カンファレンス間を移動"
+
+#: msg_list.cpp:715
+msgid "Open selected conference"
+msgstr "選択したカンファレンスを開く"
+
+#: msg_list.cpp:716
+#: msg_list.cpp:1142
+msgid "Scroll up/down a page"
+msgstr "1ページ上下にスクロール"
+
+#: msg_list.cpp:717
+msgid "Jump to first/last conference"
+msgstr "最初/最後のカンファレンスへジャンプ"
+
+#: msg_list.cpp:718
+msgid "Search/filter conferences"
+msgstr "カンファレンスを検索/フィルター"
+
+#: msg_list.cpp:719
+#: msg_list.cpp:1140
+msgid "Edit pending messages (session)"
+msgstr "保留中のメッセージを編集（セッション）"
+
+#: msg_list.cpp:720
+msgid "View polls/votes in packet"
+msgstr "パケット内の投票を表示"
+
+#: msg_list.cpp:721
+#: msg_list.cpp:1145
+msgid "Open a different QWK file"
+msgstr "別の QWK ファイルを開く"
+
+#: msg_list.cpp:722
+#: msg_list.cpp:1146
+msgid "Remote systems (download QWK)"
+msgstr "リモートシステム（QWK をダウンロード）"
+
+#: msg_list.cpp:723
+#: msg_list.cpp:1147
+msgid "Save REP reply packet"
+msgstr "REP 返信パケットを保存"
+
+#: msg_list.cpp:724
+#: msg_list.cpp:1148
+#: settings_dialog.cpp:1258
+msgid "Settings"
+msgstr "設定"
+
+#: msg_list.cpp:725
+#: msg_list.cpp:1150
+msgid "Quit SlyMail"
+msgstr "SlyMail を終了"
+
+#: msg_list.cpp:726
+#: msg_list.cpp:1151
+msgid "This help screen"
+msgstr "このヘルプ画面"
+
+#: msg_list.cpp:902
+msgid "Msg#"
+msgstr "メッセージ番号"
+
+#: msg_list.cpp:903
+msgid "From"
+msgstr "差出人"
+
+#: msg_list.cpp:922
+msgid "ew msg"
+msgstr "N=新規メッセージ"
+
+#: msg_list.cpp:922
+msgid "ead"
+msgstr "R=読む"
+
+#: msg_list.cpp:923
+msgid "onf list"
+msgstr "C=カンファレンスリスト"
+
+#: msg_list.cpp:1013
+msgid "No messages found matching the search."
+msgstr "検索に一致するメッセージが見つかりませんでした。"
+
+#: msg_list.cpp:1092
+msgid "Go to msg #: "
+msgstr "メッセージ番号へ移動: "
+
+#: msg_list.cpp:1127
+msgid "Message List Help"
+msgstr "メッセージリストのヘルプ"
+
+#: msg_list.cpp:1137
+msgid "Navigate messages"
+msgstr "メッセージ間を移動"
+
+#: msg_list.cpp:1138
+msgid "Read selected message"
+msgstr "選択したメッセージを読む"
+
+#: msg_list.cpp:1139
+msgid "Write a new message"
+msgstr "新しいメッセージを書く"
+
+#: msg_list.cpp:1141
+msgid "Go to message number"
+msgstr "メッセージ番号へ移動"
+
+#: msg_list.cpp:1143
+msgid "Jump to first/last message"
+msgstr "最初/最後のメッセージへジャンプ"
+
+#: msg_list.cpp:1144
+msgid "Search/filter messages"
+msgstr "メッセージを検索/フィルター"
+
+#: msg_list.cpp:1149
+msgid "Back to conference list"
+msgstr "カンファレンスリストへ戻る"
+
+#: msg_reader.cpp:98
+msgid "(Poll data not available)"
+msgstr "（投票データは利用できません）"
+
+#: msg_reader.cpp:178
+msgid "Total votes:"
+msgstr "総投票数:"
+
+#: msg_reader.cpp:182
+msgid "[Poll is closed]"
+msgstr "【投票は締め切られました】"
+
+#: settings_dialog.cpp:67
+msgid " UI Mode "
+msgstr " UI モード "
+
+#: settings_dialog.cpp:99
+msgid "Enter=OK, ESC=Cancel"
+msgstr "Enter=OK、ESC=キャンセル"
+
+#: settings_dialog.cpp:251
+msgid "Themes"
+msgstr "テーマ"
+
+#: settings_dialog.cpp:251
+msgid "No theme files found in config/"
+msgstr "config/ にテーマファイルが見つかりませんでした"
+
+#: settings_dialog.cpp:338
+msgid " Select Theme "
+msgstr " テーマを選択 "
+
+#: settings_dialog.cpp:351
+msgid "Theme File"
+msgstr "テーマファイル"
+
+#: settings_dialog.cpp:375
+msgid "Up, Dn, Enter=Select, ESC/Q=Cancel"
+msgstr "Up、Dn、Enter=選択、ESC/Q=キャンセル"
+
+#: settings_dialog.cpp:437
+msgid "Dictionaries"
+msgstr "辞書"
+
+#: settings_dialog.cpp:437
+msgid "No dictionary files found in dictionary_files/"
+msgstr "dictionary_files/ に辞書ファイルが見つかりませんでした"
+
+#: settings_dialog.cpp:547
+msgid " Select Dictionaries "
+msgstr " 辞書を選択 "
+
+#: settings_dialog.cpp:560
+msgid "Dictionary"
+msgstr "辞書"
+
+#: settings_dialog.cpp:561
+msgid "Selected"
+msgstr "選択済み"
+
+#: settings_dialog.cpp:585
+msgid "Up, Dn, Enter/Space=Toggle, ESC/Q=Done"
+msgstr "Up、Dn、Enter/Space=切り替え、ESC/Q=完了"
+
+#: settings_dialog.cpp:668
+msgid "Choose UI mode"
+msgstr "UI モードを選択"
+
+#: settings_dialog.cpp:669
+msgid "Taglines"
+msgstr "タグライン"
+
+#: settings_dialog.cpp:670
+msgid "Spell-check dictionary/dictionaries"
+msgstr "スペルチェック辞書"
+
+#: settings_dialog.cpp:671
+msgid "Prompt for spell checker on save"
+msgstr "保存時にスペルチェックを促す"
+
+#: settings_dialog.cpp:672
+msgid "Wrap quote lines to terminal width"
+msgstr "引用行を端末幅に折り返す"
+
+#: settings_dialog.cpp:673
+msgid "Quote with author's initials"
+msgstr "著者のイニシャルで引用"
+
+#: settings_dialog.cpp:674
+msgid "Indent quote lines containing initials"
+msgstr "イニシャルを含む引用行をインデント"
+
+#: settings_dialog.cpp:675
+msgid "Trim spaces from quote lines"
+msgstr "引用行のスペースをトリム"
+
+#: settings_dialog.cpp:757
+msgid " Setting "
+msgstr " 設定項目 "
+
+#: settings_dialog.cpp:768
+#: settings_dialog.cpp:1066
+#: settings_dialog.cpp:1348
+msgid " Enabled "
+msgstr " 有効 "
+
+#: settings_dialog.cpp:773
+msgid " Page 1 of 1 "
+msgstr " 1/1 ページ "
+
+#: settings_dialog.cpp:791
+msgid "Up, Dn, Enter=Select/toggle, ?=Help, ESC/Q/Ctrl-U=Close"
+msgstr "Up、Dn、Enter=選択/切替、?=ヘルプ、ESC/Q/Ctrl-U=閉じる"
+
+#: settings_dialog.cpp:965
+msgid "Show kludge lines"
+msgstr "クラッジ行を表示"
+
+#: settings_dialog.cpp:967
+msgid "Show tear/origin lines"
+msgstr "テア/オリジン行を表示"
+
+#: settings_dialog.cpp:969
+msgid "Scrollbar in reader"
+msgstr "リーダーにスクロールバーを表示"
+
+#: settings_dialog.cpp:971
+msgid "Only show areas with new mail"
+msgstr "新着メールのあるエリアのみ表示"
+
+#: settings_dialog.cpp:973
+msgid "Strip ANSI codes from messages"
+msgstr "メッセージから ANSI コードを除去"
+
+#: settings_dialog.cpp:975
+msgid "Attribute code toggles..."
+msgstr "属性コードの切り替え..."
+
+#: settings_dialog.cpp:977
+msgid "Search using regular expression"
+msgstr "正規表現で検索"
+
+#: settings_dialog.cpp:979
+msgid "List messages in reversed"
+msgstr "メッセージを逆順に表示"
+
+#: settings_dialog.cpp:981
+msgid "Show splash screen on startup"
+msgstr "起動時にスプラッシュ画面を表示"
+
+#: settings_dialog.cpp:983
+msgid "Reply packet directory"
+msgstr "返信パケットのディレクトリ"
+
+#: settings_dialog.cpp:984
+msgid "(current dir)"
+msgstr "（現在のディレクトリ）"
+
+#: settings_dialog.cpp:986
+msgid "Use external editor"
+msgstr "外部エディターを使用"
+
+#: settings_dialog.cpp:988
+msgid "External Editors..."
+msgstr "外部エディター..."
+
+#: settings_dialog.cpp:990
+msgid "External Editor"
+msgstr "外部エディター"
+
+#: settings_dialog.cpp:991
+msgid "(none)"
+msgstr "（なし）"
+
+#: settings_dialog.cpp:1053
+msgid " Reader Settings "
+msgstr " リーダー設定 "
+
+#: settings_dialog.cpp:1090
+msgid "Up, Dn, Enter=Select/toggle, S=Save, ESC/Q=Close"
+msgstr "Up、Dn、Enter=選択/切替、S=保存、ESC/Q=閉じる"
+
+#: settings_dialog.cpp:1195
+msgid "Select Reply Packet Directory"
+msgstr "返信パケットのディレクトリを選択"
+
+#: settings_dialog.cpp:1258
+msgid "Settings saved successfully."
+msgstr "設定を正常に保存しました。"
+
+#: settings_dialog.cpp:1266
+msgid "Save changes before closing?"
+msgstr "閉じる前に変更を保存しますか？"
+
+#: settings_dialog.cpp:1295
+msgid "Synchronet Ctrl-A attribute codes"
+msgstr "Synchronet Ctrl-A 属性コード"
+
+#: settings_dialog.cpp:1296
+msgid "WWIV attribute codes"
+msgstr "WWIV 属性コード"
+
+#: settings_dialog.cpp:1297
+msgid "Celerity attribute codes"
+msgstr "Celerity 属性コード"
+
+#: settings_dialog.cpp:1298
+msgid "Renegade attribute codes"
+msgstr "Renegade 属性コード"
+
+#: settings_dialog.cpp:1299
+msgid "PCBoard/Wildcat attribute codes"
+msgstr "PCBoard/Wildcat 属性コード"
+
+#: settings_dialog.cpp:1336
+msgid " Attribute Code Toggles "
+msgstr " 属性コードの切り替え "
+
+#: settings_dialog.cpp:1385
+msgid "ANSI escape codes are always enabled."
+msgstr "ANSI エスケープコードは常に有効です。"
+
+#: settings_dialog.cpp:1386
+msgid "These apply to the reader and editor."
+msgstr "これらはリーダーとエディターに適用されます。"
+
+#: settings_dialog.cpp:1390
+msgid " Up/Dn, Enter/Space=Toggle, ESC=Done "
+msgstr " Up/Dn、Enter/Space=切替、ESC=完了 "
+
+#: settings_dialog.cpp:1463
+msgid " Drop File Type "
+msgstr " ドロップファイルの種類 "
+
+#: settings_dialog.cpp:1484
+msgid "Enter=Select, ESC=Cancel"
+msgstr "Enter=選択、ESC=キャンセル"
+
+#: settings_dialog.cpp:1538
+msgid " External Editor "
+msgstr " 外部エディター "

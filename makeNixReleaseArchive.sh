@@ -21,10 +21,26 @@ cp slymail.ini "$releaseDirName"
 #cp CHANGELOG.md "$releaseDirName"
 cp slymail "$releaseDirName"
 cp config "$releaseDirName"
+
+# Copy compiled locale (.mo) files for runtime translation
+mkdir -p "$releaseDirName/locale"
+for lang in cy da de el es fi fr ga ja nb pirate pl pt_BR ru sv zh_CN zh_TW; do
+    mo="locale/${lang}/LC_MESSAGES/slymail.mo"
+    if [ -f "$mo" ]; then
+        mkdir -p "$releaseDirName/locale/${lang}/LC_MESSAGES"
+        cp "$mo" "$releaseDirName/locale/${lang}/LC_MESSAGES/"
+    fi
+done
+
 cd "$releaseDirName/docs"
 cp ../../docs/SlyMail_User_Manual.pdf . 2>/dev/null || true
 cp ../../docs/SlyMail_User_Manual.txt . 2>/dev/null || true
 cp -rf ../../docs/html . 2>/dev/null || true
+# Copy translated user manuals (PDF and plain text) for all supported languages
+for lang in cy da de el es fi fr ga ja nb pirate pl pt-BR ru sv zh-CN zh-TW; do
+    cp "../../docs/SlyMail_User_Manual_${lang}.pdf" . 2>/dev/null || true
+    cp "../../docs/SlyMail_User_Manual_${lang}.txt" . 2>/dev/null || true
+done
 cd ../..
 
 

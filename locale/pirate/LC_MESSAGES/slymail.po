@@ -1,0 +1,646 @@
+# SlyMail translations for Pirate Speak
+# Machine-generated translation
+msgid ""
+msgstr ""
+"Project-Id-Version: slymail\n"
+"PO-Revision-Date: 2026-04-26\n"
+"Language: pirate\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: main.cpp:75
+#: msg_list.cpp:728
+#: msg_list.cpp:1153
+msgid "Press any key to continue..."
+msgstr "Press any plank to sail on, matey..."
+
+#: main.cpp:311
+#: main.cpp:740
+#: main.cpp:755
+msgid "Error"
+msgstr "Blimey, an Error!"
+
+#: main.cpp:311
+msgid "Failed to create temporary file."
+msgstr "Davy Jones took the temporary file, arr!"
+
+#: main.cpp:377
+#: main.cpp:413
+msgid "Message Aborted"
+msgstr "Message Thrown Overboard!"
+
+#: main.cpp:378
+msgid "The external editor exited with a non-zero status. Message not posted."
+msgstr "The landlubber editor abandoned ship with a bad omen. Scroll not posted, arr!"
+
+#: main.cpp:414
+msgid "The message was not changed in the editor. Message not posted."
+msgstr "Ye didn't change a single word in the scroll, so it stays at the bottom of the sea."
+
+#: main.cpp:493
+msgid "Include quoted text from original message?"
+msgstr "Plunder the words from the original scroll?"
+
+#: main.cpp:558
+msgid "New Message"
+msgstr "New Scroll"
+
+#: main.cpp:560
+msgid "Conference: "
+msgstr "Port o' Call: "
+
+#: main.cpp:563
+msgid "     To: "
+msgstr "     To the landlubber: "
+
+#: main.cpp:571
+msgid "Subject: "
+msgstr "The Matter: "
+
+#: main.cpp:735
+msgid "REP Packet"
+msgstr "Reply Chest"
+
+#: main.cpp:735
+msgid "No pending messages or votes to save."
+msgstr "No scrolls or ballots waitin' in the hold, matey."
+
+#: main.cpp:740
+msgid "No QWK packet loaded."
+msgstr "No treasure chest has been hauled aboard, arr!"
+
+#: main.cpp:749
+msgid "REP Saved"
+msgstr "Reply Chest Stowed"
+
+#: main.cpp:749
+msgid "Reply packet saved: "
+msgstr "Reply chest stowed in the hold: "
+
+#: main.cpp:755
+msgid "Failed to create REP packet."
+msgstr "Could not lash together the reply chest, arr!"
+
+#: main.cpp:795
+msgid "Loading QWK packet..."
+msgstr "Hauling in the treasure chest..."
+
+#: main.cpp:805
+msgid "Failed to open or parse QWK file."
+msgstr "The treasure chest be locked or cursed, arr! Could not open it."
+
+#: main.cpp:955
+msgid "Reply Saved"
+msgstr "Message Stowed in the Hold"
+
+#: main.cpp:956
+msgid "Reply queued. "
+msgstr "Reply waitin' at the dock. "
+
+#: main.cpp:958
+msgid " pending reply(s)."
+msgstr " reply(s) still adrift."
+
+#: main.cpp:959
+#: main.cpp:1047
+msgid "Save REP packet now?"
+msgstr "Stow the reply chest now, arr?"
+
+#: main.cpp:988
+msgid "Up-vote"
+msgstr "Hoist the colours!"
+
+#: main.cpp:990
+msgid "Down-vote"
+msgstr "Make 'em walk the plank!"
+
+#: main.cpp:992
+msgid "Poll vote"
+msgstr "Cast yer ballot in the ship's poll"
+
+#: main.cpp:993
+msgid "Vote Queued"
+msgstr "Vote Adrift in the Queue"
+
+#: main.cpp:994
+msgid " queued. "
+msgstr " waitin' at the dock. "
+
+#: main.cpp:996
+msgid " pending vote(s)."
+msgstr " vote(s) still adrift."
+
+#: main.cpp:1043
+msgid "Message Saved"
+msgstr "Scroll Locked in the Chest"
+
+#: main.cpp:1044
+msgid "Message queued. "
+msgstr "Scroll adrift in the queue. "
+
+#: main.cpp:1046
+msgid " pending message(s)."
+msgstr " scroll(s) still adrift."
+
+#: main.cpp:1073
+msgid "Save pending replies before opening new file?"
+msgstr "Stow yer pending replies before chartin' a new course?"
+
+#: main.cpp:1103
+msgid "Save pending items before opening new file?"
+msgstr "Stow all plunder before openin' a new chart?"
+
+#: msg_list.cpp:88
+msgid "Could not create temp file for external editor."
+msgstr "Could not carve a temporary plank for the outside scribe, arr!"
+
+#: msg_list.cpp:117
+msgid "Could not read back edited file."
+msgstr "The scribe's scroll be unreadable now, curse it!"
+
+#: msg_list.cpp:152
+msgid "Edit Pending"
+msgstr "Scrolls Waitin' to be Polished"
+
+#: msg_list.cpp:152
+msgid "No messages have been written this session."
+msgstr "Ye haven't penned a scroll this voyage, matey."
+
+#: msg_list.cpp:196
+msgid "Edit Pending Messages"
+msgstr "Polish Yer Unsent Scrolls"
+
+#: msg_list.cpp:205
+#: msg_list.cpp:904
+msgid "To"
+msgstr "To"
+
+#: msg_list.cpp:206
+#: msg_list.cpp:905
+msgid "Subject"
+msgstr "The Matter"
+
+#: msg_list.cpp:207
+#: msg_list.cpp:906
+msgid "Date"
+msgstr "Date"
+
+#: msg_list.cpp:208
+#: msg_list.cpp:907
+msgid "Time"
+msgstr "Bells"
+
+#: msg_list.cpp:252
+#: msg_list.cpp:521
+#: msg_list.cpp:921
+msgid "Up/Dn/PgUp/PgDn/HOME/END, "
+msgstr "Up/Dn/PgUp/PgDn/HOME/END, "
+
+#: msg_list.cpp:253
+msgid "nter=Edit"
+msgstr "nter=Polish"
+
+#: msg_list.cpp:253
+msgid "uit/ESC"
+msgstr "uit/ESC"
+
+#: msg_list.cpp:494
+msgid "Sysop: "
+msgstr "Cap'n: "
+
+#: msg_list.cpp:496
+msgid "User: "
+msgstr "Scallywag: "
+
+#: msg_list.cpp:498
+#: msg_list.cpp:916
+#: msg_list.cpp:930
+msgid "msgs"
+msgstr "scrolls"
+
+#: msg_list.cpp:510
+msgid "Conf#"
+msgstr "Port#"
+
+#: msg_list.cpp:511
+msgid "Conference Name"
+msgstr "Port o' Call"
+
+#: msg_list.cpp:512
+msgid "Msgs"
+msgstr "Scrolls"
+
+#: msg_list.cpp:513
+msgid "New"
+msgstr "Fresh Plunder"
+
+#: msg_list.cpp:522
+#: msg_list.cpp:922
+msgid "dit pending"
+msgstr "dit unsent scrolls"
+
+#: msg_list.cpp:522
+#: msg_list.cpp:613
+#: msg_list.cpp:922
+msgid "Search"
+msgstr "Hunt fer it"
+
+#: msg_list.cpp:522
+#: msg_list.cpp:923
+msgid "o to #"
+msgstr "o to #"
+
+#: msg_list.cpp:523
+msgid "pen file"
+msgstr "pen chest"
+
+#: msg_list.cpp:523
+msgid "ettings"
+msgstr "hip's Log"
+
+#: msg_list.cpp:523
+#: msg_list.cpp:923
+msgid "uit"
+msgstr "uit"
+
+#: msg_list.cpp:528
+#: msg_list.cpp:928
+msgid "Filter:"
+msgstr "Sift the Waters:"
+
+#: msg_list.cpp:613
+msgid "No conferences found matching the search."
+msgstr "No ports match yer search, arr! Try different waters."
+
+#: msg_list.cpp:653
+msgid "Go to conf #: "
+msgstr "Sail to port #: "
+
+#: msg_list.cpp:704
+msgid "Conference List Help"
+msgstr "Port Directory Guidance, arr!"
+
+#: msg_list.cpp:714
+msgid "Navigate conferences"
+msgstr "Chart yer course through ports"
+
+#: msg_list.cpp:715
+msgid "Open selected conference"
+msgstr "Drop anchor at the chosen port"
+
+#: msg_list.cpp:716
+#: msg_list.cpp:1142
+msgid "Scroll up/down a page"
+msgstr "Hoist or lower yer spyglass a page"
+
+#: msg_list.cpp:717
+msgid "Jump to first/last conference"
+msgstr "Sail to the first or last port in the chart"
+
+#: msg_list.cpp:718
+msgid "Search/filter conferences"
+msgstr "Hunt fer a port by name"
+
+#: msg_list.cpp:719
+#: msg_list.cpp:1140
+msgid "Edit pending messages (session)"
+msgstr "Polish yer unsent scrolls from this voyage"
+
+#: msg_list.cpp:720
+msgid "View polls/votes in packet"
+msgstr "Inspect the ship's vote tallies in the chest"
+
+#: msg_list.cpp:721
+#: msg_list.cpp:1145
+msgid "Open a different QWK file"
+msgstr "Haul aboard a different treasure chest"
+
+#: msg_list.cpp:722
+#: msg_list.cpp:1146
+msgid "Remote systems (download QWK)"
+msgstr "Distant ships (plunder their QWK chest)"
+
+#: msg_list.cpp:723
+#: msg_list.cpp:1147
+msgid "Save REP reply packet"
+msgstr "Stow yer REP reply chest in the hold"
+
+#: msg_list.cpp:724
+#: msg_list.cpp:1148
+#: settings_dialog.cpp:1258
+msgid "Settings"
+msgstr "Ship's Log"
+
+#: msg_list.cpp:725
+#: msg_list.cpp:1150
+msgid "Quit SlyMail"
+msgstr "Abandon Ship!"
+
+#: msg_list.cpp:726
+#: msg_list.cpp:1151
+msgid "This help screen"
+msgstr "This here treasure map (help)"
+
+#: msg_list.cpp:902
+msgid "Msg#"
+msgstr "Scroll#"
+
+#: msg_list.cpp:903
+msgid "From"
+msgstr "From"
+
+#: msg_list.cpp:922
+msgid "ew msg"
+msgstr "ew scroll"
+
+#: msg_list.cpp:922
+msgid "ead"
+msgstr "ead"
+
+#: msg_list.cpp:923
+msgid "onf list"
+msgstr "ort list"
+
+#: msg_list.cpp:1013
+msgid "No messages found matching the search."
+msgstr "No scrolls found matchin' yer hunt, arr!"
+
+#: msg_list.cpp:1092
+msgid "Go to msg #: "
+msgstr "Sail to scroll #: "
+
+#: msg_list.cpp:1127
+msgid "Message List Help"
+msgstr "Scroll List Guidance, arr!"
+
+#: msg_list.cpp:1137
+msgid "Navigate messages"
+msgstr "Sail through the scrolls"
+
+#: msg_list.cpp:1138
+msgid "Read selected message"
+msgstr "Unfurl the chosen scroll"
+
+#: msg_list.cpp:1139
+msgid "Write a new message"
+msgstr "Pen a fresh scroll"
+
+#: msg_list.cpp:1141
+msgid "Go to message number"
+msgstr "Sail to a scroll by number"
+
+#: msg_list.cpp:1143
+msgid "Jump to first/last message"
+msgstr "Leap to the first or last scroll"
+
+#: msg_list.cpp:1144
+msgid "Search/filter messages"
+msgstr "Hunt fer a scroll"
+
+#: msg_list.cpp:1149
+msgid "Back to conference list"
+msgstr "Return to the port directory"
+
+#: msg_reader.cpp:98
+msgid "(Poll data not available)"
+msgstr "(The vote tallies be lost at sea)"
+
+#: msg_reader.cpp:178
+msgid "Total votes:"
+msgstr "Full crew count:"
+
+#: msg_reader.cpp:182
+msgid "[Poll is closed]"
+msgstr "[The vote be done and buried!]"
+
+#: settings_dialog.cpp:67
+msgid " UI Mode "
+msgstr " Deck Layout "
+
+#: settings_dialog.cpp:99
+msgid "Enter=OK, ESC=Cancel"
+msgstr "Enter=Aye, ESC=Nay"
+
+#: settings_dialog.cpp:251
+msgid "Themes"
+msgstr "Ship's Colors"
+
+#: settings_dialog.cpp:251
+msgid "No theme files found in config/"
+msgstr "No colors found in the config/ hold, arr!"
+
+#: settings_dialog.cpp:338
+msgid " Select Theme "
+msgstr " Pick Yer Colors "
+
+#: settings_dialog.cpp:351
+msgid "Theme File"
+msgstr "Colors Scroll"
+
+#: settings_dialog.cpp:375
+msgid "Up, Dn, Enter=Select, ESC/Q=Cancel"
+msgstr "Up, Dn, Enter=Claim it, ESC/Q=Walk away"
+
+#: settings_dialog.cpp:437
+msgid "Dictionaries"
+msgstr "Word Hoards"
+
+#: settings_dialog.cpp:437
+msgid "No dictionary files found in dictionary_files/"
+msgstr "No word hoards found in dictionary_files/, arr!"
+
+#: settings_dialog.cpp:547
+msgid " Select Dictionaries "
+msgstr " Pick Yer Word Hoards "
+
+#: settings_dialog.cpp:560
+msgid "Dictionary"
+msgstr "Word Hoard"
+
+#: settings_dialog.cpp:561
+msgid "Selected"
+msgstr "Claimed"
+
+#: settings_dialog.cpp:585
+msgid "Up, Dn, Enter/Space=Toggle, ESC/Q=Done"
+msgstr "Up, Dn, Enter/Space=Hoist or Lower, ESC/Q=Done"
+
+#: settings_dialog.cpp:668
+msgid "Choose UI mode"
+msgstr "Pick yer deck layout"
+
+#: settings_dialog.cpp:669
+msgid "Taglines"
+msgstr "Parting Shanties"
+
+#: settings_dialog.cpp:670
+msgid "Spell-check dictionary/dictionaries"
+msgstr "Word hoard(s) fer spellin' check"
+
+#: settings_dialog.cpp:671
+msgid "Prompt for spell checker on save"
+msgstr "Ask the spellin' lookout when stowin' a scroll"
+
+#: settings_dialog.cpp:672
+msgid "Wrap quote lines to terminal width"
+msgstr "Wrap quoted lines to fit the porthole"
+
+#: settings_dialog.cpp:673
+msgid "Quote with author's initials"
+msgstr "Mark quoted lines with the scribe's initials"
+
+#: settings_dialog.cpp:674
+msgid "Indent quote lines containing initials"
+msgstr "Indent lines that bear the scribe's mark"
+
+#: settings_dialog.cpp:675
+msgid "Trim spaces from quote lines"
+msgstr "Swab the spaces off quoted lines"
+
+#: settings_dialog.cpp:757
+msgid " Setting "
+msgstr " Ship's Order "
+
+#: settings_dialog.cpp:768
+#: settings_dialog.cpp:1066
+#: settings_dialog.cpp:1348
+msgid " Enabled "
+msgstr " Full Sail! "
+
+#: settings_dialog.cpp:773
+msgid " Page 1 of 1 "
+msgstr " Chart 1 of 1 "
+
+#: settings_dialog.cpp:791
+msgid "Up, Dn, Enter=Select/toggle, ?=Help, ESC/Q/Ctrl-U=Close"
+msgstr "Up, Dn, Enter=Claim/Toggle, ?=Consult the Map, ESC/Q/Ctrl-U=Close"
+
+#: settings_dialog.cpp:965
+msgid "Show kludge lines"
+msgstr "Show the hidden rope-work lines"
+
+#: settings_dialog.cpp:967
+msgid "Show tear/origin lines"
+msgstr "Show tear and origin lines"
+
+#: settings_dialog.cpp:969
+msgid "Scrollbar in reader"
+msgstr "Depth gauge in the scroll reader"
+
+#: settings_dialog.cpp:971
+msgid "Only show areas with new mail"
+msgstr "Only show ports with fresh plunder"
+
+#: settings_dialog.cpp:973
+msgid "Strip ANSI codes from messages"
+msgstr "Scrub ANSI codes off the scrolls"
+
+#: settings_dialog.cpp:975
+msgid "Attribute code toggles..."
+msgstr "Hoist or lower attribute flags..."
+
+#: settings_dialog.cpp:977
+msgid "Search using regular expression"
+msgstr "Hunt using a scribe's pattern"
+
+#: settings_dialog.cpp:979
+msgid "List messages in reversed"
+msgstr "List scrolls in reverse order"
+
+#: settings_dialog.cpp:981
+msgid "Show splash screen on startup"
+msgstr "Show the Jolly Roger on startup"
+
+#: settings_dialog.cpp:983
+msgid "Reply packet directory"
+msgstr "Reply chest storage port"
+
+#: settings_dialog.cpp:984
+msgid "(current dir)"
+msgstr "(current port)"
+
+#: settings_dialog.cpp:986
+msgid "Use external editor"
+msgstr "Use an outside scribe"
+
+#: settings_dialog.cpp:988
+msgid "External Editors..."
+msgstr "Outside Scribes..."
+
+#: settings_dialog.cpp:990
+msgid "External Editor"
+msgstr "Outside Scribe"
+
+#: settings_dialog.cpp:991
+msgid "(none)"
+msgstr "(none, arr)"
+
+#: settings_dialog.cpp:1053
+msgid " Reader Settings "
+msgstr " Scroll Reader Orders "
+
+#: settings_dialog.cpp:1090
+msgid "Up, Dn, Enter=Select/toggle, S=Save, ESC/Q=Close"
+msgstr "Up, Dn, Enter=Claim/Toggle, S=Stow, ESC/Q=Close"
+
+#: settings_dialog.cpp:1195
+msgid "Select Reply Packet Directory"
+msgstr "Pick the Port fer Stowin' Reply Chests"
+
+#: settings_dialog.cpp:1258
+msgid "Settings saved successfully."
+msgstr "Ship's Log saved safe in the hold, arr!"
+
+#: settings_dialog.cpp:1266
+msgid "Save changes before closing?"
+msgstr "Stow yer changes before leavin' port?"
+
+#: settings_dialog.cpp:1295
+msgid "Synchronet Ctrl-A attribute codes"
+msgstr "Synchronet Ctrl-A attribute codes"
+
+#: settings_dialog.cpp:1296
+msgid "WWIV attribute codes"
+msgstr "WWIV attribute codes"
+
+#: settings_dialog.cpp:1297
+msgid "Celerity attribute codes"
+msgstr "Celerity attribute codes"
+
+#: settings_dialog.cpp:1298
+msgid "Renegade attribute codes"
+msgstr "Renegade attribute codes"
+
+#: settings_dialog.cpp:1299
+msgid "PCBoard/Wildcat attribute codes"
+msgstr "PCBoard/Wildcat attribute codes"
+
+#: settings_dialog.cpp:1336
+msgid " Attribute Code Toggles "
+msgstr " Hoist or Lower Attribute Flags "
+
+#: settings_dialog.cpp:1385
+msgid "ANSI escape codes are always enabled."
+msgstr "ANSI escape codes always fly at full mast, arr!"
+
+#: settings_dialog.cpp:1386
+msgid "These apply to the reader and editor."
+msgstr "These orders apply to the scroll reader and the scribe."
+
+#: settings_dialog.cpp:1390
+msgid " Up/Dn, Enter/Space=Toggle, ESC=Done "
+msgstr " Up/Dn, Enter/Space=Hoist/Lower, ESC=Done "
+
+#: settings_dialog.cpp:1463
+msgid " Drop File Type "
+msgstr " Booty File Type "
+
+#: settings_dialog.cpp:1484
+msgid "Enter=Select, ESC=Cancel"
+msgstr "Enter=Claim it, ESC=Walk the plank"
+
+#: settings_dialog.cpp:1538
+msgid " External Editor "
+msgstr " Outside Scribe "

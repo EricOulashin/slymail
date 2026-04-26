@@ -28,13 +28,19 @@ SLYMAIL_OBJECTS = $(OBJDIR)/main.o $(OBJDIR)/qwk.o $(OBJDIR)/settings.o $(OBJDIR
                   $(OBJDIR)/ui_common.o $(OBJDIR)/theme.o $(OBJDIR)/file_browser.o $(OBJDIR)/msg_list.o \
                   $(OBJDIR)/bbs_colors.o $(OBJDIR)/utf8_util.o $(OBJDIR)/voting.o \
                   $(OBJDIR)/remote_systems.o $(OBJDIR)/search.o $(OBJDIR)/text_input.o \
-                  $(OBJDIR)/text_utils.o $(OBJDIR)/ansi_render.o
+                  $(OBJDIR)/text_utils.o $(OBJDIR)/ansi_render.o $(OBJDIR)/i18n.o
 
 # Config program objects
 CONFIG_OBJECTS = $(OBJDIR)/config.o $(OBJDIR)/settings.o $(OBJDIR)/settings_dialog.o \
                  $(OBJDIR)/terminal.o $(OBJDIR)/terminal_common.o $(OBJDIR)/file_dir_utils.o \
                  $(OBJDIR)/ui_common.o $(OBJDIR)/theme.o \
-                 $(OBJDIR)/remote_systems.o $(OBJDIR)/file_browser.o
+                 $(OBJDIR)/remote_systems.o $(OBJDIR)/file_browser.o $(OBJDIR)/i18n.o
+
+# Locale / translation support
+# Supported language codes (BCP-47-ish, matching locale/XX/LC_MESSAGES/slymail.po)
+I18N_LANGS = cy da de el es fi fr ga ja nb pirate pl pt_BR ru sv zh_CN zh_TW
+# .mo files to build (one per language)
+MO_FILES = $(foreach lang,$(I18N_LANGS),locale/$(lang)/LC_MESSAGES/slymail.mo)
 
 # Compiler
 CXX = g++
@@ -59,17 +65,17 @@ endif
 ifeq ($(UNAME_S),FreeBSD)
     TERM_SRC = $(SRCDIR)/terminal_ncurses.cpp
     CXXFLAGS += -D_XOPEN_SOURCE_EXTENDED
-    LDFLAGS = -lncursesw
+    LDFLAGS = -lncursesw -lintl
 endif
 ifeq ($(UNAME_S),NetBSD)
     TERM_SRC = $(SRCDIR)/terminal_ncurses.cpp
     CXXFLAGS += -D_XOPEN_SOURCE_EXTENDED
-    LDFLAGS = -lncursesw
+    LDFLAGS = -lncursesw -lintl
 endif
 ifeq ($(UNAME_S),OpenBSD)
     TERM_SRC = $(SRCDIR)/terminal_ncurses.cpp
     CXXFLAGS += -D_XOPEN_SOURCE_EXTENDED
-    LDFLAGS = -lncursesw
+    LDFLAGS = -lncursesw -lintl
 endif
 
 # Windows (MinGW/MSYS2)
@@ -78,6 +84,9 @@ ifeq ($(OS),Windows_NT)
     CONFIG_TARGET = config.exe
     TERM_SRC = $(SRCDIR)/terminal_win32.cpp
     LDFLAGS =
+    # Uncomment if linking against a bundled libintl on Windows:
+    # LDFLAGS += -lintl
+    # CXXFLAGS += -DHAVE_LIBINTL
 endif
 
 # Debug build
@@ -85,8 +94,57 @@ ifdef DEBUG
     CXXFLAGS += -g -DDEBUG -O0
 endif
 
-# Default target: build both programs
-all: $(OBJDIR) $(TARGET) $(CONFIG_TARGET)
+# Default target: build both programs and compile locale .mo files
+all: $(OBJDIR) $(TARGET) $(CONFIG_TARGET) locale-compile
+
+# ---- Locale / gettext targets ----
+
+# Generate the .pot template from all source files
+locale/slymail.pot: $(SRCDIR)/*.cpp $(SRCDIR)/*.h
+	@mkdir -p locale
+	xgettext --language=C++ --keyword=_ --keyword=N_ \
+	         --from-code=UTF-8 \
+	         --package-name=slymail \
+	         --output=locale/slymail.pot \
+	         $(SRCDIR)/*.cpp
+
+# Update a specific .po file from the .pot template
+# Usage: make locale-update (updates all); or make locale/de/LC_MESSAGES/slymail.po
+locale/%.po.updated: locale/slymail.pot
+	@mkdir -p $(dir $*)
+	@if [ -f locale/$*.po ]; then \
+	    msgmerge --update --backup=none locale/$*.po locale/slymail.pot; \
+	else \
+	    msginit --input=locale/slymail.pot --locale=$* \
+	            --output=locale/$*.po --no-translator; \
+	fi
+
+# Compile a .po to a binary .mo
+locale/%/LC_MESSAGES/slymail.mo: locale/%/LC_MESSAGES/slymail.po
+	@mkdir -p $(dir $@)
+	@if command -v msgfmt >/dev/null 2>&1; then \
+	    msgfmt --output-file=$@ $<; \
+	else \
+	    python3 tools/msgfmt.py -o $@ $<; \
+	fi
+
+# Compile all .mo files that have a corresponding .po source.
+# Uses msgfmt if available; otherwise uses tools/msgfmt.py (no external deps).
+locale-compile:
+	@$(MAKE) $(MO_FILES)
+
+# Update all .po files from the current .pot template
+locale-update: locale/slymail.pot
+	@for lang in $(I18N_LANGS); do \
+	    po="locale/$$lang/LC_MESSAGES/slymail.po"; \
+	    if [ -f "$$po" ]; then \
+	        echo "  Updating $$po"; \
+	        msgmerge --update --backup=none "$$po" locale/slymail.pot; \
+	    fi; \
+	done
+
+# Regenerate .pot and recompile all locales
+locale-all: locale/slymail.pot locale-compile
 
 # Create object directory
 $(OBJDIR):
@@ -188,6 +246,10 @@ $(OBJDIR)/text_utils.o: $(SRCDIR)/text_utils.cpp $(SRCDIR)/text_utils.h
 $(OBJDIR)/ansi_render.o: $(SRCDIR)/ansi_render.cpp $(SRCDIR)/ansi_render.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+# Compile i18n.cpp (gettext wrapper)
+$(OBJDIR)/i18n.o: $(SRCDIR)/i18n.cpp $(SRCDIR)/i18n.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
 # Test executables
 TEST_TEXT_INPUT = test_text_input
 TEST_WRAP_QUOTE = test_wrap_quote_lines
@@ -222,18 +284,34 @@ runtest: test
 clean:
 	rm -rf $(OBJDIR) $(TARGET) $(CONFIG_TARGET) $(TEST_TEXT_INPUT) $(TEST_WRAP_QUOTE)
 
+# Clean compiled locale files (keep .po sources)
+clean-locale:
+	rm -f $(MO_FILES)
+
 # Install (Linux/Mac/BSD)
-install: $(TARGET) $(CONFIG_TARGET)
+LOCALE_INSTALL_DIR = /usr/local/share/locale
+install: $(TARGET) $(CONFIG_TARGET) locale-compile
 	install -m 755 $(TARGET) /usr/local/bin/
 	install -m 755 $(CONFIG_TARGET) /usr/local/bin/slymail-config
+	@for lang in $(I18N_LANGS); do \
+	    mo="locale/$$lang/LC_MESSAGES/slymail.mo"; \
+	    if [ -f "$$mo" ]; then \
+	        mkdir -p "$(LOCALE_INSTALL_DIR)/$$lang/LC_MESSAGES"; \
+	        install -m 644 "$$mo" "$(LOCALE_INSTALL_DIR)/$$lang/LC_MESSAGES/slymail.mo"; \
+	    fi; \
+	done
 
 # Uninstall
 uninstall:
 	rm -f /usr/local/bin/$(TARGET)
 	rm -f /usr/local/bin/slymail-config
+	@for lang in $(I18N_LANGS); do \
+	    rm -f "$(LOCALE_INSTALL_DIR)/$$lang/LC_MESSAGES/slymail.mo"; \
+	done
 
 # Debug build
 debug:
 	$(MAKE) DEBUG=1
 
-.PHONY: all clean install uninstall debug test runtest
+.PHONY: all clean clean-locale install uninstall debug test runtest \
+        locale-compile locale-update locale-all nixReleaseArc

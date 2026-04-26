@@ -1,0 +1,646 @@
+# SlyMail translations for Modern Greek
+# Machine-generated translation
+msgid ""
+msgstr ""
+"Project-Id-Version: slymail\n"
+"PO-Revision-Date: 2026-04-26\n"
+"Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: main.cpp:75
+#: msg_list.cpp:728
+#: msg_list.cpp:1153
+msgid "Press any key to continue..."
+msgstr "Πατήστε οποιοδήποτε πλήκτρο για να συνεχίσετε..."
+
+#: main.cpp:311
+#: main.cpp:740
+#: main.cpp:755
+msgid "Error"
+msgstr "Σφάλμα"
+
+#: main.cpp:311
+msgid "Failed to create temporary file."
+msgstr "Αποτυχία δημιουργίας προσωρινού αρχείου."
+
+#: main.cpp:377
+#: main.cpp:413
+msgid "Message Aborted"
+msgstr "Το μήνυμα ακυρώθηκε"
+
+#: main.cpp:378
+msgid "The external editor exited with a non-zero status. Message not posted."
+msgstr "Ο εξωτερικός επεξεργαστής τερματίστηκε με μη μηδενική κατάσταση. Το μήνυμα δεν δημοσιεύτηκε."
+
+#: main.cpp:414
+msgid "The message was not changed in the editor. Message not posted."
+msgstr "Το μήνυμα δεν άλλαξε στον επεξεργαστή. Το μήνυμα δεν δημοσιεύτηκε."
+
+#: main.cpp:493
+msgid "Include quoted text from original message?"
+msgstr "Να συμπεριληφθεί το παρατιθέμενο κείμενο από το αρχικό μήνυμα;"
+
+#: main.cpp:558
+msgid "New Message"
+msgstr "Νέο μήνυμα"
+
+#: main.cpp:560
+msgid "Conference: "
+msgstr "Ομάδα συζήτησης: "
+
+#: main.cpp:563
+msgid "     To: "
+msgstr "     Προς: "
+
+#: main.cpp:571
+msgid "Subject: "
+msgstr "Θέμα: "
+
+#: main.cpp:735
+msgid "REP Packet"
+msgstr "Πακέτο REP"
+
+#: main.cpp:735
+msgid "No pending messages or votes to save."
+msgstr "Δεν υπάρχουν εκκρεμή μηνύματα ή ψήφοι για αποθήκευση."
+
+#: main.cpp:740
+msgid "No QWK packet loaded."
+msgstr "Δεν έχει φορτωθεί κανένα πακέτο QWK."
+
+#: main.cpp:749
+msgid "REP Saved"
+msgstr "Το REP αποθηκεύτηκε"
+
+#: main.cpp:749
+msgid "Reply packet saved: "
+msgstr "Το πακέτο απάντησης αποθηκεύτηκε: "
+
+#: main.cpp:755
+msgid "Failed to create REP packet."
+msgstr "Αποτυχία δημιουργίας πακέτου REP."
+
+#: main.cpp:795
+msgid "Loading QWK packet..."
+msgstr "Φόρτωση πακέτου QWK..."
+
+#: main.cpp:805
+msgid "Failed to open or parse QWK file."
+msgstr "Αποτυχία ανοίγματος ή ανάλυσης αρχείου QWK."
+
+#: main.cpp:955
+msgid "Reply Saved"
+msgstr "Η απάντηση αποθηκεύτηκε"
+
+#: main.cpp:956
+msgid "Reply queued. "
+msgstr "Η απάντηση προστέθηκε στην ουρά. "
+
+#: main.cpp:958
+msgid " pending reply(s)."
+msgstr " εκκρεμής/εκκρεμείς απάντηση/απαντήσεις."
+
+#: main.cpp:959
+#: main.cpp:1047
+msgid "Save REP packet now?"
+msgstr "Αποθήκευση πακέτου REP τώρα;"
+
+#: main.cpp:988
+msgid "Up-vote"
+msgstr "Θετική ψήφος"
+
+#: main.cpp:990
+msgid "Down-vote"
+msgstr "Αρνητική ψήφος"
+
+#: main.cpp:992
+msgid "Poll vote"
+msgstr "Ψήφος δημοσκόπησης"
+
+#: main.cpp:993
+msgid "Vote Queued"
+msgstr "Η ψήφος προστέθηκε στην ουρά"
+
+#: main.cpp:994
+msgid " queued. "
+msgstr " προστέθηκε στην ουρά. "
+
+#: main.cpp:996
+msgid " pending vote(s)."
+msgstr " εκκρεμής/εκκρεμείς ψήφος/ψήφοι."
+
+#: main.cpp:1043
+msgid "Message Saved"
+msgstr "Το μήνυμα αποθηκεύτηκε"
+
+#: main.cpp:1044
+msgid "Message queued. "
+msgstr "Το μήνυμα προστέθηκε στην ουρά. "
+
+#: main.cpp:1046
+msgid " pending message(s)."
+msgstr " εκκρεμές/εκκρεμή μήνυμα/μηνύματα."
+
+#: main.cpp:1073
+msgid "Save pending replies before opening new file?"
+msgstr "Αποθήκευση εκκρεμών απαντήσεων πριν το άνοιγμα νέου αρχείου;"
+
+#: main.cpp:1103
+msgid "Save pending items before opening new file?"
+msgstr "Αποθήκευση εκκρεμών στοιχείων πριν το άνοιγμα νέου αρχείου;"
+
+#: msg_list.cpp:88
+msgid "Could not create temp file for external editor."
+msgstr "Δεν ήταν δυνατή η δημιουργία προσωρινού αρχείου για τον εξωτερικό επεξεργαστή."
+
+#: msg_list.cpp:117
+msgid "Could not read back edited file."
+msgstr "Δεν ήταν δυνατή η ανάγνωση του επεξεργασμένου αρχείου."
+
+#: msg_list.cpp:152
+msgid "Edit Pending"
+msgstr "Επεξεργασία εκκρεμών"
+
+#: msg_list.cpp:152
+msgid "No messages have been written this session."
+msgstr "Δεν έχουν γραφτεί μηνύματα σε αυτή τη συνεδρία."
+
+#: msg_list.cpp:196
+msgid "Edit Pending Messages"
+msgstr "Επεξεργασία εκκρεμών μηνυμάτων"
+
+#: msg_list.cpp:205
+#: msg_list.cpp:904
+msgid "To"
+msgstr "Προς"
+
+#: msg_list.cpp:206
+#: msg_list.cpp:905
+msgid "Subject"
+msgstr "Θέμα"
+
+#: msg_list.cpp:207
+#: msg_list.cpp:906
+msgid "Date"
+msgstr "Ημερομηνία"
+
+#: msg_list.cpp:208
+#: msg_list.cpp:907
+msgid "Time"
+msgstr "Ώρα"
+
+#: msg_list.cpp:252
+#: msg_list.cpp:521
+#: msg_list.cpp:921
+msgid "Up/Dn/PgUp/PgDn/HOME/END, "
+msgstr "Up/Dn/PgUp/PgDn/HOME/END, "
+
+#: msg_list.cpp:253
+msgid "nter=Edit"
+msgstr "Enter=Επεξεργασία"
+
+#: msg_list.cpp:253
+msgid "uit/ESC"
+msgstr "Q/ESC=Έξοδος"
+
+#: msg_list.cpp:494
+msgid "Sysop: "
+msgstr "Διαχειριστής: "
+
+#: msg_list.cpp:496
+msgid "User: "
+msgstr "Χρήστης: "
+
+#: msg_list.cpp:498
+#: msg_list.cpp:916
+#: msg_list.cpp:930
+msgid "msgs"
+msgstr "μηνύματα"
+
+#: msg_list.cpp:510
+msgid "Conf#"
+msgstr "Αρ. ομάδας"
+
+#: msg_list.cpp:511
+msgid "Conference Name"
+msgstr "Όνομα ομάδας"
+
+#: msg_list.cpp:512
+msgid "Msgs"
+msgstr "Μηνύματα"
+
+#: msg_list.cpp:513
+msgid "New"
+msgstr "Νέα"
+
+#: msg_list.cpp:522
+#: msg_list.cpp:922
+msgid "dit pending"
+msgstr "E=Επεξεργασία εκκρεμών"
+
+#: msg_list.cpp:522
+#: msg_list.cpp:613
+#: msg_list.cpp:922
+msgid "Search"
+msgstr "Αναζήτηση"
+
+#: msg_list.cpp:522
+#: msg_list.cpp:923
+msgid "o to #"
+msgstr "G=Μετάβαση σε αριθμό"
+
+#: msg_list.cpp:523
+msgid "pen file"
+msgstr "O=Άνοιγμα αρχείου"
+
+#: msg_list.cpp:523
+msgid "ettings"
+msgstr "S=Ρυθμίσεις"
+
+#: msg_list.cpp:523
+#: msg_list.cpp:923
+msgid "uit"
+msgstr "Q=Έξοδος"
+
+#: msg_list.cpp:528
+#: msg_list.cpp:928
+msgid "Filter:"
+msgstr "Φίλτρο:"
+
+#: msg_list.cpp:613
+msgid "No conferences found matching the search."
+msgstr "Δεν βρέθηκαν ομάδες που να αντιστοιχούν στην αναζήτηση."
+
+#: msg_list.cpp:653
+msgid "Go to conf #: "
+msgstr "Μετάβαση σε ομάδα αρ.: "
+
+#: msg_list.cpp:704
+msgid "Conference List Help"
+msgstr "Βοήθεια λίστας ομάδων"
+
+#: msg_list.cpp:714
+msgid "Navigate conferences"
+msgstr "Περιήγηση σε ομάδες"
+
+#: msg_list.cpp:715
+msgid "Open selected conference"
+msgstr "Άνοιγμα επιλεγμένης ομάδας"
+
+#: msg_list.cpp:716
+#: msg_list.cpp:1142
+msgid "Scroll up/down a page"
+msgstr "Κύλιση πάνω/κάτω κατά μία σελίδα"
+
+#: msg_list.cpp:717
+msgid "Jump to first/last conference"
+msgstr "Μετάβαση στην πρώτη/τελευταία ομάδα"
+
+#: msg_list.cpp:718
+msgid "Search/filter conferences"
+msgstr "Αναζήτηση/φιλτράρισμα ομάδων"
+
+#: msg_list.cpp:719
+#: msg_list.cpp:1140
+msgid "Edit pending messages (session)"
+msgstr "Επεξεργασία εκκρεμών μηνυμάτων (συνεδρία)"
+
+#: msg_list.cpp:720
+msgid "View polls/votes in packet"
+msgstr "Προβολή δημοσκοπήσεων/ψήφων στο πακέτο"
+
+#: msg_list.cpp:721
+#: msg_list.cpp:1145
+msgid "Open a different QWK file"
+msgstr "Άνοιγμα διαφορετικού αρχείου QWK"
+
+#: msg_list.cpp:722
+#: msg_list.cpp:1146
+msgid "Remote systems (download QWK)"
+msgstr "Απομακρυσμένα συστήματα (λήψη QWK)"
+
+#: msg_list.cpp:723
+#: msg_list.cpp:1147
+msgid "Save REP reply packet"
+msgstr "Αποθήκευση πακέτου απαντήσεων REP"
+
+#: msg_list.cpp:724
+#: msg_list.cpp:1148
+#: settings_dialog.cpp:1258
+msgid "Settings"
+msgstr "Ρυθμίσεις"
+
+#: msg_list.cpp:725
+#: msg_list.cpp:1150
+msgid "Quit SlyMail"
+msgstr "Έξοδος από το SlyMail"
+
+#: msg_list.cpp:726
+#: msg_list.cpp:1151
+msgid "This help screen"
+msgstr "Αυτή η οθόνη βοήθειας"
+
+#: msg_list.cpp:902
+msgid "Msg#"
+msgstr "Αρ. μηνύματος"
+
+#: msg_list.cpp:903
+msgid "From"
+msgstr "Από"
+
+#: msg_list.cpp:922
+msgid "ew msg"
+msgstr "N=Νέο μήνυμα"
+
+#: msg_list.cpp:922
+msgid "ead"
+msgstr "R=Ανάγνωση"
+
+#: msg_list.cpp:923
+msgid "onf list"
+msgstr "C=Λίστα ομάδων"
+
+#: msg_list.cpp:1013
+msgid "No messages found matching the search."
+msgstr "Δεν βρέθηκαν μηνύματα που να αντιστοιχούν στην αναζήτηση."
+
+#: msg_list.cpp:1092
+msgid "Go to msg #: "
+msgstr "Μετάβαση σε μήνυμα αρ.: "
+
+#: msg_list.cpp:1127
+msgid "Message List Help"
+msgstr "Βοήθεια λίστας μηνυμάτων"
+
+#: msg_list.cpp:1137
+msgid "Navigate messages"
+msgstr "Περιήγηση σε μηνύματα"
+
+#: msg_list.cpp:1138
+msgid "Read selected message"
+msgstr "Ανάγνωση επιλεγμένου μηνύματος"
+
+#: msg_list.cpp:1139
+msgid "Write a new message"
+msgstr "Σύνταξη νέου μηνύματος"
+
+#: msg_list.cpp:1141
+msgid "Go to message number"
+msgstr "Μετάβαση σε αριθμό μηνύματος"
+
+#: msg_list.cpp:1143
+msgid "Jump to first/last message"
+msgstr "Μετάβαση στο πρώτο/τελευταίο μήνυμα"
+
+#: msg_list.cpp:1144
+msgid "Search/filter messages"
+msgstr "Αναζήτηση/φιλτράρισμα μηνυμάτων"
+
+#: msg_list.cpp:1149
+msgid "Back to conference list"
+msgstr "Επιστροφή στη λίστα ομάδων"
+
+#: msg_reader.cpp:98
+msgid "(Poll data not available)"
+msgstr "(Τα δεδομένα δημοσκόπησης δεν είναι διαθέσιμα)"
+
+#: msg_reader.cpp:178
+msgid "Total votes:"
+msgstr "Συνολικές ψήφοι:"
+
+#: msg_reader.cpp:182
+msgid "[Poll is closed]"
+msgstr "[Η δημοσκόπηση έχει κλείσει]"
+
+#: settings_dialog.cpp:67
+msgid " UI Mode "
+msgstr " Λειτουργία διεπαφής "
+
+#: settings_dialog.cpp:99
+msgid "Enter=OK, ESC=Cancel"
+msgstr "Enter=ΟΚ, ESC=Ακύρωση"
+
+#: settings_dialog.cpp:251
+msgid "Themes"
+msgstr "Θέματα"
+
+#: settings_dialog.cpp:251
+msgid "No theme files found in config/"
+msgstr "Δεν βρέθηκαν αρχεία θέματος στο config/"
+
+#: settings_dialog.cpp:338
+msgid " Select Theme "
+msgstr " Επιλογή θέματος "
+
+#: settings_dialog.cpp:351
+msgid "Theme File"
+msgstr "Αρχείο θέματος"
+
+#: settings_dialog.cpp:375
+msgid "Up, Dn, Enter=Select, ESC/Q=Cancel"
+msgstr "Up, Dn, Enter=Επιλογή, ESC/Q=Ακύρωση"
+
+#: settings_dialog.cpp:437
+msgid "Dictionaries"
+msgstr "Λεξικά"
+
+#: settings_dialog.cpp:437
+msgid "No dictionary files found in dictionary_files/"
+msgstr "Δεν βρέθηκαν αρχεία λεξικού στο dictionary_files/"
+
+#: settings_dialog.cpp:547
+msgid " Select Dictionaries "
+msgstr " Επιλογή λεξικών "
+
+#: settings_dialog.cpp:560
+msgid "Dictionary"
+msgstr "Λεξικό"
+
+#: settings_dialog.cpp:561
+msgid "Selected"
+msgstr "Επιλεγμένο"
+
+#: settings_dialog.cpp:585
+msgid "Up, Dn, Enter/Space=Toggle, ESC/Q=Done"
+msgstr "Up, Dn, Enter/Space=Εναλλαγή, ESC/Q=Τέλος"
+
+#: settings_dialog.cpp:668
+msgid "Choose UI mode"
+msgstr "Επιλογή λειτουργίας διεπαφής"
+
+#: settings_dialog.cpp:669
+msgid "Taglines"
+msgstr "Ετικέτες υπογραφής"
+
+#: settings_dialog.cpp:670
+msgid "Spell-check dictionary/dictionaries"
+msgstr "Λεξικό/λεξικά ορθογραφικού ελέγχου"
+
+#: settings_dialog.cpp:671
+msgid "Prompt for spell checker on save"
+msgstr "Ερώτηση για ορθογραφικό έλεγχο κατά την αποθήκευση"
+
+#: settings_dialog.cpp:672
+msgid "Wrap quote lines to terminal width"
+msgstr "Αναδίπλωση γραμμών παράθεσης στο πλάτος τερματικού"
+
+#: settings_dialog.cpp:673
+msgid "Quote with author's initials"
+msgstr "Παράθεση με αρχικά του συγγραφέα"
+
+#: settings_dialog.cpp:674
+msgid "Indent quote lines containing initials"
+msgstr "Εσοχή γραμμών παράθεσης που περιέχουν αρχικά"
+
+#: settings_dialog.cpp:675
+msgid "Trim spaces from quote lines"
+msgstr "Αφαίρεση κενών από γραμμές παράθεσης"
+
+#: settings_dialog.cpp:757
+msgid " Setting "
+msgstr " Ρύθμιση "
+
+#: settings_dialog.cpp:768
+#: settings_dialog.cpp:1066
+#: settings_dialog.cpp:1348
+msgid " Enabled "
+msgstr " Ενεργοποιημένο "
+
+#: settings_dialog.cpp:773
+msgid " Page 1 of 1 "
+msgstr " Σελίδα 1 από 1 "
+
+#: settings_dialog.cpp:791
+msgid "Up, Dn, Enter=Select/toggle, ?=Help, ESC/Q/Ctrl-U=Close"
+msgstr "Up, Dn, Enter=Επιλογή/εναλλαγή, ?=Βοήθεια, ESC/Q/Ctrl-U=Κλείσιμο"
+
+#: settings_dialog.cpp:965
+msgid "Show kludge lines"
+msgstr "Εμφάνιση γραμμών kludge"
+
+#: settings_dialog.cpp:967
+msgid "Show tear/origin lines"
+msgstr "Εμφάνιση γραμμών tear/origin"
+
+#: settings_dialog.cpp:969
+msgid "Scrollbar in reader"
+msgstr "Γραμμή κύλισης στον αναγνώστη"
+
+#: settings_dialog.cpp:971
+msgid "Only show areas with new mail"
+msgstr "Εμφάνιση μόνο περιοχών με νέα αλληλογραφία"
+
+#: settings_dialog.cpp:973
+msgid "Strip ANSI codes from messages"
+msgstr "Αφαίρεση κωδικών ANSI από μηνύματα"
+
+#: settings_dialog.cpp:975
+msgid "Attribute code toggles..."
+msgstr "Εναλλαγές κωδικών χαρακτηριστικών..."
+
+#: settings_dialog.cpp:977
+msgid "Search using regular expression"
+msgstr "Αναζήτηση με κανονικές εκφράσεις"
+
+#: settings_dialog.cpp:979
+msgid "List messages in reversed"
+msgstr "Λίστα μηνυμάτων σε αντίστροφη σειρά"
+
+#: settings_dialog.cpp:981
+msgid "Show splash screen on startup"
+msgstr "Εμφάνιση αρχικής οθόνης κατά την εκκίνηση"
+
+#: settings_dialog.cpp:983
+msgid "Reply packet directory"
+msgstr "Κατάλογος πακέτων απαντήσεων"
+
+#: settings_dialog.cpp:984
+msgid "(current dir)"
+msgstr "(τρέχων κατάλογος)"
+
+#: settings_dialog.cpp:986
+msgid "Use external editor"
+msgstr "Χρήση εξωτερικού επεξεργαστή"
+
+#: settings_dialog.cpp:988
+msgid "External Editors..."
+msgstr "Εξωτερικοί επεξεργαστές..."
+
+#: settings_dialog.cpp:990
+msgid "External Editor"
+msgstr "Εξωτερικός επεξεργαστής"
+
+#: settings_dialog.cpp:991
+msgid "(none)"
+msgstr "(κανένας)"
+
+#: settings_dialog.cpp:1053
+msgid " Reader Settings "
+msgstr " Ρυθμίσεις αναγνώστη "
+
+#: settings_dialog.cpp:1090
+msgid "Up, Dn, Enter=Select/toggle, S=Save, ESC/Q=Close"
+msgstr "Up, Dn, Enter=Επιλογή/εναλλαγή, S=Αποθήκευση, ESC/Q=Κλείσιμο"
+
+#: settings_dialog.cpp:1195
+msgid "Select Reply Packet Directory"
+msgstr "Επιλογή καταλόγου πακέτων απαντήσεων"
+
+#: settings_dialog.cpp:1258
+msgid "Settings saved successfully."
+msgstr "Οι ρυθμίσεις αποθηκεύτηκαν επιτυχώς."
+
+#: settings_dialog.cpp:1266
+msgid "Save changes before closing?"
+msgstr "Αποθήκευση αλλαγών πριν το κλείσιμο;"
+
+#: settings_dialog.cpp:1295
+msgid "Synchronet Ctrl-A attribute codes"
+msgstr "Κωδικοί χαρακτηριστικών Synchronet Ctrl-A"
+
+#: settings_dialog.cpp:1296
+msgid "WWIV attribute codes"
+msgstr "Κωδικοί χαρακτηριστικών WWIV"
+
+#: settings_dialog.cpp:1297
+msgid "Celerity attribute codes"
+msgstr "Κωδικοί χαρακτηριστικών Celerity"
+
+#: settings_dialog.cpp:1298
+msgid "Renegade attribute codes"
+msgstr "Κωδικοί χαρακτηριστικών Renegade"
+
+#: settings_dialog.cpp:1299
+msgid "PCBoard/Wildcat attribute codes"
+msgstr "Κωδικοί χαρακτηριστικών PCBoard/Wildcat"
+
+#: settings_dialog.cpp:1336
+msgid " Attribute Code Toggles "
+msgstr " Εναλλαγές κωδικών χαρακτηριστικών "
+
+#: settings_dialog.cpp:1385
+msgid "ANSI escape codes are always enabled."
+msgstr "Οι κωδικοί διαφυγής ANSI είναι πάντα ενεργοποιημένοι."
+
+#: settings_dialog.cpp:1386
+msgid "These apply to the reader and editor."
+msgstr "Αυτά ισχύουν για τον αναγνώστη και τον επεξεργαστή."
+
+#: settings_dialog.cpp:1390
+msgid " Up/Dn, Enter/Space=Toggle, ESC=Done "
+msgstr " Up/Dn, Enter/Space=Εναλλαγή, ESC=Τέλος "
+
+#: settings_dialog.cpp:1463
+msgid " Drop File Type "
+msgstr " Τύπος αρχείου drop "
+
+#: settings_dialog.cpp:1484
+msgid "Enter=Select, ESC=Cancel"
+msgstr "Enter=Επιλογή, ESC=Ακύρωση"
+
+#: settings_dialog.cpp:1538
+msgid " External Editor "
+msgstr " Εξωτερικός επεξεργαστής "

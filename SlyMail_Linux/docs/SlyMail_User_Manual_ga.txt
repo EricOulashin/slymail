@@ -1,0 +1,23 @@
+                              SlyMail User Manual
+                            QWK Offline Mail Reader
+                                  Version 0.55
+                            Release date: 2026-04-09
+
+                                       by
+
+                                 Eric Oulashin
+
+Contents
+========
+
+Tá an comhad seo san áireamh ionas go mbeidh an lámhleabhar ar fáil sa tsraith
+chéanna teangacha a thacaítear leo (mar atá i Musicians Canvas).
+
+Nóta: Níl an t-aistriúchán iomlán críochnaithe fós. Don ábhar iomlán, féach ar
+an leagan Béarla:
+
+  - SlyMail_User_Manual.md
+
+Ginfear leaganacha HTML/PDF/TXT ón gcomhad seo nuair a bheidh an t-aistriúchán
+críochnaithe.
+

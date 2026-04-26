@@ -1,0 +1,646 @@
+# SlyMail translations for Norwegian Bokmål
+# Machine-generated translation
+msgid ""
+msgstr ""
+"Project-Id-Version: slymail\n"
+"PO-Revision-Date: 2026-04-26\n"
+"Language: nb\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: main.cpp:75
+#: msg_list.cpp:728
+#: msg_list.cpp:1153
+msgid "Press any key to continue..."
+msgstr "Trykk på en tast for å fortsette..."
+
+#: main.cpp:311
+#: main.cpp:740
+#: main.cpp:755
+msgid "Error"
+msgstr "Feil"
+
+#: main.cpp:311
+msgid "Failed to create temporary file."
+msgstr "Kunne ikke opprette midlertidig fil."
+
+#: main.cpp:377
+#: main.cpp:413
+msgid "Message Aborted"
+msgstr "Melding avbrutt"
+
+#: main.cpp:378
+msgid "The external editor exited with a non-zero status. Message not posted."
+msgstr "Den eksterne editoren avsluttet med en feilkode. Meldingen er ikke sendt."
+
+#: main.cpp:414
+msgid "The message was not changed in the editor. Message not posted."
+msgstr "Meldingen ble ikke endret i editoren. Meldingen er ikke sendt."
+
+#: main.cpp:493
+msgid "Include quoted text from original message?"
+msgstr "Inkluder sitert tekst fra den opprinnelige meldingen?"
+
+#: main.cpp:558
+msgid "New Message"
+msgstr "Ny melding"
+
+#: main.cpp:560
+msgid "Conference: "
+msgstr "Konferanse: "
+
+#: main.cpp:563
+msgid "     To: "
+msgstr "     Til: "
+
+#: main.cpp:571
+msgid "Subject: "
+msgstr "Emne: "
+
+#: main.cpp:735
+msgid "REP Packet"
+msgstr "REP Packet"
+
+#: main.cpp:735
+msgid "No pending messages or votes to save."
+msgstr "Ingen ventende meldinger eller stemmer å lagre."
+
+#: main.cpp:740
+msgid "No QWK packet loaded."
+msgstr "Ingen QWK-pakke lastet inn."
+
+#: main.cpp:749
+msgid "REP Saved"
+msgstr "REP lagret"
+
+#: main.cpp:749
+msgid "Reply packet saved: "
+msgstr "Svarspakke lagret: "
+
+#: main.cpp:755
+msgid "Failed to create REP packet."
+msgstr "Kunne ikke opprette REP-pakke."
+
+#: main.cpp:795
+msgid "Loading QWK packet..."
+msgstr "Laster QWK-pakke..."
+
+#: main.cpp:805
+msgid "Failed to open or parse QWK file."
+msgstr "Kunne ikke åpne eller tolke QWK-filen."
+
+#: main.cpp:955
+msgid "Reply Saved"
+msgstr "Svar lagret"
+
+#: main.cpp:956
+msgid "Reply queued. "
+msgstr "Svar i kø. "
+
+#: main.cpp:958
+msgid " pending reply(s)."
+msgstr " ventende svar."
+
+#: main.cpp:959
+#: main.cpp:1047
+msgid "Save REP packet now?"
+msgstr "Lagre REP-pakke nå?"
+
+#: main.cpp:988
+msgid "Up-vote"
+msgstr "Positiv stemme"
+
+#: main.cpp:990
+msgid "Down-vote"
+msgstr "Negativ stemme"
+
+#: main.cpp:992
+msgid "Poll vote"
+msgstr "Avstemning"
+
+#: main.cpp:993
+msgid "Vote Queued"
+msgstr "Stemme i kø"
+
+#: main.cpp:994
+msgid " queued. "
+msgstr " i kø. "
+
+#: main.cpp:996
+msgid " pending vote(s)."
+msgstr " ventende stemme(r)."
+
+#: main.cpp:1043
+msgid "Message Saved"
+msgstr "Melding lagret"
+
+#: main.cpp:1044
+msgid "Message queued. "
+msgstr "Melding i kø. "
+
+#: main.cpp:1046
+msgid " pending message(s)."
+msgstr " ventende melding(er)."
+
+#: main.cpp:1073
+msgid "Save pending replies before opening new file?"
+msgstr "Lagre ventende svar før ny fil åpnes?"
+
+#: main.cpp:1103
+msgid "Save pending items before opening new file?"
+msgstr "Lagre ventende elementer før ny fil åpnes?"
+
+#: msg_list.cpp:88
+msgid "Could not create temp file for external editor."
+msgstr "Kunne ikke opprette midlertidig fil for den eksterne editoren."
+
+#: msg_list.cpp:117
+msgid "Could not read back edited file."
+msgstr "Kunne ikke lese tilbake den redigerte filen."
+
+#: msg_list.cpp:152
+msgid "Edit Pending"
+msgstr "Rediger ventende"
+
+#: msg_list.cpp:152
+msgid "No messages have been written this session."
+msgstr "Ingen meldinger har blitt skrevet i denne sesjonen."
+
+#: msg_list.cpp:196
+msgid "Edit Pending Messages"
+msgstr "Rediger ventende meldinger"
+
+#: msg_list.cpp:205
+#: msg_list.cpp:904
+msgid "To"
+msgstr "Til"
+
+#: msg_list.cpp:206
+#: msg_list.cpp:905
+msgid "Subject"
+msgstr "Emne"
+
+#: msg_list.cpp:207
+#: msg_list.cpp:906
+msgid "Date"
+msgstr "Dato"
+
+#: msg_list.cpp:208
+#: msg_list.cpp:907
+msgid "Time"
+msgstr "Tid"
+
+#: msg_list.cpp:252
+#: msg_list.cpp:521
+#: msg_list.cpp:921
+msgid "Up/Dn/PgUp/PgDn/HOME/END, "
+msgstr "Up/Dn/PgUp/PgDn/HOME/END, "
+
+#: msg_list.cpp:253
+msgid "nter=Edit"
+msgstr "nter=Rediger"
+
+#: msg_list.cpp:253
+msgid "uit/ESC"
+msgstr "avslutt/ESC"
+
+#: msg_list.cpp:494
+msgid "Sysop: "
+msgstr "Sysop: "
+
+#: msg_list.cpp:496
+msgid "User: "
+msgstr "Bruker: "
+
+#: msg_list.cpp:498
+#: msg_list.cpp:916
+#: msg_list.cpp:930
+msgid "msgs"
+msgstr "meld"
+
+#: msg_list.cpp:510
+msgid "Conf#"
+msgstr "Konf#"
+
+#: msg_list.cpp:511
+msgid "Conference Name"
+msgstr "Konferansenavn"
+
+#: msg_list.cpp:512
+msgid "Msgs"
+msgstr "Meld"
+
+#: msg_list.cpp:513
+msgid "New"
+msgstr "Nye"
+
+#: msg_list.cpp:522
+#: msg_list.cpp:922
+msgid "dit pending"
+msgstr "dit ventende"
+
+#: msg_list.cpp:522
+#: msg_list.cpp:613
+#: msg_list.cpp:922
+msgid "Search"
+msgstr "Søk"
+
+#: msg_list.cpp:522
+#: msg_list.cpp:923
+msgid "o to #"
+msgstr "o til #"
+
+#: msg_list.cpp:523
+msgid "pen file"
+msgstr "åpne fil"
+
+#: msg_list.cpp:523
+msgid "ettings"
+msgstr "nstillinger"
+
+#: msg_list.cpp:523
+#: msg_list.cpp:923
+msgid "uit"
+msgstr "Avslutt"
+
+#: msg_list.cpp:528
+#: msg_list.cpp:928
+msgid "Filter:"
+msgstr "Filter:"
+
+#: msg_list.cpp:613
+msgid "No conferences found matching the search."
+msgstr "Ingen konferanser funnet som samsvarer med søket."
+
+#: msg_list.cpp:653
+msgid "Go to conf #: "
+msgstr "Gå til konf #: "
+
+#: msg_list.cpp:704
+msgid "Conference List Help"
+msgstr "Hjelp for konferanseliste"
+
+#: msg_list.cpp:714
+msgid "Navigate conferences"
+msgstr "Naviger konferanser"
+
+#: msg_list.cpp:715
+msgid "Open selected conference"
+msgstr "Åpne valgt konferanse"
+
+#: msg_list.cpp:716
+#: msg_list.cpp:1142
+msgid "Scroll up/down a page"
+msgstr "Bla opp/ned en side"
+
+#: msg_list.cpp:717
+msgid "Jump to first/last conference"
+msgstr "Hopp til første/siste konferanse"
+
+#: msg_list.cpp:718
+msgid "Search/filter conferences"
+msgstr "Søk/filtrer konferanser"
+
+#: msg_list.cpp:719
+#: msg_list.cpp:1140
+msgid "Edit pending messages (session)"
+msgstr "Rediger ventende meldinger (sesjon)"
+
+#: msg_list.cpp:720
+msgid "View polls/votes in packet"
+msgstr "Vis avstemninger/stemmer i pakken"
+
+#: msg_list.cpp:721
+#: msg_list.cpp:1145
+msgid "Open a different QWK file"
+msgstr "Åpne en annen QWK-fil"
+
+#: msg_list.cpp:722
+#: msg_list.cpp:1146
+msgid "Remote systems (download QWK)"
+msgstr "Fjernsystemer (last ned QWK)"
+
+#: msg_list.cpp:723
+#: msg_list.cpp:1147
+msgid "Save REP reply packet"
+msgstr "Lagre REP-svarspakke"
+
+#: msg_list.cpp:724
+#: msg_list.cpp:1148
+#: settings_dialog.cpp:1258
+msgid "Settings"
+msgstr "Innstillinger"
+
+#: msg_list.cpp:725
+#: msg_list.cpp:1150
+msgid "Quit SlyMail"
+msgstr "Avslutt SlyMail"
+
+#: msg_list.cpp:726
+#: msg_list.cpp:1151
+msgid "This help screen"
+msgstr "Denne hjelpeskjermen"
+
+#: msg_list.cpp:902
+msgid "Msg#"
+msgstr "Meld#"
+
+#: msg_list.cpp:903
+msgid "From"
+msgstr "Fra"
+
+#: msg_list.cpp:922
+msgid "ew msg"
+msgstr "y meld"
+
+#: msg_list.cpp:922
+msgid "ead"
+msgstr "es"
+
+#: msg_list.cpp:923
+msgid "onf list"
+msgstr "onfliste"
+
+#: msg_list.cpp:1013
+msgid "No messages found matching the search."
+msgstr "Ingen meldinger funnet som samsvarer med søket."
+
+#: msg_list.cpp:1092
+msgid "Go to msg #: "
+msgstr "Gå til meld #: "
+
+#: msg_list.cpp:1127
+msgid "Message List Help"
+msgstr "Hjelp for meldingsliste"
+
+#: msg_list.cpp:1137
+msgid "Navigate messages"
+msgstr "Naviger meldinger"
+
+#: msg_list.cpp:1138
+msgid "Read selected message"
+msgstr "Les valgt melding"
+
+#: msg_list.cpp:1139
+msgid "Write a new message"
+msgstr "Skriv en ny melding"
+
+#: msg_list.cpp:1141
+msgid "Go to message number"
+msgstr "Gå til meldingsnummer"
+
+#: msg_list.cpp:1143
+msgid "Jump to first/last message"
+msgstr "Hopp til første/siste melding"
+
+#: msg_list.cpp:1144
+msgid "Search/filter messages"
+msgstr "Søk/filtrer meldinger"
+
+#: msg_list.cpp:1149
+msgid "Back to conference list"
+msgstr "Tilbake til konferanselisten"
+
+#: msg_reader.cpp:98
+msgid "(Poll data not available)"
+msgstr "(Avstemningsdata ikke tilgjengelig)"
+
+#: msg_reader.cpp:178
+msgid "Total votes:"
+msgstr "Totalt antall stemmer:"
+
+#: msg_reader.cpp:182
+msgid "[Poll is closed]"
+msgstr "[Avstemning avsluttet]"
+
+#: settings_dialog.cpp:67
+msgid " UI Mode "
+msgstr " UI-modus "
+
+#: settings_dialog.cpp:99
+msgid "Enter=OK, ESC=Cancel"
+msgstr "Enter=OK, ESC=Avbryt"
+
+#: settings_dialog.cpp:251
+msgid "Themes"
+msgstr "Temaer"
+
+#: settings_dialog.cpp:251
+msgid "No theme files found in config/"
+msgstr "Ingen temafiler funnet i config/"
+
+#: settings_dialog.cpp:338
+msgid " Select Theme "
+msgstr " Velg tema "
+
+#: settings_dialog.cpp:351
+msgid "Theme File"
+msgstr "Temafil"
+
+#: settings_dialog.cpp:375
+msgid "Up, Dn, Enter=Select, ESC/Q=Cancel"
+msgstr "Up, Dn, Enter=Velg, ESC/Q=Avbryt"
+
+#: settings_dialog.cpp:437
+msgid "Dictionaries"
+msgstr "Ordbøker"
+
+#: settings_dialog.cpp:437
+msgid "No dictionary files found in dictionary_files/"
+msgstr "Ingen ordbokfiler funnet i dictionary_files/"
+
+#: settings_dialog.cpp:547
+msgid " Select Dictionaries "
+msgstr " Velg ordbøker "
+
+#: settings_dialog.cpp:560
+msgid "Dictionary"
+msgstr "Ordbok"
+
+#: settings_dialog.cpp:561
+msgid "Selected"
+msgstr "Valgt"
+
+#: settings_dialog.cpp:585
+msgid "Up, Dn, Enter/Space=Toggle, ESC/Q=Done"
+msgstr "Up, Dn, Enter/Space=Veksle, ESC/Q=Ferdig"
+
+#: settings_dialog.cpp:668
+msgid "Choose UI mode"
+msgstr "Velg UI-modus"
+
+#: settings_dialog.cpp:669
+msgid "Taglines"
+msgstr "Taglinjer"
+
+#: settings_dialog.cpp:670
+msgid "Spell-check dictionary/dictionaries"
+msgstr "Stavekontrollordbok/-bøker"
+
+#: settings_dialog.cpp:671
+msgid "Prompt for spell checker on save"
+msgstr "Spør om stavekontroll ved lagring"
+
+#: settings_dialog.cpp:672
+msgid "Wrap quote lines to terminal width"
+msgstr "Bryt siteringslinjer til terminalbredde"
+
+#: settings_dialog.cpp:673
+msgid "Quote with author's initials"
+msgstr "Sitér med forfatterens initialer"
+
+#: settings_dialog.cpp:674
+msgid "Indent quote lines containing initials"
+msgstr "Innrykk for siteringslinjer med initialer"
+
+#: settings_dialog.cpp:675
+msgid "Trim spaces from quote lines"
+msgstr "Fjern mellomrom fra siteringslinjer"
+
+#: settings_dialog.cpp:757
+msgid " Setting "
+msgstr " Innstilling "
+
+#: settings_dialog.cpp:768
+#: settings_dialog.cpp:1066
+#: settings_dialog.cpp:1348
+msgid " Enabled "
+msgstr " Aktivert "
+
+#: settings_dialog.cpp:773
+msgid " Page 1 of 1 "
+msgstr " Side 1 av 1 "
+
+#: settings_dialog.cpp:791
+msgid "Up, Dn, Enter=Select/toggle, ?=Help, ESC/Q/Ctrl-U=Close"
+msgstr "Up, Dn, Enter=Velg/veksle, ?=Hjelp, ESC/Q/Ctrl-U=Lukk"
+
+#: settings_dialog.cpp:965
+msgid "Show kludge lines"
+msgstr "Vis kludge-linjer"
+
+#: settings_dialog.cpp:967
+msgid "Show tear/origin lines"
+msgstr "Vis tear/origin-linjer"
+
+#: settings_dialog.cpp:969
+msgid "Scrollbar in reader"
+msgstr "Rullefelt i leseren"
+
+#: settings_dialog.cpp:971
+msgid "Only show areas with new mail"
+msgstr "Vis bare områder med ny post"
+
+#: settings_dialog.cpp:973
+msgid "Strip ANSI codes from messages"
+msgstr "Fjern ANSI-koder fra meldinger"
+
+#: settings_dialog.cpp:975
+msgid "Attribute code toggles..."
+msgstr "Attributtkodebytter..."
+
+#: settings_dialog.cpp:977
+msgid "Search using regular expression"
+msgstr "Søk med regulært uttrykk"
+
+#: settings_dialog.cpp:979
+msgid "List messages in reversed"
+msgstr "List meldinger i omvendt rekkefølge"
+
+#: settings_dialog.cpp:981
+msgid "Show splash screen on startup"
+msgstr "Vis startskjerm ved oppstart"
+
+#: settings_dialog.cpp:983
+msgid "Reply packet directory"
+msgstr "Mappe for svarspakker"
+
+#: settings_dialog.cpp:984
+msgid "(current dir)"
+msgstr "(gjeldende mappe)"
+
+#: settings_dialog.cpp:986
+msgid "Use external editor"
+msgstr "Bruk ekstern editor"
+
+#: settings_dialog.cpp:988
+msgid "External Editors..."
+msgstr "Eksterne editorer..."
+
+#: settings_dialog.cpp:990
+msgid "External Editor"
+msgstr "Ekstern editor"
+
+#: settings_dialog.cpp:991
+msgid "(none)"
+msgstr "(ingen)"
+
+#: settings_dialog.cpp:1053
+msgid " Reader Settings "
+msgstr " Leserinnstillinger "
+
+#: settings_dialog.cpp:1090
+msgid "Up, Dn, Enter=Select/toggle, S=Save, ESC/Q=Close"
+msgstr "Up, Dn, Enter=Velg/veksle, S=Lagre, ESC/Q=Lukk"
+
+#: settings_dialog.cpp:1195
+msgid "Select Reply Packet Directory"
+msgstr "Velg mappe for svarspakker"
+
+#: settings_dialog.cpp:1258
+msgid "Settings saved successfully."
+msgstr "Innstillinger lagret."
+
+#: settings_dialog.cpp:1266
+msgid "Save changes before closing?"
+msgstr "Lagre endringer før lukking?"
+
+#: settings_dialog.cpp:1295
+msgid "Synchronet Ctrl-A attribute codes"
+msgstr "Synchronet Ctrl-A attributtkoder"
+
+#: settings_dialog.cpp:1296
+msgid "WWIV attribute codes"
+msgstr "WWIV attributtkoder"
+
+#: settings_dialog.cpp:1297
+msgid "Celerity attribute codes"
+msgstr "Celerity attributtkoder"
+
+#: settings_dialog.cpp:1298
+msgid "Renegade attribute codes"
+msgstr "Renegade attributtkoder"
+
+#: settings_dialog.cpp:1299
+msgid "PCBoard/Wildcat attribute codes"
+msgstr "PCBoard/Wildcat attributtkoder"
+
+#: settings_dialog.cpp:1336
+msgid " Attribute Code Toggles "
+msgstr " Attributtkodebytter "
+
+#: settings_dialog.cpp:1385
+msgid "ANSI escape codes are always enabled."
+msgstr "ANSI-escapekoder er alltid aktivert."
+
+#: settings_dialog.cpp:1386
+msgid "These apply to the reader and editor."
+msgstr "Disse gjelder for leseren og editoren."
+
+#: settings_dialog.cpp:1390
+msgid " Up/Dn, Enter/Space=Toggle, ESC=Done "
+msgstr " Up/Dn, Enter/Space=Veksle, ESC=Ferdig "
+
+#: settings_dialog.cpp:1463
+msgid " Drop File Type "
+msgstr " Filtype å ignorere "
+
+#: settings_dialog.cpp:1484
+msgid "Enter=Select, ESC=Cancel"
+msgstr "Enter=Velg, ESC=Avbryt"
+
+#: settings_dialog.cpp:1538
+msgid " External Editor "
+msgstr " Ekstern editor "

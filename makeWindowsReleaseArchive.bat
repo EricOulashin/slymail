@@ -47,6 +47,20 @@ if exist docs\SlyMail_User_Manual.pdf copy /y docs\SlyMail_User_Manual.pdf "%rel
 if exist docs\SlyMail_User_Manual.txt copy /y docs\SlyMail_User_Manual.txt "%releaseDirName%\docs\" >nul
 if exist docs\html xcopy /q /y /e docs\html\* "%releaseDirName%\docs\html\" >nul
 
+REM Copy translated user manuals (PDF and plain text) for all supported languages
+for %%L in (cy da de el es fi fr ga ja nb pirate pl pt-BR ru sv zh-CN zh-TW) do (
+    if exist "docs\SlyMail_User_Manual_%%L.pdf" copy /y "docs\SlyMail_User_Manual_%%L.pdf" "%releaseDirName%\docs\" >nul
+    if exist "docs\SlyMail_User_Manual_%%L.txt" copy /y "docs\SlyMail_User_Manual_%%L.txt" "%releaseDirName%\docs\" >nul
+)
+
+REM Copy compiled locale (.mo) files for runtime translation
+for %%L in (cy da de el es fi fr ga ja nb pirate pl pt_BR ru sv zh_CN zh_TW) do (
+    if exist "locale\%%L\LC_MESSAGES\slymail.mo" (
+        if not exist "%releaseDirName%\locale\%%L\LC_MESSAGES" mkdir "%releaseDirName%\locale\%%L\LC_MESSAGES"
+        copy /y "locale\%%L\LC_MESSAGES\slymail.mo" "%releaseDirName%\locale\%%L\LC_MESSAGES\" >nul
+    )
+)
+
 REM Create the FILE_ID.DIZ for the release package
 REM Get today's date in YYYY-MM-DD format and build FILE_ID.DIZ using PowerShell
 powershell -Command "$today = Get-Date -Format 'yyyy-MM-dd'; (Get-Content 'FILE_ID_Template.DIZ') -replace '<VERSION>','%version%' -replace '<OS>','%OSName%' -replace '<DATE>',$today | Set-Content 'FILE_ID.DIZ'"

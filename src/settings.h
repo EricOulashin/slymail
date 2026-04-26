@@ -106,6 +106,7 @@ struct Settings
     std::string replyDir;           // Directory for REP packets
     bool        useExternalEditor;  // Use external editor instead of built-in
     std::string selectedEditor;     // Name of the active external editor
+    std::string language;           // UI language code ("" = OS default)
 
     // External editor configurations
     std::vector<ExternalEditorConfig> externalEditors;

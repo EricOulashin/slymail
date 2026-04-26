@@ -6,12 +6,14 @@ import os
 import textwrap
 
 script_dir = os.environ.get('SCRIPT_DIR', os.environ.get('SCRIPT_DIR_ENV', os.path.dirname(os.path.abspath(__file__))))
-source = os.path.join(script_dir, 'SlyMail_User_Manual.md')
-output = os.path.join(script_dir, 'SlyMail_User_Manual.txt')
+# Allow SOURCE_MD / OUTPUT_TXT env vars so the same script can be called in a
+# loop to generate translated plain-text variants of the manual.
+source = os.environ.get('SOURCE_MD', os.path.join(script_dir, 'SlyMail_User_Manual.md'))
+output = os.environ.get('OUTPUT_TXT', os.path.join(script_dir, 'SlyMail_User_Manual.txt'))
 
 LINE_WIDTH = 79
 
-with open(source, 'r') as f:
+with open(source, 'r', encoding='utf-8') as f:
     raw = f.read()
 
 # Get version and date from environment (set by generate_docs.sh/.bat from program_info.h)
@@ -263,7 +265,7 @@ if in_table:
     flush_table()
 
 # Write output, collapsing multiple blank lines
-with open(output, 'w') as f:
+with open(output, 'w', encoding='utf-8') as f:
     prev_blank = False
     for line in output_lines:
         is_blank = (line.strip() == "")

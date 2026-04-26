@@ -1,0 +1,627 @@
+*(Maskinöversättning — för det engelska originalet, se [SlyMail_User_Manual.md](SlyMail_User_Manual.md))*
+
+---
+title: "SlyMail Användarmanual"
+subtitle: "QWK Offline-postläsare"
+version: "0.54"
+date: "2026-04-02"
+author: "Eric Oulashin"
+---
+
+# SlyMail Användarmanual
+
+## Introduktion
+
+SlyMail är en plattformsoberoende textbaserad offline-postläsare för QWK-paketformatet. QWK-paket används för att utbyta post på bulletin board-system (BBS). SlyMail erbjuder ett komplett gränssnitt för att läsa, söka i och svara på meddelanden från QWK-postpaket.
+
+Användargränssnittet är inspirerat av Digital Distortion Message Reader (DDMsgReader) för meddelandeläsning och SlyEdit för meddelanderedigering, båda ursprungligen skapade för Synchronet BBS.
+
+SlyMail körs på Linux, macOS, BSD och Windows.
+
+## Kom igång
+
+### Starta SlyMail
+
+![SlyMail Opening Screen](../screenshots/SlyMail_01_OpeningScreen.png)
+
+Starta SlyMail från kommandoraden:
+
+    slymail
+
+Detta visar startskärmen (om aktiverad) och öppnar filbläddraren för att välja ett QWK-paket.
+
+Öppna ett specifikt QWK-paket direkt:
+
+    slymail MYBBS.qwk
+
+Eller använd den namngivna parametern:
+
+    slymail -qwk_file=/path/to/MYBBS.qwk
+
+Andra kommandoradsalternativ:
+
+- `-v` eller `--version` - Visa versionsinformation
+- `-?` eller `--help` - Visa hjälp
+
+### SlyMail-datakatalogen
+
+Vid första körning skapar SlyMail en datakatalog på `~/.slymail` (på Linux, macOS och BSD) eller i din hemkatalog på Windows. Den här katalogen innehåller:
+
+- `slymail.ini` - Dina inställningar
+- `QWK/` - Standardkatalog för QWK-postpaket
+- `REP/` - Standardkatalog för svarspaket
+- `config_files/` - Färgtemafiler
+- `dictionary_files/` - Stavningskontrollordböcker
+- `tagline_files/` - Tagradfiler
+- `remote_systems.json` - Sparade fjärrsystemsanslutningar
+- `lastread_<BBSID>.json` - Pekare till senast lästa meddelande per konferens
+
+### Konfigurationsprogrammet
+
+SlyMail inkluderar ett fristående konfigurationsprogram kallat `config` (eller `slymail-config` om installerat via `make install`). Det här programmet erbjuder ett textbaserat gränssnitt för att konfigurera alla SlyMail-inställningar utan att öppna huvudprogrammet.
+
+Kör det från kommandoraden:
+
+    config
+
+Konfigurationsprogrammet erbjuder dessa kategorier:
+
+- **Redigerarinställningar** - Redigerarstil, taglines, stavningskontroll, citeringsalternativ, temaval
+- **Läsarinställningar** - Kludge-rader, bortrivningsrader, rullningslist, ANSI-borttagning, omvänd ordning, attributkodsomkopplare
+- **Temainställningar** - Välj Ice- och DCT-färgtemafiler
+- **Allmänna inställningar** - Ditt namn för svar, svarspaketskatelog, extern redigerarkonfiguration, ljusstångsläge, startskärm
+
+Inställningarna sparas automatiskt när du avslutar varje kategori. Både SlyMail och konfigurationsprogrammet läser och skriver samma `slymail.ini`-fil.
+
+## Filbläddrare
+
+När SlyMail startar visas en filbläddrare för att välja ett QWK-paket att öppna.
+
+![File Browser](../screenshots/SlyMail_02_File_Chooser.png)
+
+### Tangenter för filbläddrare
+
+| Tangent | Åtgärd |
+|---------|--------|
+| Upp / Ned | Navigera filer och kataloger |
+| Enter | Öppna katalog eller välj en QWK-fil |
+| PgUp / PgDn | Rulla fillistan |
+| Home / End | Hoppa till första eller sista posten |
+| Ctrl-R | Öppna fjärrsystemskatalogen |
+| Q / ESC | Avsluta SlyMail |
+| ? / F1 | Hjälp |
+
+Endast `.qwk`-filer kan väljas. Kataloger visas i blått och kan navigeras in i genom att trycka Enter.
+
+## Fjärrsystem (Ctrl-R)
+
+![Remote Systems List](../screenshots/SlyMail_03_remote_system_list.png)
+
+SlyMail kan ladda ned QWK-paket direkt från fjärr-BBS via FTP eller SFTP (SSH).
+
+Tryck **Ctrl-R** från filbläddraren, konferenslistan eller meddelandelistan för att öppna fjärrsystemhanteraren. Härifrån kan du:
+
+- **Lägga till** ett nytt fjärrsystem med dess värdnamn, port, anslutningstyp (FTP eller SSH), användarnamn, lösenord, passiv FTP-växel och inledande fjärrsökväg
+- **Redigera** eller **Ta bort** befintliga poster
+- **Ansluta** till ett fjärrsystem och bläddra i dess kataloger
+- **Ladda ned** QWK-filer direkt till din `QWK/`-katalog
+- **Ladda upp** REP-svarspaket till fjärrsystemet
+
+Fjärrsystemposter sparas i `remote_systems.json` i din SlyMail-datakatalog. Det senaste anslutningsdatumet/-tiden spåras för varje system.
+
+SlyMail använder systemets `curl`-kommando för FTP- och SFTP-filöverföringar.
+
+## Konferenslista
+
+![Conference List](../screenshots/SlyMail_06_msg_area_list.png)
+
+Efter att ett QWK-paket har öppnats visas konferenslistan med alla meddelandeområden (konferenser) och deras meddelandeantal. Kolumnen "Ny" visar en bockmarkering bredvid konferenser som har nya meddelanden. Om inställningen "Visa bara områden med ny post" är aktiverad, döljs konferenser med noll meddelanden.
+
+### Tangenter för konferenslista
+
+| Tangent | Åtgärd |
+|---------|--------|
+| Upp / Ned | Navigera konferenser |
+| PgUp / PgDn | Rulla listan |
+| Home / End | Hoppa till första eller sista konferensen |
+| Enter (E) | Öppna den valda konferensen |
+| G | Gå till ett specifikt konferensnummer |
+| / | Sök konferenser efter namn |
+| V | Visa omröstningar och röster i paketet |
+| O / Ctrl-L | Öppna en annan QWK-fil |
+| Ctrl-R | Öppna fjärrsystem |
+| Ctrl-P | Spara REP-svarspaketet |
+| S / Ctrl-U | Öppna inställningar |
+| Q / ESC | Avsluta SlyMail |
+| ? / F1 | Hjälp |
+
+När ett sökfilter är aktivt rensar **Q** filtret istället för att avsluta.
+
+## Meddelandelista
+
+![Message List](../screenshots/SlyMail_07_msg_list.png)
+
+Meddelandelistan visar alla meddelanden i den valda konferensen med kolumner för meddelandenummer, från, till, ämne, datum och tid.
+
+### Spårning av senast lästa meddelande
+
+SlyMail kommer ihåg det sista meddelandet du läste i varje konferens. När du öppnar en konferens placeras markören automatiskt vid det första olästa meddelandet (meddelandet efter det sista du läste). Den här informationen sparas per BBS i SlyMail-datakatalogen.
+
+### Tangenter för meddelandelista
+
+| Tangent | Åtgärd |
+|---------|--------|
+| Upp / Ned | Navigera meddelanden |
+| PgUp / PgDn | Rulla listan |
+| Home / End | Hoppa till första eller sista meddelandet |
+| Enter / R | Läs det valda meddelandet |
+| N | Skriv ett nytt meddelande |
+| G | Gå till ett specifikt meddelandenummer |
+| / | Sök meddelanden |
+| Ctrl-A | Avancerad sökning (med datumintervall) |
+| Ctrl-L | Öppna en annan QWK-fil |
+| Ctrl-R | Öppna fjärrsystem |
+| Ctrl-P | Spara REP-svarspaketet |
+| S / Ctrl-U | Öppna inställningar |
+| C / ESC | Tillbaka till konferenslistan |
+| Q | Avsluta |
+| ? / F1 | Hjälp |
+
+### Söka i meddelanden
+
+![Message Search](../screenshots/SlyMail_16_msg_search.png)
+
+Tryck **/** för att söka meddelanden efter ämne, brödtext, avsändare eller mottagare. Tryck **Ctrl-A** för avancerad sökning, som inkluderar filtrering av datumintervall med en visuell kalenderväljare. När ett sökfilter är aktivt rensar **Q** filtret.
+
+Sökningen kan använda enkel delsträngsmatchning eller reguljära uttryck, beroende på inställningen "Sök med reguljärt uttryck".
+
+## Meddelandeläsare
+
+![Reading a Message](../screenshots/SlyMail_08_reading_msg.png)
+
+Meddelandeläsaren visar meddelandeinnehåll med en rubrik som visar fälten Från, Till, Ämne och Datum.
+
+### Tangenter för meddelandeläsare
+
+| Tangent | Åtgärd |
+|---------|--------|
+| Upp / Ned | Rulla meddelandeinnehåll |
+| PgUp / PgDn | Sida upp eller ned |
+| Home / End | Hoppa till toppen eller botten |
+| Vänster / Höger | Föregående eller nästa meddelande |
+| F / L | Första eller sista meddelandet |
+| R | Svara på meddelandet |
+| V | Rösta (upp-/nedröstning eller omröstningsröstsedel) |
+| D / Ctrl-D | Ladda ned bifogade filer |
+| H | Visa detaljerad meddelanderubrik |
+| S / Ctrl-U | Öppna inställningar |
+| C / Q / ESC / M | Tillbaka till meddelandelistan |
+| ? / F1 | Hjälp |
+
+### ANSI-konst
+
+![ANSI Art](../screenshots/SlyMail_20_reading_ANSI_art.png)
+
+SlyMail renderar ANSI-konst i meddelanden med stöd för markörpositionering, färger och CP437-blocktecken. Meddelanden som innehåller ANSI-markörsekvenser identifieras automatiskt och renderas via en virtuell skärmbuffer för korrekt visning.
+
+### Bifogade filer
+
+När ett meddelande har bifogade filer (indikerat med **[ATT]** i rubriken), tryck **D** eller **Ctrl-D** för att visa och ladda ned dem. Du visas en lista över bifogade filer med deras storlekar och uppmanas att välja en målkatalog.
+
+### Röstning och omröstningar
+
+SlyMail stöder Synchronet-stil röstning:
+
+- **Omröstningar**: Meddelanden identifierade som omröstningar visar svarsalternativ med rösträkningar och procentstaplar. Tryck **V** för att öppna en röstsedeldialog där du kan växla dina val och avge din röst.
+- **Upp-/Nedröstningar**: För vanliga meddelanden, tryck **V** för att rösta upp eller ned. Aktuella röstresultat och nettopoäng visas i rubriken.
+- **Omröstningsbläddrare**: Tryck **V** från konferenslistan för att bläddra bland alla omröstningar i paketet.
+
+Röster köas tillsammans med meddelandesvar och skrivs till REP-paketet.
+
+## Meddelanderedigerare
+
+![Message Editor](../screenshots/SlyMail_09_msg_edit_start.png)
+
+Meddelanderedigeraren används för att komponera svar och nya meddelanden. Den erbjuder två visuella lägen inspirerade av SlyEdit: **Ice**-läget och **DCT**-läget.
+
+### Redigerartangenter
+
+| Tangent | Åtgärd |
+|---------|--------|
+| Piltangenter | Flytta markören |
+| Home / End | Början eller slutet av raden |
+| PgUp / PgDn | Sida upp eller ned |
+| Insert | Växla Infoga/Överskrivningsläge |
+| Delete | Ta bort tecken vid markören |
+| Backspace | Ta bort tecken före markören |
+| ESC | Öppna redigeringsmenyn |
+| Ctrl-Z | Spara meddelandet |
+| Ctrl-A | Avbryt meddelandet |
+| Ctrl-Q | Öppna eller stäng citatfönstret |
+| Ctrl-K | Öppna färgväljaren |
+| Ctrl-G | Infoga ett CP437-grafiktecken |
+| Ctrl-O | Importera en textfil vid markörens position |
+| Ctrl-W | Sök efter text |
+| Ctrl-S | Ändra ämnet |
+| Ctrl-D | Ta bort den aktuella raden |
+| Ctrl-T | Lista textersättningar |
+| Ctrl-U | Öppna redigerarinställningar |
+| F1 | Hjälpskärm |
+
+### Snedstreckskommandon
+
+Du kan också skriva snedstreckskommandon på en tom rad och trycka Enter:
+
+| Kommando | Åtgärd |
+|----------|--------|
+| /S | Spara meddelandet |
+| /A | Avbryt meddelandet |
+| /Q | Öppna citatfönstret |
+| /U | Öppna redigerarinställningar |
+| /? | Visa hjälp |
+
+### Citatfönster
+
+![Quote Window](../screenshots/SlyMail_10_quote_line_selection.png)
+
+När du svarar på ett meddelande, tryck **Ctrl-Q** eller skriv `/Q` på en tom rad för att öppna citatfönstret. Citatfönstret visar den ursprungliga meddelandetexten med citatprefix.
+
+| Tangent | Åtgärd |
+|---------|--------|
+| Upp / Ned | Navigera citerade rader |
+| PgUp / PgDn | Sida upp eller ned |
+| Home / End | Hoppa till första eller sista raden |
+| Enter | Infoga den valda citerade raden i ditt meddelande |
+| Ctrl-Q / ESC | Stäng citatfönstret |
+
+Om antalet citerade rader överstiger citatfönstrets höjd visas en rullningslist på höger kant.
+
+### Färgväljare (Ctrl-K)
+
+Tryck **Ctrl-K** för att öppna en interaktiv färgväljar-dialog. Välj en förgrundsfärg (16 alternativ: 8 normala + 8 ljusa) och en bakgrundsfärg (8 alternativ). En förhandsgranskning visar den valda kombinationen. Tryck **Enter** för att infoga ANSI-färgkoden vid markörens position. Tryck **N** för att infoga en återställnings-(normal) kod.
+
+### Filimport (Ctrl-O)
+
+Tryck **Ctrl-O** för att importera innehållet i en textfil till ditt meddelande vid den aktuella markörens position. En filbläddrare öppnas för att låta dig välja valfri fil. Filens innehåll infogas rad för rad vid markören med bevarade radbrytningar.
+
+![Editing a message](../screenshots/SlyMail_11_writing_reply_msg.png)
+
+### Hantering av citerade rader
+
+När du svarar på ett meddelande spåras rader som infogats från citatfönstret som citerade rader. Om du redigerar en citerad rad och den radbryts, hamnar spillet på en ny rad (också markerad som en citerad rad) snarare än att slås samman med angränsande text. Att ta bort text från en citerad rad drar inte upp text från nästa rad om den också är en citerad rad. Detta bevarar integriteten hos citerad text.
+
+### Styckebaserat sparande
+
+När ett meddelande sparas sammanfogar SlyMail mjukt radbrytna rader med nyskriven text till enkla långa stycken. Det gör att andra personers postläsare kan radbryta texten för att passa deras egna terminalbredd. Citerade rader bevaras alltid exakt som de visas och sammanfogas aldrig.
+
+### Tomma meddelanden
+
+Om du sparar ett meddelande som inte har något textinnehåll (tomt eller bara blanksteg) avbryter SlyMail meddelandet och visar ett meddelande istället för att posta det.
+
+### Externa redigerare
+
+SlyMail stöder användning av externa textredigerare istället för den inbyggda redigeraren. För att konfigurera en extern redigerare:
+
+1. Öppna Inställningar (Ctrl-U eller konfigurationsprogrammet)
+2. Gå till **Externa redigerare...** för att lägga till och konfigurera redigerare
+3. Ange **Extern redigerare** för att välja vilken konfigurerad redigerare som ska användas
+4. Aktivera **Använd extern redigerare**
+
+Varje extern redigerare kan konfigureras med:
+
+- **Namn** - Ett beskrivande namn för redigeraren
+- **Startkatalog** - Katalogen som innehåller redigerarens körbara fil
+- **Kommandorad** - Kommandot att köra (använd `%f` för den temporära filsökvägen)
+- **Radbryt citerad text** - Om citerad text ska radbrytningslindas och kolumnbredden
+- **Automatisk citerad text** - Inkludera alltid citat, fråga varje gång eller inkludera aldrig
+- **Redigerarinformationsfiler** - Typ av drop-fil (Ingen, MSGINF, EDITOR.INF, DOOR.SYS, DOOR32.SYS)
+- **Ta bort FidoNet-kludges** - Ta bort FidoNet-kontrollrader från citerad text
+
+När en extern redigerare används skapar SlyMail en temporär fil, startar redigeraren och läser resultatet när redigeraren avslutas. Om redigeraren producerar en `RESULT.ED`-fil (Synchronet-kompatibel) läser SlyMail det nya ämnet och redigerardetaljerna från den.
+
+## Inställningar
+
+### Läsarinställningar (Ctrl-U)
+
+![Reader Settings](../screenshots/SlyMail_14_reader_settings.png)
+
+Öppna läsarinställningar genom att trycka **Ctrl-U** eller **S** från konferenslistan, meddelandelistan eller meddelandeläsaren.
+
+Tillgängliga inställningar:
+
+- **Visa kludge-rader** - Visa eller dölj kludge-/kontrollrader i meddelanden
+- **Visa bortrivnings-/ursprungsrader** - Visa eller dölj bortrivnings- och ursprungsrader
+- **Rullningslist i läsaren** - Visa eller dölj rullningslisten
+- **Visa bara områden med ny post** - Dölj konferenser med noll meddelanden
+- **Ta bort ANSI-koder från meddelanden** - Ta bort alla ANSI escape-sekvenser
+- **Attributkodsomkopplare** - Aktivera/inaktivera BBS-färgkodstolkning per typ
+- **Sök med reguljärt uttryck** - Använd regex för sökningar
+- **Lista meddelanden i omvänd ordning** - Visa nyaste meddelanden först
+- **Visa startskärm vid uppstart** - Växla startskärmen
+- **Katalog för svarspaket** - Ange katalogen för att spara REP-paket
+- **Använd extern redigerare** - Aktivera externt redigerarläge
+- **Externa redigerare...** - Konfigurera externa redigerare
+- **Extern redigerare** - Välj vilken konfigurerad redigerare som ska användas
+
+Tryck **S** för att spara inställningar, eller **ESC/Q** för att stänga (med en uppmaning att spara om ändringar gjorts).
+
+### Redigerarinställningar (Ctrl-U i redigeraren)
+
+Öppna redigerarinställningar genom att trycka **Ctrl-U** medan du är i meddelanderedigeraren.
+
+Tillgängliga inställningar:
+
+- **Välj UI-läge** - Växla mellan Ice-, DCT- och Slumpmässiga stilar
+- **Taglines** - Aktivera tagradsinfogning vid sparande
+- **Stavningskontrollsordbok/ordböcker** - Välj vilka ordböcker som ska användas
+- **Fråga om stavningskontroll vid spara** - Aktivera stavningskontrollsfrågor
+- **Radbryt citerade rader till terminalens bredd** - Radbryt citerade rader med ordbrytning
+- **Citera med författarens initialer** - Använd initialbaserade citatprefix
+- **Indrag för citerade rader med initialer** - Lägg till mellanrum före initialer
+- **Ta bort mellanslag från citerade rader** - Ta bort ledande blanksteg från citat
+
+## BBS-färgkodsstöd
+
+SlyMail tolkar färg- och attributkoder från flera BBS-programvarupaket:
+
+- **ANSI escape-koder** - Alltid aktiverade; standard SGR-sekvenser
+- **Synchronet Ctrl-A-koder** - Ctrl-A + attributtecken
+- **WWIV hjärtkoder** - Ctrl-C + siffra 0–9
+- **PCBoard/Wildcat @X-koder** - @X följt av två hexsiffror
+- **Celerity pipe-koder** - Pipe + bokstav
+- **Renegade pipe-koder** - Pipe + tvåsiffrigt tal
+
+Varje kodstyp kan aktiveras eller inaktiveras individuellt via underdialogrutan Attributkodsomkopplare i inställningar.
+
+## Färgteman
+
+SlyMails redigerare använder konfigurerbara färgteman laddade från `.ini`-filer i katalogen `config_files/`.
+
+### Ice-teman
+
+Ice-teman styr utseendet på Ice-redigeringsläget:
+
+- BlueIce (standard)
+- EmeraldCity
+- FieryInferno
+- Fire-N-Ice
+- GeneralClean
+- GenericBlue
+- PurpleHaze
+- ShadesOfGrey
+
+### DCT-teman
+
+DCT-teman styr utseendet på DCT-redigeringsläget:
+
+- Default
+- Default-Modified
+- Midnight
+
+### Temafärgformat
+
+Temafärger använder ett kompakt format baserat på Synchronet-attributkoder:
+
+- `n` - Normal (återställ alla attribut)
+- Förgrundsbokstäver: `k`=svart, `r`=röd, `g`=grön, `y`=gul, `b`=blå, `m`=magenta, `c`=cyan, `w`=vit
+- `h` - Hög/ljus intensitet
+- Bakgrundssiffror: `0`=svart, `1`=röd, `2`=grön, `3`=brun, `4`=blå, `5`=magenta, `6`=cyan, `7`=ljusgrå
+
+Exempel: `nbh` = ljusblå, `n4wh` = ljusvit på blå bakgrund, `nk7` = svart på ljusgrå
+
+## Stavningskontroll
+
+SlyMail inkluderar en inbyggd stavningskontroll som använder klartextordböcker.
+
+### Ordböcker
+
+Ordboksfiler lagras i `dictionary_files/`:
+
+- `dictionary_en.txt` - Engelska (allmän)
+- `dictionary_en-US-supplemental.txt` - Tillägg för amerikansk engelska
+- `dictionary_en-GB-supplemental.txt` - Tillägg för brittisk engelska
+- `dictionary_en-AU-supplemental.txt` - Tillägg för australisk engelska
+- `dictionary_en-CA-supplemental.txt` - Tillägg för kanadensisk engelska
+
+Flera ordböcker kan väljas samtidigt för kombinerad ordtäckning.
+
+### Använda stavningskontrollen
+
+Aktivera "Fråga om stavningskontroll vid spara" i inställningarna. När du sparar ett meddelande söker stavningskontrollen efter felstavade ord och presenterar alternativ för varje:
+
+- **E**rsätt - Skriv ett ersättningsord
+- **H**oppa över - Hoppa över detta ord
+- **A**vsluta - Stoppa stavningskontroll
+
+## Taglines
+
+Taglines är korta citat eller talesätt som läggs till i meddelanden när de sparas.
+
+### Inställning
+
+1. Aktivera "Taglines" i redigerarinställningar
+2. Placera taglines i `tagline_files/taglines.txt`, en per rad
+3. Rader som börjar med `#` eller `;` behandlas som kommentarer
+
+### Användning
+
+När ett meddelande sparas med taglines aktiverade uppmanas du att välja en specifik tagline eller välja en slumpmässigt. Den valda tagline läggs till i ditt meddelande med prefixet `...`.
+
+## REP-svarspaket
+
+När du skriver svar eller nya meddelanden köas de som väntande. Röster (omröstningsröstsedlar, upp-/nedröstningar) köas också.
+
+### Spara REP-paket
+
+- Tryck **Ctrl-P** från konferensen eller meddelandelistan för att spara REP-paketet när som helst
+- SlyMail frågar om att spara efter att ett meddelande har komponerats
+- Vid avslutning frågar SlyMail om att spara eventuella osparade väntande objekt
+
+REP-paketet sparas som `<BBS-ID>.rep` i din konfigurerade svarskatalog (standard `~/.slymail/REP/`). Ladda upp den här filen tillbaka till BBS för att posta dina svar.
+
+### REP-paketets innehåll
+
+- Meddelandesvar i standard QWK-format
+- `HEADERS.DAT` för utökade fält som överstiger 25 tecken
+- `VOTING.DAT` för väntande röster (Synchronet-kompatibelt)
+
+## UTF-8-stöd
+
+SlyMail identifierar och visar UTF-8-innehåll korrekt:
+
+- UTF-8-meddelanden identifieras via `HEADERS.DAT`-flaggor och automatisk bytesekvensanalys
+- En **[UTF8]**-indikator visas i meddelanderubriken för UTF-8-meddelanden
+- CP437-tecken från äldre BBS-innehåll konverteras till sina Unicode-motsvarigheter för korrekt visning i moderna terminaler
+
+## Inställningsfilsreferens
+
+Inställningarna lagras i `slymail.ini` i SlyMail-datakatalogen. Filen använder INI-format med sektioner:
+
+### [General]
+
+| Inställning | Standard | Beskrivning |
+|-------------|----------|-------------|
+| showSplashScreen | true | Visa startskärm vid uppstart |
+| userName | (tomt) | Ditt namn för Från-fältet i svar |
+| replyDir | (tomt) | Katalog för att spara REP-paket |
+| useExternalEditor | false | Använd extern redigerare istället för inbyggd |
+| selectedEditor | (tomt) | Namn på den valda externa redigeraren |
+
+### [Reader]
+
+| Inställning | Standard | Beskrivning |
+|-------------|----------|-------------|
+| showKludgeLines | false | Visa kludge-/kontrollrader |
+| showTearLine | true | Visa bortrivnings- och ursprungsrader |
+| useScrollbar | true | Visa rullningslist i meddelandeläsaren |
+| onlyShowAreasWithNewMail | false | Dölj tomma konferenser |
+| stripAnsi | false | Ta bort ANSI-koder från meddelanden |
+| attrSynchronet | true | Tolka Synchronet Ctrl-A-koder |
+| attrWWIV | true | Tolka WWIV hjärtkoder |
+| attrCelerity | true | Tolka Celerity pipe-koder |
+| attrRenegade | true | Tolka Renegade pipe-koder |
+| attrPCBoard | true | Tolka PCBoard/Wildcat @X-koder |
+| useRegexSearch | false | Använd regex för sökningar |
+
+### [MessageList]
+
+| Inställning | Standard | Beskrivning |
+|-------------|----------|-------------|
+| lightbarMode | true | Ljusstångsnavigering i meddelandelistan |
+| reverseOrder | false | Visa nyaste meddelanden först |
+
+### [Editor]
+
+| Inställning | Standard | Beskrivning |
+|-------------|----------|-------------|
+| editorStyle | Ice | Redigerarläge: Ice, Dct eller Random |
+| insertMode | true | Standardinfogningsläge |
+| wrapQuoteLines | true | Radbryt citerade rader med ordbrytning |
+| quoteLineWidth | 76 | Maxbredd för citerade rader |
+| quotePrefix | > (mellanslag) | Prefix för citerad rad |
+| taglines | false | Aktivera tagradsinfogning |
+| promptSpellCheck | false | Fråga om stavningskontroll vid spara |
+| quoteWithInitials | false | Använd författarens initialer i citatprefix |
+| indentQuoteInitials | true | Lägg till mellanrum före initialer |
+| trimQuoteSpaces | false | Ta bort blanksteg från citerade rader |
+
+### [Themes]
+
+| Inställning | Standard | Beskrivning |
+|-------------|----------|-------------|
+| iceThemeFile | EditorIceColors_BlueIce.ini | Ice-lägets temafil |
+| dctThemeFile | EditorDCTColors_Default.ini | DCT-lägets temafil |
+
+## Synchronet BBS QWK-inställningar
+
+Om du använder ett Synchronet BBS rekommenderas följande QWK-paketinställningar för bästa kompatibilitet med SlyMail:
+
+| Inställning | Rekommenderat värde |
+|-------------|---------------------|
+| Ctrl-A Color Codes | Leave in |
+| Archive Type | ZIP |
+| Include File Attachments | Yes |
+| Include Index Files | Yes |
+| Include Control Files | Yes |
+| Include VOTING.DAT File | Yes |
+| Include HEADERS.DAT File | Yes |
+| Include UTF-8 Characters | Yes |
+| Extended (QWKE) Packet Format | Yes |
+
+## Ändringslogg
+
+### Version 0.54 (2026-03-31)
+
+#### Tillagt
+- Spårning av senast lästa meddelande per konferens med automatisk markörpositionering
+- Indikator för nya meddelanden (bockmarkeringskolumn) i konferenslistan
+- Filimport i meddelanderedigeraren (Ctrl-O) för att infoga textfiler vid markörens position
+- Spårning av citerade rader för att bevara citatraders integritet under redigering
+- Styckebaserat meddelandesparande för bättre textomflöde hos mottagare
+- Identifiering av terminalstorlekar: Det gör att SlyMail kan ändra storlek på sitt/sina fönster och innehåll som svar på att terminalfönstret ändrar storlek
+
+#### Ändrat
+- Radbrytning av citerade rader respekterar nu terminalens bredd när det är aktiverat
+- Konfiguration vid första start: Om användaren inte har några SlyMail-inställningar ännu (dvs. deras .slymail-katalog inte finns ännu), körs config vid uppstart och användarens namn efterfrågas innan konfigurationsinställningarna fortsätter
+
+#### Åtgärdat
+- Redigering av citerade rader sammanfogar inte längre spillet med angränsande rader
+
+### Version 0.53 (2026-03-29)
+
+#### Tillagt
+- Inställning för att bara visa konferenser med nya meddelanden
+- Stöd för externa redigerare med flera redigerarkonfigurationer
+- Stöd för drop-filtyp (MSGINF, EDITOR.INF, DOOR.SYS, DOOR32.SYS)
+- RESULT.ED-tolkning efter att extern redigerare avslutas
+- Gå till konferensnummer (G-tangent) i konferenslistan
+- Endast-siffror-inmatningsvalidering för Gå till-prompter
+
+#### Åtgärdat
+- Snedstreckskommandon (/Q, /S, osv.) fungerar nu på den första raden i redigeraren
+- DCT-citatfönsterfärger använder nu det laddade temat korrekt
+- Citatfönstrets rullningslist återställd för långa citatlistor
+- Förbättrad skärmuppdatering i inställningsdialoger
+
+### Version 0.52 (2026-03-26)
+
+#### Tillagt
+- REP-katalog skapas automatiskt
+- Snabbtangent för att spara REP-paket (Ctrl-P)
+- Ladda upp svarspaket till fjärrsystem
+- Omradbrytning av citerade rader
+- Katalogväljare för svarspaketskatalog
+
+#### Ändrat
+- Snabbare redigerarskärmsuppdateringar med reducerat flimmer
+- Styckemedvetet meddelandesparande
+- Förbättrad ANSI-rendering med stöd för 256-färger och sann färg
+
+#### Åtgärdat
+- Hantering av redigerarfärgkoder under alla redigeringsoperationer
+- Ordbrytningsbeteende i redigeraren
+- Bevarande av avslutande mellanslag i citatprefix
+- REP-sparningsspårning
+
+### Version 0.51 (2026-03-25)
+
+#### Tillagt
+- QWKE (utökat QWK) stöd
+- BBS-färg-/attributkodsstöd för flera BBS-typer
+- Synchronet-röstningsstöd (omröstningar och upp-/nedröstningar)
+- Stöd för bifogade filer
+- UTF-8-stöd
+- Färgväljare (Ctrl-K)
+- Fjärrsystemskatalog (Ctrl-R)
+- Sökning och filtrering med avancerad sökning
+- Startskärmsväxel
+
+### Version 0.50 (2026-03-24)
+
+- Första utgåvan
+- Plattformsoberoende QWK offline-postläsare
+- DDMsgReader-inspirerat läsgränssnitt
+- SlyEdit-inspirerad meddelanderedigerare med Ice- och DCT-lägen
+- Temastöd, stavningskontroll och taglines
+- Skapande av REP-svarspaket
+- Filbläddrare och fristående konfigurationsverktyg

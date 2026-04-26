@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Eric Oulashin" />
+  <meta name="dcterms.date" content="2026-04-09" />
+  <title>SlyMail User Manual</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">SlyMail User Manual</h1>
+<p class="subtitle">QWK Offline Mail Reader</p>
+<p class="author">Eric Oulashin</p>
+<p class="date">2026-04-09</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#slymail-user-manual-pirate"
+id="toc-slymail-user-manual-pirate">SlyMail User Manual (Pirate)</a>
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#getting-started" id="toc-getting-started">Getting
+Started</a>
+<ul>
+<li><a href="#launching-slymail" id="toc-launching-slymail">Launching
+SlyMail</a></li>
+<li><a href="#the-slymail-data-directory"
+id="toc-the-slymail-data-directory">The SlyMail Data Directory</a></li>
+<li><a href="#the-configuration-program"
+id="toc-the-configuration-program">The Configuration Program</a></li>
+</ul></li>
+<li><a href="#file-browser" id="toc-file-browser">File Browser</a>
+<ul>
+<li><a href="#file-browser-keys" id="toc-file-browser-keys">File Browser
+Keys</a></li>
+</ul></li>
+<li><a href="#remote-systems-ctrl-r"
+id="toc-remote-systems-ctrl-r">Remote Systems (Ctrl-R)</a></li>
+<li><a href="#conference-list" id="toc-conference-list">Conference
+List</a>
+<ul>
+<li><a href="#conference-list-keys"
+id="toc-conference-list-keys">Conference List Keys</a></li>
+</ul></li>
+<li><a href="#message-list" id="toc-message-list">Message List</a>
+<ul>
+<li><a href="#last-read-message-tracking"
+id="toc-last-read-message-tracking">Last-Read Message Tracking</a></li>
+<li><a href="#message-list-keys" id="toc-message-list-keys">Message List
+Keys</a></li>
+<li><a href="#searching-messages" id="toc-searching-messages">Searching
+Messages</a></li>
+</ul></li>
+<li><a href="#message-reader" id="toc-message-reader">Message Reader</a>
+<ul>
+<li><a href="#message-reader-keys" id="toc-message-reader-keys">Message
+Reader Keys</a></li>
+<li><a href="#ansi-art" id="toc-ansi-art">ANSI Art</a></li>
+<li><a href="#file-attachments" id="toc-file-attachments">File
+Attachments</a></li>
+<li><a href="#voting-and-polls" id="toc-voting-and-polls">Voting and
+Polls</a></li>
+</ul></li>
+<li><a href="#message-editor" id="toc-message-editor">Message Editor</a>
+<ul>
+<li><a href="#editor-keys" id="toc-editor-keys">Editor Keys</a></li>
+<li><a href="#slash-commands" id="toc-slash-commands">Slash
+Commands</a></li>
+<li><a href="#quote-window" id="toc-quote-window">Quote Window</a></li>
+<li><a href="#color-picker-ctrl-k" id="toc-color-picker-ctrl-k">Color
+Picker (Ctrl-K)</a></li>
+<li><a href="#file-import-ctrl-o" id="toc-file-import-ctrl-o">File
+Import (Ctrl-O)</a></li>
+<li><a href="#quote-line-handling" id="toc-quote-line-handling">Quote
+Line Handling</a></li>
+<li><a href="#paragraph-based-saving"
+id="toc-paragraph-based-saving">Paragraph-Based Saving</a></li>
+<li><a href="#empty-messages" id="toc-empty-messages">Empty
+Messages</a></li>
+<li><a href="#external-editors" id="toc-external-editors">External
+Editors</a></li>
+</ul></li>
+<li><a href="#settings" id="toc-settings">Settings</a>
+<ul>
+<li><a href="#reader-settings-ctrl-u"
+id="toc-reader-settings-ctrl-u">Reader Settings (Ctrl-U)</a></li>
+<li><a href="#editor-settings-ctrl-u-in-editor"
+id="toc-editor-settings-ctrl-u-in-editor">Editor Settings (Ctrl-U in
+Editor)</a></li>
+</ul></li>
+<li><a href="#bbs-color-code-support"
+id="toc-bbs-color-code-support">BBS Color Code Support</a></li>
+<li><a href="#color-themes" id="toc-color-themes">Color Themes</a>
+<ul>
+<li><a href="#ice-themes" id="toc-ice-themes">Ice Themes</a></li>
+<li><a href="#dct-themes" id="toc-dct-themes">DCT Themes</a></li>
+<li><a href="#theme-color-format" id="toc-theme-color-format">Theme
+Color Format</a></li>
+</ul></li>
+<li><a href="#spell-checker" id="toc-spell-checker">Spell Checker</a>
+<ul>
+<li><a href="#dictionaries" id="toc-dictionaries">Dictionaries</a></li>
+<li><a href="#using-the-spell-checker"
+id="toc-using-the-spell-checker">Using the Spell Checker</a></li>
+</ul></li>
+<li><a href="#taglines" id="toc-taglines">Taglines</a>
+<ul>
+<li><a href="#setup" id="toc-setup">Setup</a></li>
+<li><a href="#usage" id="toc-usage">Usage</a></li>
+</ul></li>
+<li><a href="#rep-reply-packets" id="toc-rep-reply-packets">REP Reply
+Packets</a>
+<ul>
+<li><a href="#saving-rep-packets" id="toc-saving-rep-packets">Saving REP
+Packets</a></li>
+<li><a href="#rep-packet-contents" id="toc-rep-packet-contents">REP
+Packet Contents</a></li>
+</ul></li>
+<li><a href="#utf-8-support" id="toc-utf-8-support">UTF-8
+Support</a></li>
+<li><a href="#settings-file-reference"
+id="toc-settings-file-reference">Settings File Reference</a>
+<ul>
+<li><a href="#general" id="toc-general">[General]</a></li>
+<li><a href="#reader" id="toc-reader">[Reader]</a></li>
+<li><a href="#messagelist" id="toc-messagelist">[MessageList]</a></li>
+<li><a href="#editor" id="toc-editor">[Editor]</a></li>
+<li><a href="#themes" id="toc-themes">[Themes]</a></li>
+</ul></li>
+<li><a href="#synchronet-bbs-qwk-settings"
+id="toc-synchronet-bbs-qwk-settings">Synchronet BBS QWK
+Settings</a></li>
+<li><a href="#changelog" id="toc-changelog">Changelog</a>
+<ul>
+<li><a href="#version-0.54-2026-03-31"
+id="toc-version-0.54-2026-03-31">Version 0.54 (2026-03-31)</a></li>
+<li><a href="#version-0.53-2026-03-29"
+id="toc-version-0.53-2026-03-29">Version 0.53 (2026-03-29)</a></li>
+<li><a href="#version-0.52-2026-03-26"
+id="toc-version-0.52-2026-03-26">Version 0.52 (2026-03-26)</a></li>
+<li><a href="#version-0.51-2026-03-25"
+id="toc-version-0.51-2026-03-25">Version 0.51 (2026-03-25)</a></li>
+<li><a href="#version-0.50-2026-03-24"
+id="toc-version-0.50-2026-03-24">Version 0.50 (2026-03-24)</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="slymail-user-manual-pirate">SlyMail User Manual (Pirate)</h1>
+<h2 id="introduction">Introduction</h2>
+<p>SlyMail be a cross‑platform, text‑mode, offline mail reader fer the
+QWK packet format. QWK packets be used t’ trade mail on Bulletin Board
+Systems (BBSes). SlyMail gives ye a full‑featured interface fer readin’,
+searchin’, and replyin’ t’ messages from QWK mail packets.</p>
+<p>Its user interface be inspired by Digital Distortion Message Reader
+(DDMsgReader) fer readin’ messages, and SlyEdit fer editin’ messages,
+both o’ which were forged fer Synchronet BBS back in the day.</p>
+<p>SlyMail sails on Linux, macOS, BSD, and Windows.</p>
+<h2 id="getting-started">Getting Started</h2>
+<h3 id="launching-slymail">Launching SlyMail</h3>
+<figure>
+<img src="screenshots/SlyMail_01_OpeningScreen.png"
+alt="SlyMail Opening Screen" />
+<figcaption aria-hidden="true">SlyMail Opening Screen</figcaption>
+</figure>
+<p>Launch SlyMail from the command line:</p>
+<pre><code>slymail</code></pre>
+<p>That shows the splash screen (if enabled) and opens the file browser
+t’ pick a QWK packet.</p>
+<p>T’ open a specific QWK packet directly:</p>
+<pre><code>slymail MYBBS.qwk</code></pre>
+<p>Or use the named parameter:</p>
+<pre><code>slymail -qwk_file=/path/to/MYBBS.qwk</code></pre>
+<p>Other command‑line options:</p>
+<ul>
+<li><code>-v</code> or <code>--version</code> - Show version
+information</li>
+<li><code>-?</code> or <code>--help</code> - Show help</li>
+</ul>
+<h3 id="the-slymail-data-directory">The SlyMail Data Directory</h3>
+<p>On first run, SlyMail builds a data hold at <code>~/.slymail</code>
+(on Linux, macOS, and BSD) or in yer home directory on Windows. This
+hold contains:</p>
+<ul>
+<li><code>slymail.ini</code> - Yer settings</li>
+<li><code>QWK/</code> - Default berth fer QWK mail packets</li>
+<li><code>REP/</code> - Default berth fer reply packets</li>
+<li><code>config_files/</code> - Color theme files</li>
+<li><code>dictionary_files/</code> - Spell‑check dictionaries</li>
+<li><code>tagline_files/</code> - Tagline files</li>
+<li><code>remote_systems.json</code> - Saved remote system
+connections</li>
+<li><code>lastread_&lt;BBSID&gt;.json</code> - Last‑read message
+pointers per conference</li>
+</ul>
+<h3 id="the-configuration-program">The Configuration Program</h3>
+<p>SlyMail comes with a standalone configuration program called
+<code>config</code> (or <code>slymail-config</code> if installed via
+<code>make install</code>). This program gives a text‑based way t’ set
+all SlyMail options without openin’ the main app.</p>
+<p>Run it from the command line:</p>
+<pre><code>config</code></pre>
+<p>The configuration program offers these categories:</p>
+<ul>
+<li><strong>Editor Settings</strong> - Editor style, taglines,
+spell‑check, quoting options, theme selection</li>
+<li><strong>Reader Settings</strong> - Kludge lines, tear lines,
+scrollbar, ANSI stripping, reverse order, attribute code toggles</li>
+<li><strong>Theme Settings</strong> - Select Ice and DCT color theme
+files</li>
+<li><strong>General Settings</strong> - Yer name fer replies, reply
+packet directory, external editor configuration, lightbar mode, splash
+screen</li>
+</ul>
+<p>Settings be saved automatically when ye leave each category. Both
+SlyMail and the config program read and write the same
+<code>slymail.ini</code> file.</p>
+<h2 id="file-browser">File Browser</h2>
+<p>When SlyMail starts, a file browser be shown fer selectin’ a QWK
+packet t’ open.</p>
+<figure>
+<img src="screenshots/SlyMail_02_File_Chooser.png" alt="File Browser" />
+<figcaption aria-hidden="true">File Browser</figcaption>
+</figure>
+<h3 id="file-browser-keys">File Browser Keys</h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Up / Down</td>
+<td>Navigate files and directories</td>
+</tr>
+<tr>
+<td>Enter</td>
+<td>Open directory or select a QWK file</td>
+</tr>
+<tr>
+<td>PgUp / PgDn</td>
+<td>Scroll the file list</td>
+</tr>
+<tr>
+<td>Home / End</td>
+<td>Jump t’ first or last entry</td>
+</tr>
+<tr>
+<td>Ctrl-R</td>
+<td>Open the remote systems directory</td>
+</tr>
+<tr>
+<td>Q / ESC</td>
+<td>Quit SlyMail</td>
+</tr>
+<tr>
+<td>? / F1</td>
+<td>Help</td>
+</tr>
+</tbody>
+</table>
+<p>Only <code>.qwk</code> files can be selected. Directories be shown in
+blue and can be entered by pressin’ Enter.</p>
+<h2 id="remote-systems-ctrl-r">Remote Systems (Ctrl-R)</h2>
+<figure>
+<img src="screenshots/SlyMail_03_remote_system_list.png"
+alt="Remote Systems List" />
+<figcaption aria-hidden="true">Remote Systems List</figcaption>
+</figure>
+<p>SlyMail can haul down QWK packets straight from remote BBSes via FTP
+or SFTP (SSH).</p>
+<p>Press <strong>Ctrl-R</strong> from the file browser, conference list,
+or message list t’ open the remote systems manager. From there ye
+can:</p>
+<ul>
+<li><strong>Add</strong> a new remote system with its hostname, port,
+connection type (FTP or SSH), username, password, passive FTP toggle,
+and initial remote path</li>
+<li><strong>Edit</strong> or <strong>Delete</strong> existing
+entries</li>
+<li><strong>Connect</strong> t’ a remote system and browse its
+directories</li>
+<li><strong>Download</strong> QWK files straight into yer
+<code>QWK/</code> directory</li>
+<li><strong>Upload</strong> REP reply packets t’ the remote system</li>
+</ul>
+<p>Remote system entries be stored in <code>remote_systems.json</code>
+in yer SlyMail data directory. The last connection date/time be tracked
+fer each system.</p>
+<p>SlyMail uses the ship’s <code>curl</code> command fer FTP and SFTP
+file transfers.</p>
+<h2 id="conference-list">Conference List</h2>
+<figure>
+<img src="screenshots/SlyMail_06_msg_area_list.png"
+alt="Conference List" />
+<figcaption aria-hidden="true">Conference List</figcaption>
+</figure>
+<p>After openin’ a QWK packet, the conference list shows all message
+areas (conferences) with their message counts. A “New” column shows a
+checkmark next t’ conferences that have new messages. If the “Only show
+areas with new mail” setting be enabled, conferences with zero messages
+be hidden.</p>
+<h3 id="conference-list-keys">Conference List Keys</h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Up / Down</td>
+<td>Navigate conferences</td>
+</tr>
+<tr>
+<td>PgUp / PgDn</td>
+<td>Scroll the list</td>
+</tr>
+<tr>
+<td>Home / End</td>
+<td>Jump t’ first or last conference</td>
+</tr>
+<tr>
+<td>Enter (E)</td>
+<td>Open the selected conference</td>
+</tr>
+<tr>
+<td>G</td>
+<td>Go t’ a specific conference number</td>
+</tr>
+<tr>
+<td>/</td>
+<td>Search conferences by name</td>
+</tr>
+<tr>
+<td>V</td>
+<td>View polls and votes in the packet</td>
+</tr>
+<tr>
+<td>O / Ctrl-L</td>
+<td>Open a different QWK file</td>
+</tr>
+<tr>
+<td>Ctrl-R</td>
+<td>Open remote systems</td>
+</tr>
+<tr>
+<td>Ctrl-P</td>
+<td>Save the REP reply packet</td>
+</tr>
+<tr>
+<td>S / Ctrl-U</td>
+<td>Open settings</td>
+</tr>
+<tr>
+<td>Q / ESC</td>
+<td>Quit SlyMail</td>
+</tr>
+<tr>
+<td>? / F1</td>
+<td>Help</td>
+</tr>
+</tbody>
+</table>
+<p>When a search filter be active, pressin’ <strong>Q</strong> clears
+the filter instead o’ quittin’.</p>
+<h2 id="message-list">Message List</h2>
+<figure>
+<img src="screenshots/SlyMail_07_msg_list.png" alt="Message List" />
+<figcaption aria-hidden="true">Message List</figcaption>
+</figure>
+<p>The message list shows all messages in the selected conference with
+columns fer message number, from, to, subject, date, and time.</p>
+<h3 id="last-read-message-tracking">Last-Read Message Tracking</h3>
+<p>SlyMail remembers the last message ye read in each conference. When
+ye enter a conference, the cursor be placed on the first unread message
+(the one after the last one ye read). This be saved per‑BBS in the
+SlyMail data directory.</p>
+<h3 id="message-list-keys">Message List Keys</h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Up / Down</td>
+<td>Navigate messages</td>
+</tr>
+<tr>
+<td>PgUp / PgDn</td>
+<td>Scroll the list</td>
+</tr>
+<tr>
+<td>Home / End</td>
+<td>Jump t’ first or last message</td>
+</tr>
+<tr>
+<td>Enter / R</td>
+<td>Read the selected message</td>
+</tr>
+<tr>
+<td>N</td>
+<td>Write a new message</td>
+</tr>
+<tr>
+<td>G</td>
+<td>Go t’ a specific message number</td>
+</tr>
+<tr>
+<td>/</td>
+<td>Search messages</td>
+</tr>
+<tr>
+<td>Ctrl-A</td>
+<td>Advanced search (with date range)</td>
+</tr>
+<tr>
+<td>Ctrl-L</td>
+<td>Open a different QWK file</td>
+</tr>
+<tr>
+<td>Ctrl-R</td>
+<td>Open remote systems</td>
+</tr>
+<tr>
+<td>Ctrl-P</td>
+<td>Save the REP reply packet</td>
+</tr>
+<tr>
+<td>S / Ctrl-U</td>
+<td>Open settings</td>
+</tr>
+<tr>
+<td>C / ESC</td>
+<td>Back t’ the conference list</td>
+</tr>
+<tr>
+<td>Q</td>
+<td>Quit</td>
+</tr>
+<tr>
+<td>? / F1</td>
+<td>Help</td>
+</tr>
+</tbody>
+</table>
+<h3 id="searching-messages">Searching Messages</h3>
+<figure>
+<img src="screenshots/SlyMail_16_msg_search.png" alt="Message Search" />
+<figcaption aria-hidden="true">Message Search</figcaption>
+</figure>
+<p>Press <strong>/</strong> t’ search messages by subject, body text,
+sender, or recipient. Press <strong>Ctrl-A</strong> fer advanced search,
+which includes date‑range filterin’ with a calendar picker. When a
+search filter be active, pressin’ <strong>Q</strong> clears the
+filter.</p>
+<p>The search can use plain substring matchin’ or regular expressions,
+dependin’ on the “Search using regular expression” setting.</p>
+<h2 id="message-reader">Message Reader</h2>
+<figure>
+<img src="screenshots/SlyMail_08_reading_msg.png"
+alt="Reading a Message" />
+<figcaption aria-hidden="true">Reading a Message</figcaption>
+</figure>
+<p>The message reader shows message content with a header showin’ From,
+To, Subject, and Date.</p>
+<h3 id="message-reader-keys">Message Reader Keys</h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Up / Down</td>
+<td>Scroll message content</td>
+</tr>
+<tr>
+<td>PgUp / PgDn</td>
+<td>Page up or down</td>
+</tr>
+<tr>
+<td>Home / End</td>
+<td>Jump t’ top or bottom</td>
+</tr>
+<tr>
+<td>Left / Right</td>
+<td>Previous or next message</td>
+</tr>
+<tr>
+<td>F / L</td>
+<td>First or last message</td>
+</tr>
+<tr>
+<td>R</td>
+<td>Reply t’ the message</td>
+</tr>
+<tr>
+<td>V</td>
+<td>Vote (up/down vote or poll ballot)</td>
+</tr>
+<tr>
+<td>D / Ctrl-D</td>
+<td>Download file attachments</td>
+</tr>
+<tr>
+<td>H</td>
+<td>Show detailed message header</td>
+</tr>
+<tr>
+<td>S / Ctrl-U</td>
+<td>Open settings</td>
+</tr>
+<tr>
+<td>C / Q / ESC / M</td>
+<td>Back t’ the message list</td>
+</tr>
+<tr>
+<td>? / F1</td>
+<td>Help</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ansi-art">ANSI Art</h3>
+<figure>
+<img src="screenshots/SlyMail_20_reading_ANSI_art.png" alt="ANSI Art" />
+<figcaption aria-hidden="true">ANSI Art</figcaption>
+</figure>
+<p>SlyMail renders ANSI art in messages, supportin’ cursor positionin’,
+colors, and CP437 block characters. Messages containin’ ANSI cursor
+control sequences be detected and rendered through a virtual screen
+buffer fer proper display.</p>
+<h3 id="file-attachments">File Attachments</h3>
+<p>When a message has file attachments (marked by <strong>[ATT]</strong>
+in the header), press <strong>D</strong> or <strong>Ctrl-D</strong> t’
+view and download them. Ye’ll see a list o’ attached files and be asked
+t’ choose a destination directory.</p>
+<h3 id="voting-and-polls">Voting and Polls</h3>
+<p>SlyMail supports Synchronet‑style votin’:</p>
+<ul>
+<li><strong>Polls</strong>: Messages flagged as polls show answer
+options with vote counts and percentage bars. Press <strong>V</strong>
+t’ open a ballot where ye can toggle selections and cast yer vote.</li>
+<li><strong>Up/Down Votes</strong>: Fer regular messages, press
+<strong>V</strong> t’ up‑vote or down‑vote. Current tallies and net
+score be shown in the header.</li>
+<li><strong>Poll Browser</strong>: Press <strong>V</strong> from the
+conference list t’ browse all polls in the packet.</li>
+</ul>
+<p>Votes be queued alongside replies and written to the REP packet.</p>
+<h2 id="message-editor">Message Editor</h2>
+<figure>
+<img src="screenshots/SlyMail_09_msg_edit_start.png"
+alt="Message Editor" />
+<figcaption aria-hidden="true">Message Editor</figcaption>
+</figure>
+<p>The message editor be fer composin’ replies and new messages. It
+offers two visual modes inspired by SlyEdit: <strong>Ice</strong> mode
+and <strong>DCT</strong> mode.</p>
+<h3 id="editor-keys">Editor Keys</h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Arrow keys</td>
+<td>Move the cursor</td>
+</tr>
+<tr>
+<td>Home / End</td>
+<td>Beginning or end o’ line</td>
+</tr>
+<tr>
+<td>PgUp / PgDn</td>
+<td>Page up or down</td>
+</tr>
+<tr>
+<td>Insert</td>
+<td>Toggle Insert/Overwrite mode</td>
+</tr>
+<tr>
+<td>Delete</td>
+<td>Delete character at cursor</td>
+</tr>
+<tr>
+<td>Backspace</td>
+<td>Delete character before cursor</td>
+</tr>
+<tr>
+<td>ESC</td>
+<td>Open the editor menu</td>
+</tr>
+<tr>
+<td>Ctrl-Z</td>
+<td>Save the message</td>
+</tr>
+<tr>
+<td>Ctrl-A</td>
+<td>Abort the message</td>
+</tr>
+<tr>
+<td>Ctrl-Q</td>
+<td>Open or close the quote window</td>
+</tr>
+<tr>
+<td>Ctrl-K</td>
+<td>Open the color picker</td>
+</tr>
+<tr>
+<td>Ctrl-G</td>
+<td>Insert a CP437 graphic character</td>
+</tr>
+<tr>
+<td>Ctrl-O</td>
+<td>Import a text file at the cursor position</td>
+</tr>
+<tr>
+<td>Ctrl-W</td>
+<td>Search fer text</td>
+</tr>
+<tr>
+<td>Ctrl-S</td>
+<td>Change the subject</td>
+</tr>
+<tr>
+<td>Ctrl-D</td>
+<td>Delete the current line</td>
+</tr>
+<tr>
+<td>Ctrl-T</td>
+<td>List text replacements</td>
+</tr>
+<tr>
+<td>Ctrl-U</td>
+<td>Open editor settings</td>
+</tr>
+<tr>
+<td>F1</td>
+<td>Help screen</td>
+</tr>
+</tbody>
+</table>
+<h3 id="slash-commands">Slash Commands</h3>
+<p>Ye can also type slash commands on an empty line and press Enter:</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/S</td>
+<td>Save the message</td>
+</tr>
+<tr>
+<td>/A</td>
+<td>Abort the message</td>
+</tr>
+<tr>
+<td>/Q</td>
+<td>Open the quote window</td>
+</tr>
+<tr>
+<td>/U</td>
+<td>Open editor settings</td>
+</tr>
+<tr>
+<td>/?</td>
+<td>Show help</td>
+</tr>
+</tbody>
+</table>
+<h3 id="quote-window">Quote Window</h3>
+<figure>
+<img src="screenshots/SlyMail_10_quote_line_selection.png"
+alt="Quote Window" />
+<figcaption aria-hidden="true">Quote Window</figcaption>
+</figure>
+<p>When replyin’, press <strong>Ctrl-Q</strong> or type <code>/Q</code>
+on an empty line t’ open the quote window. It shows the original message
+text with quote prefixes.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Up / Down</td>
+<td>Navigate quote lines</td>
+</tr>
+<tr>
+<td>PgUp / PgDn</td>
+<td>Page up or down</td>
+</tr>
+<tr>
+<td>Home / End</td>
+<td>Jump t’ first or last line</td>
+</tr>
+<tr>
+<td>Enter</td>
+<td>Insert the selected quote line into yer message</td>
+</tr>
+<tr>
+<td>Ctrl-Q / ESC</td>
+<td>Close the quote window</td>
+</tr>
+</tbody>
+</table>
+<p>If the number o’ quote lines be more than the window’s height, a
+scrollbar appears on the right.</p>
+<h3 id="color-picker-ctrl-k">Color Picker (Ctrl-K)</h3>
+<p>Press <strong>Ctrl-K</strong> t’ open an interactive color picker.
+Pick a foreground color (16 options: 8 normal + 8 bright) and a
+background color (8 options). A live preview shows the chosen mix. Press
+<strong>Enter</strong> t’ insert the ANSI color code at the cursor.
+Press <strong>N</strong> t’ insert a reset (normal) code.</p>
+<h3 id="file-import-ctrl-o">File Import (Ctrl-O)</h3>
+<p>Press <strong>Ctrl-O</strong> t’ import the contents o’ a text file
+at the cursor. A file browser opens so ye can pick any file. The
+contents be inserted line by line, keepin’ line breaks.</p>
+<figure>
+<img src="screenshots/SlyMail_11_writing_reply_msg.png"
+alt="Editing a message" />
+<figcaption aria-hidden="true">Editing a message</figcaption>
+</figure>
+<h3 id="quote-line-handling">Quote Line Handling</h3>
+<p>When replyin’, lines inserted from the quote window be tracked as
+quote lines. If ye edit a quote line and it wraps, the overflow goes
+onto a new line (also marked as quote) instead o’ mergin’ with nearby
+text. Deletin’ text from a quote line won’t pull text up from the next
+line if that line be also a quote line. This keeps yer quoted text
+shipshape.</p>
+<h3 id="paragraph-based-saving">Paragraph-Based Saving</h3>
+<p>When savin’ a message, SlyMail joins soft‑wrapped lines o’ newly
+typed text into single long paragraphs. That lets other mail readers
+re‑wrap the text t’ fit their own terminal width. Quote lines be always
+preserved exactly and never joined.</p>
+<h3 id="empty-messages">Empty Messages</h3>
+<p>If ye save a message with no text (empty or only whitespace), SlyMail
+aborts the message and shows a notification instead o’ postin’ it.</p>
+<h3 id="external-editors">External Editors</h3>
+<p>SlyMail supports usin’ external text editors instead o’ the built‑in
+editor. T’ configure one:</p>
+<ol type="1">
+<li>Open Settings (Ctrl-U or the <code>config</code> program)</li>
+<li>Go to <strong>External Editors…</strong> t’ add and configure
+editors</li>
+<li>Set <strong>External Editor</strong> to choose which editor to
+use</li>
+<li>Enable <strong>Use external editor</strong></li>
+</ol>
+<p>Each external editor can be set up with:</p>
+<ul>
+<li><strong>Name</strong> - A descriptive name</li>
+<li><strong>Startup Directory</strong> - The directory containin’ the
+editor executable</li>
+<li><strong>Command Line</strong> - The command to run (use
+<code>%f</code> fer the temp filename)</li>
+<li><strong>Word-wrap Quoted Text</strong> - Whether t’ wrap quoted text
+and the column width</li>
+<li><strong>Auto Quoted Text</strong> - Always include quotes, prompt
+each time, or never</li>
+<li><strong>Editor Information Files</strong> - Drop file type (None,
+MSGINF, EDITOR.INF, DOOR.SYS, DOOR32.SYS)</li>
+<li><strong>Strip FidoNet Kludges</strong> - Remove FidoNet control
+lines from quoted text</li>
+</ul>
+<p>When usin’ an external editor, SlyMail creates a temporary file,
+launches the editor, and reads the result when the editor quits. If the
+editor produces <code>RESULT.ED</code> (Synchronet‑compatible), SlyMail
+reads the new subject and editor details from it.</p>
+<h2 id="settings">Settings</h2>
+<h3 id="reader-settings-ctrl-u">Reader Settings (Ctrl-U)</h3>
+<figure>
+<img src="screenshots/SlyMail_14_reader_settings.png"
+alt="Reader Settings" />
+<figcaption aria-hidden="true">Reader Settings</figcaption>
+</figure>
+<p>Open reader settings by pressin’ <strong>Ctrl-U</strong> or
+<strong>S</strong> from the conference list, message list, or
+reader.</p>
+<p>Available settings:</p>
+<ul>
+<li><strong>Show kludge lines</strong> - Show or hide kludge/control
+lines</li>
+<li><strong>Show tear/origin lines</strong> - Show or hide tear and
+origin lines</li>
+<li><strong>Scrollbar in reader</strong> - Show or hide the
+scrollbar</li>
+<li><strong>Only show areas with new mail</strong> - Hide conferences
+with zero messages</li>
+<li><strong>Strip ANSI codes from messages</strong> - Remove ANSI escape
+sequences</li>
+<li><strong>Attribute code toggles</strong> - Enable/disable BBS color
+code interpretation per type</li>
+<li><strong>Search using regular expression</strong> - Use regex fer
+searches</li>
+<li><strong>List messages in reversed</strong> - Show newest messages
+first</li>
+<li><strong>Show splash screen on startup</strong> - Toggle the splash
+screen</li>
+<li><strong>Reply packet directory</strong> - Set the directory fer
+savin’ REP packets</li>
+<li><strong>Use external editor</strong> - Enable external editor
+mode</li>
+<li><strong>External Editors…</strong> - Configure external editors</li>
+<li><strong>External Editor</strong> - Select which configured editor to
+use</li>
+<li><strong>Language</strong> - Choose the UI language (or “OS
+Default”)</li>
+</ul>
+<p>Press <strong>S</strong> t’ save, or <strong>ESC/Q</strong> t’ close
+(with a prompt t’ save if changes were made).</p>
+<h3 id="editor-settings-ctrl-u-in-editor">Editor Settings (Ctrl-U in
+Editor)</h3>
+<p>Open editor settings by pressin’ <strong>Ctrl-U</strong> while in the
+message editor.</p>
+<p>Available settings:</p>
+<ul>
+<li><strong>Choose UI mode</strong> - Switch between Ice, DCT, and
+Random styles</li>
+<li><strong>Taglines</strong> - Enable tagline insertion when
+savin’</li>
+<li><strong>Spell-check dictionary/dictionaries</strong> - Select which
+dictionaries to use</li>
+<li><strong>Prompt for spell checker on save</strong> - Enable
+spell‑check promptin’</li>
+<li><strong>Wrap quote lines to terminal width</strong> - Word‑wrap
+quoted lines</li>
+<li><strong>Quote with author’s initials</strong> - Use initials‑based
+quote prefixes</li>
+<li><strong>Indent quote lines containing initials</strong> - Add
+leadin’ space before initials</li>
+<li><strong>Trim spaces from quote lines</strong> - Strip leadin’
+whitespace from quotes</li>
+<li><strong>Language</strong> - Choose the UI language (or “OS
+Default”)</li>
+</ul>
+<h2 id="bbs-color-code-support">BBS Color Code Support</h2>
+<p>SlyMail interprets color and attribute codes from multiple BBS
+software packages:</p>
+<ul>
+<li><strong>ANSI escape codes</strong> - Always enabled; standard SGR
+sequences</li>
+<li><strong>Synchronet Ctrl-A codes</strong> - Ctrl-A + attribute
+character</li>
+<li><strong>WWIV heart codes</strong> - Ctrl-C + digit 0-9</li>
+<li><strong>PCBoard/Wildcat <span class="citation"
+data-cites="X">@X</span> codes</strong> - <span class="citation"
+data-cites="X">@X</span> followed by two hex digits</li>
+<li><strong>Celerity pipe codes</strong> - Pipe + letter</li>
+<li><strong>Renegade pipe codes</strong> - Pipe + two‑digit number</li>
+</ul>
+<p>Each code type can be enabled or disabled via the Attribute Code
+Toggles sub‑dialog in settings.</p>
+<h2 id="color-themes">Color Themes</h2>
+<p>SlyMail’s editor uses configurable color themes loaded from
+<code>.ini</code> files in <code>config_files/</code>.</p>
+<h3 id="ice-themes">Ice Themes</h3>
+<p>Ice themes control the look o’ Ice mode:</p>
+<ul>
+<li>BlueIce (default)</li>
+<li>EmeraldCity</li>
+<li>FieryInferno</li>
+<li>Fire-N-Ice</li>
+<li>GeneralClean</li>
+<li>GenericBlue</li>
+<li>PurpleHaze</li>
+<li>ShadesOfGrey</li>
+</ul>
+<h3 id="dct-themes">DCT Themes</h3>
+<p>DCT themes control the look o’ DCT mode:</p>
+<ul>
+<li>Default</li>
+<li>Default-Modified</li>
+<li>Midnight</li>
+</ul>
+<h3 id="theme-color-format">Theme Color Format</h3>
+<p>Theme colors use a compact format based on Synchronet attribute
+codes:</p>
+<ul>
+<li><code>n</code> - Normal (reset all attributes)</li>
+<li>Foreground letters: <code>k</code>=black, <code>r</code>=red,
+<code>g</code>=green, <code>y</code>=yellow, <code>b</code>=blue,
+<code>m</code>=magenta, <code>c</code>=cyan, <code>w</code>=white</li>
+<li><code>h</code> - High/bright intensity</li>
+<li>Background digits: <code>0</code>=black, <code>1</code>=red,
+<code>2</code>=green, <code>3</code>=brown, <code>4</code>=blue,
+<code>5</code>=magenta, <code>6</code>=cyan, <code>7</code>=light
+gray</li>
+</ul>
+<p>Examples: <code>nbh</code> = bright blue, <code>n4wh</code> = bright
+white on blue background, <code>nk7</code> = black on light gray</p>
+<h2 id="spell-checker">Spell Checker</h2>
+<p>SlyMail includes a built‑in spell checker usin’ plain‑text dictionary
+files.</p>
+<h3 id="dictionaries">Dictionaries</h3>
+<p>Dictionary files be stored in <code>dictionary_files/</code>:</p>
+<ul>
+<li><code>dictionary_en.txt</code> - English (general)</li>
+<li><code>dictionary_en-US-supplemental.txt</code> - US English
+supplement</li>
+<li><code>dictionary_en-GB-supplemental.txt</code> - British English
+supplement</li>
+<li><code>dictionary_en-AU-supplemental.txt</code> - Australian English
+supplement</li>
+<li><code>dictionary_en-CA-supplemental.txt</code> - Canadian English
+supplement</li>
+</ul>
+<p>Ye can pick multiple dictionaries at once.</p>
+<h3 id="using-the-spell-checker">Using the Spell Checker</h3>
+<p>Enable “Prompt for spell checker on save” in settings. When ye save a
+message, the spell checker hunts misspelled words and gives ye
+choices:</p>
+<ul>
+<li><strong>R</strong>eplace - Type a replacement word</li>
+<li><strong>S</strong>kip - Skip this word</li>
+<li><strong>Q</strong>uit - Stop spell checkin’</li>
+</ul>
+<h2 id="taglines">Taglines</h2>
+<p>Taglines be short quotes or sayings appended t’ messages when
+saved.</p>
+<h3 id="setup">Setup</h3>
+<ol type="1">
+<li>Enable “Taglines” in editor settings</li>
+<li>Put taglines in <code>tagline_files/taglines.txt</code>, one per
+line</li>
+<li>Lines startin’ with <code>#</code> or <code>;</code> be treated as
+comments</li>
+</ol>
+<h3 id="usage">Usage</h3>
+<p>When savin’ a message with taglines enabled, ye be prompted t’ pick a
+tagline or choose one at random. The chosen tagline be appended with a
+<code>...</code> prefix.</p>
+<h2 id="rep-reply-packets">REP Reply Packets</h2>
+<p>When ye write replies or new messages, they be queued as pendin’.
+Votes (poll ballots, up/down votes) be queued as well.</p>
+<h3 id="saving-rep-packets">Saving REP Packets</h3>
+<ul>
+<li>Press <strong>Ctrl-P</strong> from the conference or message list t’
+save the REP packet anytime</li>
+<li>SlyMail prompts ye t’ save after composin’ a message</li>
+<li>On exit, SlyMail prompts ye t’ save any unsaved pendin’ items</li>
+</ul>
+<p>The REP packet be saved as <code>&lt;BBS-ID&gt;.rep</code> in yer
+configured reply directory (default <code>~/.slymail/REP/</code>).
+Upload it back t’ the BBS t’ post yer replies.</p>
+<h3 id="rep-packet-contents">REP Packet Contents</h3>
+<ul>
+<li>Message replies in standard QWK format</li>
+<li><code>HEADERS.DAT</code> fer extended fields exceedin’ 25
+characters</li>
+<li><code>VOTING.DAT</code> fer pendin’ votes
+(Synchronet‑compatible)</li>
+</ul>
+<h2 id="utf-8-support">UTF-8 Support</h2>
+<p>SlyMail detects and displays UTF‑8 content proper:</p>
+<ul>
+<li>UTF‑8 messages be detected via <code>HEADERS.DAT</code> flags and
+automatic byte‑sequence analysis</li>
+<li>A <strong>[UTF8]</strong> marker appears in the header fer UTF‑8
+messages</li>
+<li>CP437 characters from old BBS content be converted t’ Unicode
+equivalents</li>
+</ul>
+<h2 id="settings-file-reference">Settings File Reference</h2>
+<p>Settings be stored in <code>slymail.ini</code> in the SlyMail data
+directory. The file uses INI format with sections:</p>
+<h3 id="general">[General]</h3>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>showSplashScreen</td>
+<td>true</td>
+<td>Show splash screen on startup</td>
+</tr>
+<tr>
+<td>userName</td>
+<td>(empty)</td>
+<td>Yer name fer the From field in replies</td>
+</tr>
+<tr>
+<td>replyDir</td>
+<td>(empty)</td>
+<td>Directory fer savin’ REP packets</td>
+</tr>
+<tr>
+<td>useExternalEditor</td>
+<td>false</td>
+<td>Use external editor instead o’ built‑in</td>
+</tr>
+<tr>
+<td>selectedEditor</td>
+<td>(empty)</td>
+<td>Name o’ the selected external editor</td>
+</tr>
+<tr>
+<td>language</td>
+<td>(empty)</td>
+<td>UI language code (empty = OS Default)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="reader">[Reader]</h3>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>showKludgeLines</td>
+<td>false</td>
+<td>Show kludge/control lines</td>
+</tr>
+<tr>
+<td>showTearLine</td>
+<td>true</td>
+<td>Show tear and origin lines</td>
+</tr>
+<tr>
+<td>useScrollbar</td>
+<td>true</td>
+<td>Show scrollbar in message reader</td>
+</tr>
+<tr>
+<td>onlyShowAreasWithNewMail</td>
+<td>false</td>
+<td>Hide empty conferences</td>
+</tr>
+<tr>
+<td>stripAnsi</td>
+<td>false</td>
+<td>Strip ANSI codes</td>
+</tr>
+<tr>
+<td>attrSynchronet</td>
+<td>true</td>
+<td>Interpret Synchronet Ctrl-A codes</td>
+</tr>
+<tr>
+<td>attrWWIV</td>
+<td>true</td>
+<td>Interpret WWIV heart codes</td>
+</tr>
+<tr>
+<td>attrCelerity</td>
+<td>true</td>
+<td>Interpret Celerity pipe codes</td>
+</tr>
+<tr>
+<td>attrRenegade</td>
+<td>true</td>
+<td>Interpret Renegade pipe codes</td>
+</tr>
+<tr>
+<td>attrPCBoard</td>
+<td>true</td>
+<td>Interpret PCBoard/Wildcat <span class="citation"
+data-cites="X">@X</span> codes</td>
+</tr>
+<tr>
+<td>useRegexSearch</td>
+<td>false</td>
+<td>Use regex fer searches</td>
+</tr>
+</tbody>
+</table>
+<h3 id="messagelist">[MessageList]</h3>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>lightbarMode</td>
+<td>true</td>
+<td>Lightbar navigation in message list</td>
+</tr>
+<tr>
+<td>reverseOrder</td>
+<td>false</td>
+<td>Show newest messages first</td>
+</tr>
+</tbody>
+</table>
+<h3 id="editor">[Editor]</h3>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>editorStyle</td>
+<td>Ice</td>
+<td>Editor mode: Ice, Dct, or Random</td>
+</tr>
+<tr>
+<td>insertMode</td>
+<td>true</td>
+<td>Default insert mode</td>
+</tr>
+<tr>
+<td>wrapQuoteLines</td>
+<td>true</td>
+<td>Word‑wrap quoted lines</td>
+</tr>
+<tr>
+<td>quoteLineWidth</td>
+<td>76</td>
+<td>Max width fer quote lines</td>
+</tr>
+<tr>
+<td>quotePrefix</td>
+<td>&gt; (space)</td>
+<td>Quote line prefix</td>
+</tr>
+<tr>
+<td>taglines</td>
+<td>false</td>
+<td>Enable tagline insertion</td>
+</tr>
+<tr>
+<td>promptSpellCheck</td>
+<td>false</td>
+<td>Prompt fer spell check on save</td>
+</tr>
+<tr>
+<td>quoteWithInitials</td>
+<td>false</td>
+<td>Use author initials in quote prefix</td>
+</tr>
+<tr>
+<td>indentQuoteInitials</td>
+<td>true</td>
+<td>Add space before initials</td>
+</tr>
+<tr>
+<td>trimQuoteSpaces</td>
+<td>false</td>
+<td>Trim whitespace from quote lines</td>
+</tr>
+</tbody>
+</table>
+<h3 id="themes">[Themes]</h3>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>iceThemeFile</td>
+<td>EditorIceColors_BlueIce.ini</td>
+<td>Ice mode theme file</td>
+</tr>
+<tr>
+<td>dctThemeFile</td>
+<td>EditorDCTColors_Default.ini</td>
+<td>DCT mode theme file</td>
+</tr>
+</tbody>
+</table>
+<h2 id="synchronet-bbs-qwk-settings">Synchronet BBS QWK Settings</h2>
+<p>If ye be usin’ a Synchronet BBS, these QWK packet settings be
+recommended fer best compatibility with SlyMail:</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>Recommended Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ctrl-A Color Codes</td>
+<td>Leave in</td>
+</tr>
+<tr>
+<td>Archive Type</td>
+<td>ZIP</td>
+</tr>
+<tr>
+<td>Include File Attachments</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Include Index Files</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Include Control Files</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Include VOTING.DAT File</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Include HEADERS.DAT File</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Include UTF-8 Characters</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Extended (QWKE) Packet Format</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="changelog">Changelog</h2>
+<h3 id="version-0.54-2026-03-31">Version 0.54 (2026-03-31)</h3>
+<h4 id="added">Added</h4>
+<ul>
+<li>Last‑read message tracking per conference with automatic cursor
+positioning</li>
+<li>New message indicator (checkmark column) in the conference list</li>
+<li>File import in message editor (Ctrl-O) t’ insert text files at
+cursor position</li>
+<li>Quote line tracking t’ preserve quote line integrity during
+editing</li>
+<li>Paragraph‑based message saving fer better text reflow by
+recipients</li>
+<li>Terminal resize detection: Allows SlyMail t’ resize its window(s)
+when the terminal be resized</li>
+</ul>
+<h4 id="changed">Changed</h4>
+<ul>
+<li>Quote line wrapping now respects terminal width when enabled</li>
+<li>Configuration on first start: If the user ain’t got settings yet (no
+<code>.slymail</code> dir), <code>config</code> runs on startup and asks
+fer yer name first</li>
+</ul>
+<h4 id="fixed">Fixed</h4>
+<ul>
+<li>Quote line editing no longer merges overflow with adjacent
+lines</li>
+</ul>
+<h3 id="version-0.53-2026-03-29">Version 0.53 (2026-03-29)</h3>
+<h4 id="added-1">Added</h4>
+<ul>
+<li>Setting t’ only show conferences with new messages</li>
+<li>External editor support with multiple editor configurations</li>
+<li>Drop file type support (MSGINF, EDITOR.INF, DOOR.SYS,
+DOOR32.SYS)</li>
+<li>RESULT.ED parsing after external editor exits</li>
+<li>Go‑to conference number (G key) in conference list</li>
+<li>Digit‑only input validation fer Go‑to prompts</li>
+</ul>
+<h4 id="fixed-1">Fixed</h4>
+<ul>
+<li>Slash commands (/Q, /S, etc.) now work on the first line o’ the
+editor</li>
+<li>DCT quote window colors now use the loaded theme properly</li>
+<li>Quote window scrollbar restored fer long quote lists</li>
+<li>Improved screen refresh in settings dialogs</li>
+</ul>
+<h3 id="version-0.52-2026-03-26">Version 0.52 (2026-03-26)</h3>
+<h4 id="added-2">Added</h4>
+<ul>
+<li>REP directory created automatically</li>
+<li>Save REP packet hotkey (Ctrl-P)</li>
+<li>Upload reply packets t’ remote systems</li>
+<li>Quote line re‑wrappin’</li>
+<li>Directory chooser fer reply packet directory</li>
+</ul>
+<h4 id="changed-1">Changed</h4>
+<ul>
+<li>Faster editor screen updates with reduced flicker</li>
+<li>Paragraph‑aware message saving</li>
+<li>Improved ANSI renderin’ with 256‑color and truecolor support</li>
+</ul>
+<h4 id="fixed-2">Fixed</h4>
+<ul>
+<li>Editor color code handling during all editing operations</li>
+<li>Editor word wrap behavior</li>
+<li>Quote prefix trailin’ space preservation</li>
+<li>REP save tracking</li>
+</ul>
+<h3 id="version-0.51-2026-03-25">Version 0.51 (2026-03-25)</h3>
+<h4 id="added-3">Added</h4>
+<ul>
+<li>QWKE (Extended QWK) support</li>
+<li>BBS color/attribute code support fer multiple BBS types</li>
+<li>Synchronet votin’ support (polls and up/down votes)</li>
+<li>File attachment support</li>
+<li>UTF‑8 support</li>
+<li>Color picker (Ctrl-K)</li>
+<li>Remote systems directory (Ctrl-R)</li>
+<li>Search and filtering with advanced search</li>
+<li>Splash screen toggle</li>
+</ul>
+<h3 id="version-0.50-2026-03-24">Version 0.50 (2026-03-24)</h3>
+<ul>
+<li>Initial release</li>
+<li>Cross‑platform QWK offline mail reader</li>
+<li>DDMsgReader‑inspired readin’ interface</li>
+<li>SlyEdit‑inspired message editor with Ice and DCT modes</li>
+<li>Theme support, spell checker, and taglines</li>
+<li>REP reply packet creation</li>
+<li>File browser and standalone config utility</li>
+</ul>
+</body>
+</html>

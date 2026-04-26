@@ -2,6 +2,7 @@
 #include "ui_common.h"
 #include "file_dir_utils.h"
 #include "remote_systems.h"
+#include "i18n.h"
 #include <filesystem>
 #include <cctype>
 
@@ -291,7 +292,7 @@ string showFileBrowser(const string& startDir,
             }
             else
             {
-                printAt(y, COLS - 28, padStr("<DIR>", 10), sizeAttr);
+                printAt(y, COLS - 28, padStr(_("<DIR>"), 10), sizeAttr);
             }
             printAt(y, COLS - 18, padStr(entry.dateStr, 16), dateAttr);
         };
@@ -320,7 +321,7 @@ string showFileBrowser(const string& startDir,
             int searchX = COLS - searchW - 1;
             if (searchX < 32) searchX = 32;
             string searchDisp = searchBuf.empty() ? string()
-                                                  : (string("Search: ") + searchBuf);
+                                                  : (string(_("Search:")) + " " + searchBuf);
             printAt(LINES - 2, searchX, padStr(searchDisp, searchW),
                     tAttr(TC_YELLOW, TC_BLACK, true));
         };
@@ -342,12 +343,12 @@ string showFileBrowser(const string& startDir,
             g_term->putCP437(0, 0, CP437_BOX_DRAWINGS_UPPER_LEFT_SINGLE);
             g_term->drawHLine(0, 1, COLS - 2);
             g_term->putCP437(0, COLS - 1, CP437_BOX_DRAWINGS_UPPER_RIGHT_SINGLE);
-            printAt(0, 4, " SlyMail - Select QWK File ", titleAttr);
+            printAt(0, 4, string(" ") + _("SlyMail - Select QWK File") + " ", titleAttr);
 
             g_term->setAttr(borderAttr);
             g_term->putCP437(1, 0, CP437_BOX_DRAWINGS_LIGHT_VERTICAL);
             g_term->putCP437(1, COLS - 1, CP437_BOX_DRAWINGS_LIGHT_VERTICAL);
-            printAt(1, 2, "Path: ", tAttr(TC_CYAN, TC_BLACK, false));
+            printAt(1, 2, _("Path: "), tAttr(TC_CYAN, TC_BLACK, false));
             printAt(1, 8, truncateStr(currentDir, COLS - 11), pathAttr);
 
             g_term->setAttr(borderAttr);
@@ -358,9 +359,9 @@ string showFileBrowser(const string& startDir,
             // Column headers
             int headerY = 3;
             TermAttr colHdrAttr = tAttr(TC_CYAN, TC_BLACK, true);
-            printAt(headerY, 1, padStr("Name", COLS - 30), colHdrAttr);
-            printAt(headerY, COLS - 28, padStr("Size", 10), colHdrAttr);
-            printAt(headerY, COLS - 18, padStr("Date", 16), colHdrAttr);
+            printAt(headerY, 1, padStr(_("Name"), COLS - 30), colHdrAttr);
+            printAt(headerY, COLS - 28, padStr(_("Size"), 10), colHdrAttr);
+            printAt(headerY, COLS - 18, padStr(_("Date"), 16), colHdrAttr);
 
             // All visible rows
             for (int i = 0; i < listHeight && (scrollOffset + i) < static_cast<int>(entries.size()); ++i)
@@ -370,10 +371,10 @@ string showFileBrowser(const string& startDir,
 
             drawSB();
             drawStatus();
-            drawDDHelpBar(LINES - 1, "Up/Dn/PgUp/PgDn/HOME/END, ",
-                {{'Q', "uit"}, {'?', ""}});
+            drawDDHelpBar(LINES - 1, _("Up/Dn/PgUp/PgDn/HOME/END, "),
+                {{'Q', _("uit")}, {'?', ""}});
             // Show Ctrl-R hint on the far right
-            printAt(LINES - 1, COLS - 18, "Ctrl-R=Remote",
+            printAt(LINES - 1, COLS - 18, _("Ctrl-R=Remote"),
                     tAttr(TC_RED, TC_WHITE, false));
 
             needFullRedraw = false;
@@ -464,7 +465,7 @@ string showFileBrowser(const string& startDir,
                     }
                     else
                     {
-                        messageDialog("Info", "Please select a " + acceptExt + " file");
+                        messageDialog(_("Info"), string(_("Please select a")) + " " + acceptExt + " " + _("file"));
                         needFullRedraw = true;
                     }
                 }
@@ -489,7 +490,7 @@ string showFileBrowser(const string& startDir,
                 int r = 1;
                 drawProgramInfoLine(r++);
                 r++;
-                printCentered(r++, "File Browser Help",
+                printCentered(r++, _("File Browser Help"),
                     tAttr(TC_GREEN, TC_BLACK, true));
                 r++;
                 TermAttr keyC  = tAttr(TC_CYAN, TC_BLACK, true);
@@ -500,15 +501,15 @@ string showFileBrowser(const string& startDir,
                     printAt(r, 24, ": " + desc, descC);
                     ++r;
                 };
-                helpLine("Up/Down arrow", "Navigate files and directories");
-                helpLine("PageUp/PageDown", "Scroll up/down a page");
-                helpLine("HOME/END", "Jump to first/last entry");
-                helpLine("Enter", "Open directory or select QWK file");
-                helpLine("Ctrl-R", "Open remote systems directory");
-                helpLine("Q / ESC", "Quit SlyMail");
-                helpLine("? / F1", "Show this help screen");
+                helpLine("Up/Down arrow", _("Navigate files and directories"));
+                helpLine("PageUp/PageDown", _("Scroll up/down a page"));
+                helpLine("HOME/END", _("Jump to first/last entry"));
+                helpLine("Enter", _("Open directory or select QWK file"));
+                helpLine("Ctrl-R", _("Open remote systems directory"));
+                helpLine("Q / ESC", _("Quit SlyMail"));
+                helpLine("? / F1", _("Show this help screen"));
                 r += 2;
-                printAt(r, 2, "Hit a key", tAttr(TC_GREEN, TC_BLACK, false));
+                printAt(r, 2, _("Hit a key"), tAttr(TC_GREEN, TC_BLACK, false));
                 g_term->refresh();
                 g_term->getKey();
                 needFullRedraw = true;
@@ -639,11 +640,11 @@ string showDirChooser(const string& startDir, const string& title)
             }
 
             // Help bar
-            drawDDHelpBar(ROWS - 1, "Up/Dn, ",
-                          {{'E', "nter=Open"}, {'S', "elect this dir"}, {'Q', "uit"}});
+            drawDDHelpBar(ROWS - 1, _("Up/Dn, "),
+                          {{'E', _("nter=Open")}, {'S', _("elect this dir")}, {'Q', _("uit")}});
 
             // Status
-            printAt(ROWS - 2, 0, " Press S or Enter+select to choose: " + currentDir,
+            printAt(ROWS - 2, 0, string(" ") + _("Press S or Enter+select to choose:") + " " + currentDir,
                     tAttr(TC_GREEN, TC_BLACK, false));
 
             needFullRedraw = false;

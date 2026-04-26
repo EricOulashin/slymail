@@ -2,6 +2,7 @@
 #include "ui_common.h"
 #include "search.h"
 #include "msg_editor.h"
+#include "i18n.h"
 #include <cstdio>
 #include <ctime>
 #include <fstream>
@@ -84,7 +85,7 @@ static EditorResult editPendingWithExternalOrBuiltin(
         std::ofstream ofs(tmpFile, std::ios::binary | std::ios::trunc);
         if (!ofs)
         {
-            messageDialog("Error", "Could not create temp file for external editor.");
+            messageDialog(_("Error"), _("Could not create temp file for external editor."));
             return EditorResult::Aborted;
         }
         ofs << orig.body;
@@ -113,7 +114,7 @@ static EditorResult editPendingWithExternalOrBuiltin(
     std::ifstream ifs(tmpFile, std::ios::binary);
     if (!ifs)
     {
-        messageDialog("Error", "Could not read back edited file.");
+        messageDialog(_("Error"), _("Could not read back edited file."));
         std::error_code ec;
         fs::remove(tmpFile, ec);
         return EditorResult::Aborted;
@@ -148,7 +149,7 @@ bool showEditPendingMessagesDialog(vector<QwkReply>& pendingReplies,
 
     if (pendingReplies.empty())
     {
-        messageDialog("Edit Pending", "No messages have been written this session.");
+        messageDialog(_("Edit Pending"), _("No messages have been written this session."));
         return false;
     }
 
@@ -192,7 +193,7 @@ bool showEditPendingMessagesDialog(vector<QwkReply>& pendingReplies,
             g_term->putCP437(0, 0, CP437_BOX_DRAWINGS_UPPER_LEFT_SINGLE);
             g_term->drawHLine(0, 1, COLS - 2);
             g_term->putCP437(0, COLS - 1, CP437_BOX_DRAWINGS_UPPER_RIGHT_SINGLE);
-            string title = " Edit Pending Messages (" + std::to_string(total) + ") ";
+            string title = string(" ") + _("Edit Pending Messages") + " (" + std::to_string(total) + ") ";
             printAt(0, 4, title, titleAttr);
 
             g_term->setAttr(borderAttr);
@@ -201,10 +202,10 @@ bool showEditPendingMessagesDialog(vector<QwkReply>& pendingReplies,
             g_term->putCP437(1, COLS - 1, CP437_BOX_DRAWINGS_LOWER_RIGHT_SINGLE);
 
             TermAttr colAttr = tAttr(TC_CYAN, TC_BLACK, true);
-            printAt(2, 1, padStr("To", toW), colAttr);
-            printAt(2, 1 + toW + 1, padStr("Subject", subjW), colAttr);
-            printAt(2, 1 + toW + subjW + 2, padStr("Date", dateW), colAttr);
-            printAt(2, 1 + toW + subjW + dateW + 3, padStr("Time", timeW), colAttr);
+            printAt(2, 1, padStr(_("To"), toW), colAttr);
+            printAt(2, 1 + toW + 1, padStr(_("Subject"), subjW), colAttr);
+            printAt(2, 1 + toW + subjW + 2, padStr(_("Date"), dateW), colAttr);
+            printAt(2, 1 + toW + subjW + dateW + 3, padStr(_("Time"), timeW), colAttr);
 
             for (int i = 0; i < listHeight && (scrollOffset + i) < total; ++i)
             {
@@ -248,8 +249,8 @@ bool showEditPendingMessagesDialog(vector<QwkReply>& pendingReplies,
             }
 
             drawDDHelpBar(ROWS - 1,
-                "Up/Dn/PgUp/PgDn/HOME/END, ",
-                {{'E', "nter=Edit"}, {'Q', "uit/ESC"}});
+                _("Up/Dn/PgUp/PgDn/HOME/END, "),
+                {{'E', _("nter=Edit")}, {'Q', _("uit/ESC")}});
 
             needFullRedraw = false;
         }
@@ -490,11 +491,11 @@ ConfListResult showConferenceList(QwkPacket& packet, int& selectedConf,
             g_term->setAttr(borderAttr);
             g_term->putCP437(1, 0, CP437_BOX_DRAWINGS_LIGHT_VERTICAL);
             g_term->putCP437(1, COLS - 1, CP437_BOX_DRAWINGS_LIGHT_VERTICAL);
-            printAt(1, 2, "Sysop: ", tAttr(TC_CYAN, TC_BLACK, false));
+            printAt(1, 2, _("Sysop: "), tAttr(TC_CYAN, TC_BLACK, false));
             printAt(1, 9, packet.info.sysopName, tAttr(TC_WHITE, TC_BLACK, true));
-            string userInfo = "User: " + packet.info.userName;
+            string userInfo = string(_("User: ")) + packet.info.userName;
             printAt(1, COLS / 2, userInfo, tAttr(TC_CYAN, TC_BLACK, false));
-            string totalStr = std::to_string(packet.totalMessages()) + " msgs";
+            string totalStr = std::to_string(packet.totalMessages()) + " " + _("msgs");
             printAt(1, COLS - static_cast<int>(totalStr.size()) - 3, totalStr,
                     tAttr(TC_GREEN, TC_BLACK, false));
 
@@ -506,10 +507,10 @@ ConfListResult showConferenceList(QwkPacket& packet, int& selectedConf,
             TermAttr colAttr = tAttr(TC_CYAN, TC_BLACK, true);
             int msgsColHdr = COLS - countW - newW - 2;
             int newColHdr  = COLS - newW - 1;
-            printAt(3, 1, padStr("Conf#", numW), colAttr);
-            printAt(3, 1 + numW + 1, padStr("Conference Name", nameW), colAttr);
-            printAt(3, msgsColHdr, padStr("Msgs", countW), colAttr);
-            printAt(3, newColHdr, padStr("New", newW), colAttr);
+            printAt(3, 1, padStr(_("Conf#"), numW), colAttr);
+            printAt(3, 1 + numW + 1, padStr(_("Conference Name"), nameW), colAttr);
+            printAt(3, msgsColHdr, padStr(_("Msgs"), countW), colAttr);
+            printAt(3, newColHdr, padStr(_("New"), newW), colAttr);
 
             for (int i = 0; i < listHeight && (scrollOffset + i) < totalConfs; ++i)
                 drawRow(scrollOffset + i);
@@ -517,14 +518,14 @@ ConfListResult showConferenceList(QwkPacket& packet, int& selectedConf,
             drawSB();
 
             drawDDHelpBar(ROWS - 1,
-                "Up/Dn/PgUp/PgDn/HOME/END, ",
-                {{'E', "dit pending"}, {'/', "Search"}, {'G', "o to #"},
-                 {'O', "pen file"}, {'S', "ettings"}, {'Q', "uit"}, {'?', ""}});
+                _("Up/Dn/PgUp/PgDn/HOME/END, "),
+                {{'E', _("dit pending")}, {'/', _("Search")}, {'G', _("o to #")},
+                 {'O', _("pen file")}, {'S', _("ettings")}, {'Q', _("uit")}, {'?', ""}});
 
             // Show filter indicator if active
             if (isFiltered)
             {
-                string filterMsg = " Filter: \"" + searchLabel + "\" (" +
+                string filterMsg = string(" ") + _("Filter:") + " \"" + searchLabel + "\" (" +
                     std::to_string(totalConfs) + "/" +
                     std::to_string(packet.conferences.size()) + ") ";
                 printAt(ROWS - 2, 0, filterMsg, tAttr(TC_YELLOW, TC_BLACK, true));
@@ -609,7 +610,7 @@ ConfListResult showConferenceList(QwkPacket& packet, int& selectedConf,
                                                      settings.useRegexSearch);
                     if (results.empty())
                     {
-                        messageDialog("Search", "No conferences found matching the search.");
+                        messageDialog(_("Search"), _("No conferences found matching the search."));
                     }
                     else
                     {
@@ -649,10 +650,11 @@ ConfListResult showConferenceList(QwkPacket& packet, int& selectedConf,
             case 'g':
             case 'G':
             {
-                printAt(ROWS - 1, 0, "Go to conf #: ",
+                const string goToConfLabel = _("Go to conf #: ");
+                printAt(ROWS - 1, 0, goToConfLabel,
                         tAttr(TC_WHITE, TC_BLACK, true));
                 g_term->clearToEol();
-                string numStr = getNumericInput(ROWS - 1, 14, 8,
+                string numStr = getNumericInput(ROWS - 1, static_cast<int>(goToConfLabel.size()), 8,
                     tAttr(TC_WHITE, TC_BLACK, true));
                 if (!numStr.empty())
                 {
@@ -699,7 +701,7 @@ ConfListResult showConferenceList(QwkPacket& packet, int& selectedConf,
                 int r = 1;
                 drawProgramInfoLine(r++);
                 r++;
-                printCentered(r++, "Conference List Help",
+                printCentered(r++, _("Conference List Help"),
                     tAttr(TC_CYAN, TC_BLACK, true));
                 TermAttr keyC  = tAttr(TC_CYAN, TC_BLACK, true);
                 TermAttr descC = tAttr(TC_CYAN, TC_BLACK, false);
@@ -709,21 +711,21 @@ ConfListResult showConferenceList(QwkPacket& packet, int& selectedConf,
                     printAt(r, 24, ": " + desc, descC);
                     ++r;
                 };
-                helpLine("Up/Down arrow", "Navigate conferences");
-                helpLine("Enter", "Open selected conference");
-                helpLine("PageUp/PageDown", "Scroll up/down a page");
-                helpLine("HOME/END", "Jump to first/last conference");
-                helpLine("/", "Search/filter conferences");
-                helpLine("E", "Edit pending messages (session)");
-                helpLine("V", "View polls/votes in packet");
-                helpLine("O / Ctrl-L", "Open a different QWK file");
-                helpLine("Ctrl-R", "Remote systems (download QWK)");
-                helpLine("Ctrl-P", "Save REP reply packet");
-                helpLine("S / Ctrl-U", "Settings");
-                helpLine("Q / ESC", "Quit SlyMail");
-                helpLine("? / F1", "This help screen");
+                helpLine("Up/Down arrow", _("Navigate conferences"));
+                helpLine("Enter", _("Open selected conference"));
+                helpLine("PageUp/PageDown", _("Scroll up/down a page"));
+                helpLine("HOME/END", _("Jump to first/last conference"));
+                helpLine("/", _("Search/filter conferences"));
+                helpLine("E", _("Edit pending messages (session)"));
+                helpLine("V", _("View polls/votes in packet"));
+                helpLine("O / Ctrl-L", _("Open a different QWK file"));
+                helpLine("Ctrl-R", _("Remote systems (download QWK)"));
+                helpLine("Ctrl-P", _("Save REP reply packet"));
+                helpLine("S / Ctrl-U", _("Settings"));
+                helpLine("Q / ESC", _("Quit SlyMail"));
+                helpLine("? / F1", _("This help screen"));
                 r += 2;
-                printAt(r, 2, "Press any key to continue...",
+                printAt(r, 2, _("Press any key to continue..."),
                     tAttr(TC_GREEN, TC_BLACK, false));
                 g_term->refresh();
                 g_term->getKey();
@@ -897,12 +899,12 @@ MsgListResult showMessageList(QwkConference& conf, int& selectedMsg,
             g_term->clear();
 
             TermAttr colHdrAttr = tAttr(TC_CYAN, TC_BLACK, true);
-            printAt(0, 0, padStr("Msg#", numW), colHdrAttr);
-            printAt(0, numW + 1, padStr("From", fromW), colHdrAttr);
-            printAt(0, numW + fromW + 2, padStr("To", toW), colHdrAttr);
-            printAt(0, numW + fromW + toW + 3, padStr("Subject", subjW), colHdrAttr);
-            printAt(0, COLS - dateW - timeW - 2, padStr("Date", dateW), colHdrAttr);
-            printAt(0, COLS - timeW - 1, padStr("Time", timeW), colHdrAttr);
+            printAt(0, 0, padStr(_("Msg#"), numW), colHdrAttr);
+            printAt(0, numW + 1, padStr(_("From"), fromW), colHdrAttr);
+            printAt(0, numW + fromW + 2, padStr(_("To"), toW), colHdrAttr);
+            printAt(0, numW + fromW + toW + 3, padStr(_("Subject"), subjW), colHdrAttr);
+            printAt(0, COLS - dateW - timeW - 2, padStr(_("Date"), dateW), colHdrAttr);
+            printAt(0, COLS - timeW - 1, padStr(_("Time"), timeW), colHdrAttr);
 
             for (int i = 0; i < listHeight && (scrollOffset + i) < totalMsgs; ++i)
                 drawRow(scrollOffset + i);
@@ -911,21 +913,21 @@ MsgListResult showMessageList(QwkConference& conf, int& selectedMsg,
 
             // Status line (static for the lifetime of this message list)
             string confTitle = bbsName + " - " + conf.name
-                + " (" + std::to_string(totalMsgs) + " msgs)";
+                + " (" + std::to_string(totalMsgs) + " " + _("msgs") + ")";
             printAt(ROWS - 2, 0, truncateStr(confTitle, COLS),
                     tAttr(TC_CYAN, TC_BLACK, false));
 
             drawDDHelpBar(ROWS - 1,
-                "Up/Dn/PgUp/PgDn/HOME/END, ",
-                {{'N', "ew msg"}, {'R', "ead"}, {'E', "dit pending"}, {'/', "Search"},
-                 {'G', "o to #"}, {'C', "onf list"}, {'Q', "uit"}, {'?', ""}});
+                _("Up/Dn/PgUp/PgDn/HOME/END, "),
+                {{'N', _("ew msg")}, {'R', _("ead")}, {'E', _("dit pending")}, {'/', _("Search")},
+                 {'G', _("o to #")}, {'C', _("onf list")}, {'Q', _("uit")}, {'?', ""}});
 
             // Show filter indicator if active
             if (isFiltered)
             {
-                string filterMsg = " Filter: \"" + searchLabel + "\" (" +
+                string filterMsg = string(" ") + _("Filter:") + " \"" + searchLabel + "\" (" +
                     std::to_string(totalMsgs) + "/" +
-                    std::to_string(conf.messages.size()) + " msgs) ";
+                    std::to_string(conf.messages.size()) + " " + _("msgs") + ") ";
                 printAt(ROWS - 2, COLS - static_cast<int>(filterMsg.size()) - 1,
                         filterMsg, tAttr(TC_YELLOW, TC_BLACK, true));
             }
@@ -1008,7 +1010,7 @@ MsgListResult showMessageList(QwkConference& conf, int& selectedMsg,
                     auto results = filterMessages(conf.messages, searchParams);
                     if (results.empty())
                     {
-                        messageDialog("Search", "No messages found matching the search.");
+                        messageDialog(_("Search"), _("No messages found matching the search."));
                     }
                     else
                     {
@@ -1087,10 +1089,11 @@ MsgListResult showMessageList(QwkConference& conf, int& selectedMsg,
             case 'g':
             case 'G':
             {
-                printAt(ROWS - 1, 0, "Go to msg #: ",
+                const string goToMsgLabel = _("Go to msg #: ");
+                printAt(ROWS - 1, 0, goToMsgLabel,
                         tAttr(TC_WHITE, TC_BLACK, true));
                 g_term->clearToEol();
-                string numStr = getNumericInput(ROWS - 1, 14, 8,
+                string numStr = getNumericInput(ROWS - 1, static_cast<int>(goToMsgLabel.size()), 8,
                     tAttr(TC_WHITE, TC_BLACK, true));
                 if (!numStr.empty())
                 {
@@ -1121,7 +1124,7 @@ MsgListResult showMessageList(QwkConference& conf, int& selectedMsg,
                 int r = 1;
                 drawProgramInfoLine(r++);
                 r++;
-                printCentered(r++, "Message List Help",
+                printCentered(r++, _("Message List Help"),
                     tAttr(TC_CYAN, TC_BLACK, true));
                 TermAttr keyC  = tAttr(TC_CYAN, TC_BLACK, true);
                 TermAttr descC = tAttr(TC_CYAN, TC_BLACK, false);
@@ -1131,23 +1134,23 @@ MsgListResult showMessageList(QwkConference& conf, int& selectedMsg,
                     printAt(r, 24, ": " + desc, descC);
                     ++r;
                 };
-                helpLine("Up/Down arrow", "Navigate messages");
-                helpLine("Enter / R", "Read selected message");
-                helpLine("N", "Write a new message");
-                helpLine("E", "Edit pending messages (session)");
-                helpLine("G", "Go to message number");
-                helpLine("PageUp/PageDown", "Scroll up/down a page");
-                helpLine("HOME/END", "Jump to first/last message");
-                helpLine("/", "Search/filter messages");
-                helpLine("Ctrl-L", "Open a different QWK file");
-                helpLine("Ctrl-R", "Remote systems (download QWK)");
-                helpLine("Ctrl-P", "Save REP reply packet");
-                helpLine("S / Ctrl-U", "Settings");
-                helpLine("C / ESC", "Back to conference list");
-                helpLine("Q", "Quit SlyMail");
-                helpLine("? / F1", "This help screen");
+                helpLine("Up/Down arrow", _("Navigate messages"));
+                helpLine("Enter / R", _("Read selected message"));
+                helpLine("N", _("Write a new message"));
+                helpLine("E", _("Edit pending messages (session)"));
+                helpLine("G", _("Go to message number"));
+                helpLine("PageUp/PageDown", _("Scroll up/down a page"));
+                helpLine("HOME/END", _("Jump to first/last message"));
+                helpLine("/", _("Search/filter messages"));
+                helpLine("Ctrl-L", _("Open a different QWK file"));
+                helpLine("Ctrl-R", _("Remote systems (download QWK)"));
+                helpLine("Ctrl-P", _("Save REP reply packet"));
+                helpLine("S / Ctrl-U", _("Settings"));
+                helpLine("C / ESC", _("Back to conference list"));
+                helpLine("Q", _("Quit SlyMail"));
+                helpLine("? / F1", _("This help screen"));
                 r += 2;
-                printAt(r, 2, "Press any key to continue...",
+                printAt(r, 2, _("Press any key to continue..."),
                     tAttr(TC_GREEN, TC_BLACK, false));
                 g_term->refresh();
                 g_term->getKey();

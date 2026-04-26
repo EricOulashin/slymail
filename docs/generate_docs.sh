@@ -49,6 +49,10 @@ if [ -f "$PROGRAM_INFO" ]; then
     fi
 fi
 
+# All translated language codes (matching README_XX.md / SlyMail_User_Manual_XX.md)
+# Keep in sync with supported UI languages in src/i18n.cpp (note: pt_BR vs pt-BR file naming).
+LANGS=(cy da de el es fi fr ga ja nb pirate pl pt-BR ru sv zh-CN zh-TW)
+
 generate_html() {
     echo "Generating HTML user manual..."
     mkdir -p "$HTML_DIR"
@@ -62,6 +66,17 @@ generate_html() {
 
     if python3 -c "import markdown" 2>/dev/null; then
         python3 "$SCRIPT_DIR/generate_html.py"
+        # Generate HTML for each translated language variant
+        for lang in "${LANGS[@]}"; do
+            src="$SCRIPT_DIR/SlyMail_User_Manual_${lang}.md"
+            if [ -f "$src" ]; then
+                echo "  Generating HTML for language: $lang"
+                SOURCE_MD="$src" \
+                OUTPUT_HTML="$HTML_DIR/SlyMail_User_Manual_${lang}.html" \
+                LANG_CODE="$lang" \
+                python3 "$SCRIPT_DIR/generate_html.py"
+            fi
+        done
     elif command -v pandoc &>/dev/null; then
         sed 's|](../screenshots/|](screenshots/|g' "$SOURCE" > "/tmp/slymail_manual_tmp.md"
         pandoc "/tmp/slymail_manual_tmp.md" \
@@ -74,6 +89,24 @@ generate_html() {
             -o "$HTML_OUTPUT"
         rm -f /tmp/slymail_manual_tmp.md
         echo "  HTML generated: $HTML_OUTPUT"
+        # Generate translated HTML via pandoc
+        for lang in "${LANGS[@]}"; do
+            src="$SCRIPT_DIR/SlyMail_User_Manual_${lang}.md"
+            if [ -f "$src" ]; then
+                echo "  Generating HTML for language: $lang"
+                tmp="/tmp/slymail_manual_${lang}_tmp.md"
+                sed 's|](../screenshots/|](screenshots/|g' "$src" > "$tmp"
+                pandoc "$tmp" \
+                    --from markdown \
+                    --to html5 \
+                    --standalone \
+                    --toc \
+                    --toc-depth=3 \
+                    --metadata title="SlyMail User Manual" \
+                    -o "$HTML_DIR/SlyMail_User_Manual_${lang}.html"
+                rm -f "$tmp"
+            fi
+        done
     else
         echo "Error: Neither Python 'markdown' module nor 'pandoc' is available."
         echo "Install one of:"
@@ -91,6 +124,18 @@ generate_pdf() {
         generate_html
     fi
 
+    # If weasyprint is not importable, try to install it into the user environment
+    # using --break-system-packages (safe on modern Debian/Ubuntu with PEP 668).
+    if ! python3 -c "from weasyprint import HTML" 2>/dev/null; then
+        echo "  weasyprint not found — attempting: pip3 install --break-system-packages weasyprint"
+        if pip3 install --break-system-packages weasyprint 2>/dev/null \
+           || pip3 install weasyprint 2>/dev/null; then
+            echo "  weasyprint installed successfully."
+        else
+            echo "  pip install failed — will try wkhtmltopdf fallback."
+        fi
+    fi
+
     if python3 -c "from weasyprint import HTML" 2>/dev/null; then
         python3 -c "
 from weasyprint import HTML
@@ -100,6 +145,21 @@ pdf_file = os.path.join('${SCRIPT_DIR}', 'SlyMail_User_Manual.pdf')
 HTML(filename=html_file, base_url='${HTML_DIR}').write_pdf(pdf_file)
 print(f'  PDF generated: {pdf_file}')
 "
+        # Generate translated PDFs
+        for lang in "${LANGS[@]}"; do
+            html_src="$HTML_DIR/SlyMail_User_Manual_${lang}.html"
+            if [ -f "$html_src" ]; then
+                echo "  Generating PDF for language: $lang"
+                python3 -c "
+from weasyprint import HTML
+import os
+html_file = '${html_src}'
+pdf_file = os.path.join('${SCRIPT_DIR}', 'SlyMail_User_Manual_${lang}.pdf')
+HTML(filename=html_file, base_url='${HTML_DIR}').write_pdf(pdf_file)
+print(f'  PDF generated: {pdf_file}')
+"
+            fi
+        done
     elif command -v wkhtmltopdf &>/dev/null; then
         wkhtmltopdf \
             --enable-local-file-access \
@@ -117,11 +177,25 @@ print(f'  PDF generated: {pdf_file}')
             "$HTML_OUTPUT" \
             "$PDF_OUTPUT" 2>/dev/null
         echo "  PDF generated: $PDF_OUTPUT"
+        # Generate translated PDFs via wkhtmltopdf
+        for lang in "${LANGS[@]}"; do
+            html_src="$HTML_DIR/SlyMail_User_Manual_${lang}.html"
+            if [ -f "$html_src" ]; then
+                echo "  Generating PDF for language: $lang"
+                wkhtmltopdf \
+                    --enable-local-file-access \
+                    --page-size Letter \
+                    --margin-top 20mm --margin-bottom 20mm \
+                    --margin-left 15mm --margin-right 15mm \
+                    --footer-center "[page] / [topage]" \
+                    --footer-font-size 9 --footer-spacing 5 \
+                    "$html_src" \
+                    "$SCRIPT_DIR/SlyMail_User_Manual_${lang}.pdf" 2>/dev/null
+            fi
+        done
     else
-        echo "Warning: Cannot generate PDF."
-        echo "Install one of:"
-        echo "  pip3 install weasyprint"
-        echo "  sudo apt-get install wkhtmltopdf"
+        echo "Warning: Cannot generate PDF. Install weasyprint:"
+        echo "  pip3 install --break-system-packages weasyprint"
         return 1
     fi
 }
@@ -129,6 +203,16 @@ print(f'  PDF generated: {pdf_file}')
 generate_text() {
     echo "Generating plain text user manual..."
     python3 "$SCRIPT_DIR/generate_text.py"
+    # Generate translated plain-text variants
+    for lang in "${LANGS[@]}"; do
+        src="$SCRIPT_DIR/SlyMail_User_Manual_${lang}.md"
+        if [ -f "$src" ]; then
+            echo "  Generating plain text for language: $lang"
+            SOURCE_MD="$src" \
+            OUTPUT_TXT="$SCRIPT_DIR/SlyMail_User_Manual_${lang}.txt" \
+            python3 "$SCRIPT_DIR/generate_text.py"
+        fi
+    done
 }
 
 case "${1:-all}" in

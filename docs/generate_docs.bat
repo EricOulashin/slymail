@@ -73,6 +73,9 @@ call :gen_text
 echo Done.
 goto :eof
 
+REM All translated language codes
+set LANGS=cy da de el es fi fr ga ja nb pl pt-BR ru sv zh-CN zh-TW
+
 :gen_html
 echo Generating HTML user manual...
 if not exist "%HTML_DIR%" mkdir "%HTML_DIR%"
@@ -90,17 +93,39 @@ if %errorlevel%==0 (
     set SCRIPT_DIR_ENV=%SCRIPT_DIR%
     set PROJECT_DIR_ENV=%PROJECT_DIR%
     python "%SCRIPT_DIR%\generate_html.py"
+    REM Generate translated HTML variants
+    for %%L in (%LANGS%) do (
+        if exist "%SCRIPT_DIR%\SlyMail_User_Manual_%%L.md" (
+            echo   Generating HTML for language: %%L
+            set SOURCE_MD=%SCRIPT_DIR%\SlyMail_User_Manual_%%L.md
+            set OUTPUT_HTML=%HTML_DIR%\SlyMail_User_Manual_%%L.html
+            set LANG_CODE=%%L
+            python "%SCRIPT_DIR%\generate_html.py"
+        )
+    )
 ) else (
     python3 -c "import markdown" >nul 2>&1
     if %errorlevel%==0 (
         set SCRIPT_DIR_ENV=%SCRIPT_DIR%
         set PROJECT_DIR_ENV=%PROJECT_DIR%
         python3 "%SCRIPT_DIR%\generate_html.py"
+        for %%L in (%LANGS%) do (
+            if exist "%SCRIPT_DIR%\SlyMail_User_Manual_%%L.md" (
+                echo   Generating HTML for language: %%L
+                set SOURCE_MD=%SCRIPT_DIR%\SlyMail_User_Manual_%%L.md
+                set OUTPUT_HTML=%HTML_DIR%\SlyMail_User_Manual_%%L.html
+                set LANG_CODE=%%L
+                python3 "%SCRIPT_DIR%\generate_html.py"
+            )
+        )
     ) else (
         echo Error: Python 'markdown' module not available.
         echo Install with: pip install markdown
     )
 )
+set SOURCE_MD=
+set OUTPUT_HTML=
+set LANG_CODE=
 goto :eof
 
 :gen_pdf
@@ -116,6 +141,13 @@ if %errorlevel% neq 0 (
         echo Warning: Cannot generate PDF. Install weasyprint: pip install weasyprint
     )
 )
+REM Generate translated PDFs
+for %%L in (%LANGS%) do (
+    if exist "%HTML_DIR%\SlyMail_User_Manual_%%L.html" (
+        echo   Generating PDF for language: %%L
+        python -c "from weasyprint import HTML; HTML(filename=r'%HTML_DIR%\SlyMail_User_Manual_%%L.html', base_url=r'%HTML_DIR%').write_pdf(r'%SCRIPT_DIR%\SlyMail_User_Manual_%%L.pdf')" 2>nul || python3 -c "from weasyprint import HTML; HTML(filename=r'%HTML_DIR%\SlyMail_User_Manual_%%L.html', base_url=r'%HTML_DIR%').write_pdf(r'%SCRIPT_DIR%\SlyMail_User_Manual_%%L.pdf')" 2>nul || echo   Warning: PDF generation failed for %%L
+    )
+)
 goto :eof
 
 :gen_text
@@ -129,4 +161,15 @@ if %errorlevel% neq 0 (
         echo Warning: Cannot generate plain text. Python 3 is required.
     )
 )
+REM Generate translated plain-text variants
+for %%L in (%LANGS%) do (
+    if exist "%SCRIPT_DIR%\SlyMail_User_Manual_%%L.md" (
+        echo   Generating plain text for language: %%L
+        set SOURCE_MD=%SCRIPT_DIR%\SlyMail_User_Manual_%%L.md
+        set OUTPUT_TXT=%SCRIPT_DIR%\SlyMail_User_Manual_%%L.txt
+        python "%SCRIPT_DIR%\generate_text.py" 2>nul || python3 "%SCRIPT_DIR%\generate_text.py" 2>nul || echo   Warning: text generation failed for %%L
+    )
+)
+set SOURCE_MD=
+set OUTPUT_TXT=
 goto :eof

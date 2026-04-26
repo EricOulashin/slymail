@@ -2,6 +2,7 @@
 #include "ui_common.h"
 #include "file_dir_utils.h"
 #include "file_browser.h"
+#include "i18n.h"
 #include <filesystem>
 
 using std::string;
@@ -63,7 +64,7 @@ EditorStyle showUIModeDialog(EditorStyle currentStyle)
             g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
 
             // Title in top border
-            string title = " UI Mode ";
+            string title = _(" UI Mode ");
             int titleX = dlgX + (dlgW - static_cast<int>(title.size()) - 2) / 2;
             g_term->setAttr(borderAttr);
             g_term->putCP437(dlgY, titleX, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
@@ -95,7 +96,7 @@ EditorStyle showUIModeDialog(EditorStyle currentStyle)
             g_term->drawHLine(helpY, dlgX + 1, dlgW - 2);
             g_term->putCP437(helpY, dlgX + dlgW - 1,
                              CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
-            string helpText = "Enter=OK, ESC=Cancel";
+            string helpText = _("Enter=OK, ESC=Cancel");
             int helpX = dlgX + (dlgW - static_cast<int>(helpText.size())) / 2;
             g_term->setAttr(titleAttr);
             g_term->printStr(helpY, helpX, helpText);
@@ -247,7 +248,7 @@ string showThemeSelector(const string& baseDir, EditorStyle currentStyle)
 
     if (themes.empty())
     {
-        messageDialog("Themes", "No theme files found in config/");
+        messageDialog(_("Themes"), _("No theme files found in config/"));
         return "";
     }
 
@@ -334,7 +335,7 @@ string showThemeSelector(const string& baseDir, EditorStyle currentStyle)
             g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
 
             // Title in top border
-            string title = " Select Theme ";
+            string title = _(" Select Theme ");
             int titleX = dlgX + (dlgW - static_cast<int>(title.size()) - 2) / 2;
             g_term->setAttr(borderAttr);
             g_term->putCP437(dlgY, titleX, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
@@ -347,7 +348,7 @@ string showThemeSelector(const string& baseDir, EditorStyle currentStyle)
             // Header
             int headerY = dlgY + 1;
             g_term->setAttr(titleAttr);
-            g_term->printStr(headerY, dlgX + 2, "Theme File");
+            g_term->printStr(headerY, dlgX + 2, _("Theme File"));
 
             // Separator
             g_term->setAttr(borderAttr);
@@ -371,7 +372,7 @@ string showThemeSelector(const string& baseDir, EditorStyle currentStyle)
             g_term->drawHLine(helpY, dlgX + 1, dlgW - 2);
             g_term->putCP437(helpY, dlgX + dlgW - 1,
                              CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
-            string helpText = "Up, Dn, Enter=Select, ESC/Q=Cancel";
+            string helpText = _("Up, Dn, Enter=Select, ESC/Q=Cancel");
             int helpX = dlgX + (dlgW - static_cast<int>(helpText.size())) / 2;
             g_term->setAttr(titleAttr);
             g_term->printStr(helpY, helpX, helpText);
@@ -433,7 +434,7 @@ string showDictionarySelector(const string& baseDir,
     vector<string> dicts = findDictionaries(baseDir);
     if (dicts.empty())
     {
-        messageDialog("Dictionaries", "No dictionary files found in dictionary_files/");
+        messageDialog(_("Dictionaries"), _("No dictionary files found in dictionary_files/"));
         return currentSelection;
     }
 
@@ -543,7 +544,7 @@ string showDictionarySelector(const string& baseDir,
             g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
 
             // Title in top border
-            string title = " Select Dictionaries ";
+            string title = _(" Select Dictionaries ");
             int titleX = dlgX + (dlgW - static_cast<int>(title.size()) - 2) / 2;
             g_term->setAttr(borderAttr);
             g_term->putCP437(dlgY, titleX, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
@@ -556,8 +557,8 @@ string showDictionarySelector(const string& baseDir,
             // Header
             int headerY = dlgY + 1;
             g_term->setAttr(titleAttr);
-            g_term->printStr(headerY, dlgX + 2, "Dictionary");
-            g_term->printStr(headerY, dlgX + dlgW - 12, "Selected");
+            g_term->printStr(headerY, dlgX + 2, _("Dictionary"));
+            g_term->printStr(headerY, dlgX + dlgW - 12, _("Selected"));
 
             // Separator
             g_term->setAttr(borderAttr);
@@ -581,7 +582,7 @@ string showDictionarySelector(const string& baseDir,
             g_term->drawHLine(helpY, dlgX + 1, dlgW - 2);
             g_term->putCP437(helpY, dlgX + dlgW - 1,
                              CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
-            string helpText = "Up, Dn, Enter/Space=Toggle, ESC/Q=Done";
+            string helpText = _("Up, Dn, Enter/Space=Toggle, ESC/Q=Done");
             int helpX = dlgX + (dlgW - static_cast<int>(helpText.size())) / 2;
             g_term->setAttr(titleAttr);
             g_term->printStr(helpY, helpX, helpText);
@@ -656,6 +657,156 @@ string showDictionarySelector(const string& baseDir,
 }
 
 // ============================================================
+// showLanguageSelector - language picker dialog
+// Returns the chosen language code, or currentCode on ESC.
+// ============================================================
+string showLanguageSelector(const string& currentCode)
+{
+    vector<LangEntry> langs = i18n_supported_languages();
+    int totalItems = static_cast<int>(langs.size());
+
+    // Find initial cursor position
+    int cursor = 0;
+    for (int i = 0; i < totalItems; ++i)
+    {
+        if (langs[i].code == currentCode)
+        {
+            cursor = i;
+            break;
+        }
+    }
+
+    int dlgW = 50;
+    if (dlgW > g_term->getCols() - 4)
+        dlgW = g_term->getCols() - 4;
+    int visibleItems = totalItems;
+    if (visibleItems > g_term->getRows() - 8)
+        visibleItems = g_term->getRows() - 8;
+    int dlgH = visibleItems + 4;
+    int dlgY = (g_term->getRows() - dlgH) / 2;
+    int dlgX = (g_term->getCols() - dlgW) / 2;
+
+    TermAttr borderAttr = tAttr(TC_GREEN, TC_BLACK, false);
+    TermAttr titleAttr  = tAttr(TC_BLUE, TC_BLACK, true);
+    TermAttr itemAttr   = tAttr(TC_CYAN, TC_BLACK, false);
+    TermAttr selAttr    = tAttr(TC_BLUE, TC_WHITE, false);
+
+    int scrollOffset  = 0;
+    bool needFullRedraw = true;
+    int prevCursor    = -1;
+    int prevScrollOff = -1;
+
+    auto drawRow = [&](int idx)
+    {
+        if (idx < scrollOffset || idx >= scrollOffset + visibleItems) return;
+        if (idx < 0 || idx >= totalItems) return;
+        int y = dlgY + 1 + (idx - scrollOffset);
+        bool isSel = (idx == cursor);
+        if (isSel)
+            fillRow(y, selAttr, dlgX + 1, dlgX + dlgW - 1);
+        else
+            fillRow(y, tAttr(TC_BLACK, TC_BLACK, false), dlgX + 1, dlgX + dlgW - 1);
+        string display = langs[idx].displayName;
+        printAt(y, dlgX + 2, truncateStr(display, dlgW - 4), isSel ? selAttr : itemAttr);
+    };
+
+    for (;;)
+    {
+        if (cursor < scrollOffset)
+            scrollOffset = cursor;
+        if (cursor >= scrollOffset + visibleItems)
+            scrollOffset = cursor - visibleItems + 1;
+
+        bool scrollChanged = (scrollOffset != prevScrollOff);
+
+        if (needFullRedraw || scrollChanged)
+        {
+            g_term->setAttr(borderAttr);
+            g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
+
+            string title = _(" Select Language ");
+            int titleX = dlgX + (dlgW - static_cast<int>(title.size()) - 2) / 2;
+            g_term->setAttr(borderAttr);
+            g_term->putCP437(dlgY, titleX, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
+            g_term->setAttr(titleAttr);
+            g_term->printStr(dlgY, titleX + 1, title);
+            g_term->setAttr(borderAttr);
+            g_term->putCP437(dlgY, titleX + static_cast<int>(title.size()) + 1,
+                             CP437_BOX_DRAWINGS_LIGHT_LEFT_T);
+
+            for (int i = 0; i < visibleItems && i + scrollOffset < totalItems; ++i)
+                drawRow(scrollOffset + i);
+
+            if (totalItems > visibleItems)
+            {
+                drawScrollbar(dlgY + 1, visibleItems, cursor, totalItems,
+                             tAttr(TC_BLACK, TC_BLACK, true),
+                             tAttr(TC_WHITE, TC_BLACK, true));
+            }
+
+            int helpY = dlgY + dlgH - 2;
+            g_term->setAttr(borderAttr);
+            g_term->putCP437(helpY, dlgX, CP437_BOX_DRAWINGS_LIGHT_LEFT_T);
+            g_term->drawHLine(helpY, dlgX + 1, dlgW - 2);
+            g_term->putCP437(helpY, dlgX + dlgW - 1,
+                             CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
+            string helpText = _("Up, Dn, Enter=Select, ESC=Cancel");
+            int helpX = dlgX + (dlgW - static_cast<int>(helpText.size())) / 2;
+            g_term->setAttr(titleAttr);
+            g_term->printStr(helpY, helpX, helpText);
+
+            needFullRedraw = false;
+        }
+        else if (cursor != prevCursor)
+        {
+            drawRow(prevCursor);
+            drawRow(cursor);
+        }
+
+        g_term->refresh();
+        prevCursor    = cursor;
+        prevScrollOff = scrollOffset;
+
+        int ch = g_term->getKey();
+        switch (ch)
+        {
+            case TK_UP:
+                if (cursor > 0) --cursor;
+                break;
+            case TK_DOWN:
+                if (cursor < totalItems - 1) ++cursor;
+                break;
+            case TK_HOME:
+                cursor = 0;
+                break;
+            case TK_END:
+                cursor = totalItems - 1;
+                break;
+            case TK_PGUP:
+                cursor -= visibleItems;
+                if (cursor < 0) cursor = 0;
+                break;
+            case TK_PGDN:
+                cursor += visibleItems;
+                if (cursor >= totalItems) cursor = totalItems - 1;
+                break;
+            case TK_ENTER:
+            case ' ':
+                return langs[cursor].code;
+            case TK_ESCAPE:
+            case 'q':
+            case 'Q':
+                return currentCode;
+            case TK_RESIZE:
+                needFullRedraw = true;
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+// ============================================================
 // showEditorSettings - SlyEdit-style user settings dialog
 // Called from the editor when Ctrl-U is pressed.
 // Matches the exact layout from SlyEdit4_Ice_UserSettings.png
@@ -664,14 +815,15 @@ bool showEditorSettings(Settings& settings, const string& baseDir)
 {
     vector<EditorSettingItem> items =
     {
-        {"Choose UI mode",                        SettingType::Choice,  ESET_UI_MODE},
-        {"Taglines",                              SettingType::Toggle,  ESET_TAGLINES},
-        {"Spell-check dictionary/dictionaries",   SettingType::SubMenu, ESET_SPELL_DICT},
-        {"Prompt for spell checker on save",      SettingType::Toggle,  ESET_PROMPT_SPELL},
-        {"Wrap quote lines to terminal width",    SettingType::Toggle,  ESET_WRAP_QUOTES},
-        {"Quote with author's initials",          SettingType::Toggle,  ESET_QUOTE_INITIALS},
-        {"Indent quote lines containing initials", SettingType::Toggle, ESET_INDENT_INITIALS},
-        {"Trim spaces from quote lines",          SettingType::Toggle,  ESET_TRIM_QUOTE_SPACES},
+        {_("Choose UI mode"),                        SettingType::Choice,  ESET_UI_MODE},
+        {_("Taglines"),                              SettingType::Toggle,  ESET_TAGLINES},
+        {_("Spell-check dictionary/dictionaries"),   SettingType::SubMenu, ESET_SPELL_DICT},
+        {_("Prompt for spell checker on save"),      SettingType::Toggle,  ESET_PROMPT_SPELL},
+        {_("Wrap quote lines to terminal width"),    SettingType::Toggle,  ESET_WRAP_QUOTES},
+        {_("Quote with author's initials"),          SettingType::Toggle,  ESET_QUOTE_INITIALS},
+        {_("Indent quote lines containing initials"), SettingType::Toggle, ESET_INDENT_INITIALS},
+        {_("Trim spaces from quote lines"),          SettingType::Toggle,  ESET_TRIM_QUOTE_SPACES},
+        {_("Language"),                              SettingType::Choice,  ESET_LANGUAGE},
     };
 
     int itemCount = static_cast<int>(items.size());
@@ -753,7 +905,7 @@ bool showEditorSettings(Settings& settings, const string& baseDir)
 
         // Title bar: +--|Setting|---------------------- Enabled - Page 1 of 1 --+
         // T-characters around "Setting" text in top border
-        string settingTitle = " Setting ";
+        string settingTitle = _(" Setting ");
         int settingTitleX = dlgX + 3;
         g_term->setAttr(borderAttr);
         g_term->putCP437(dlgY, settingTitleX, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
@@ -764,12 +916,12 @@ bool showEditorSettings(Settings& settings, const string& baseDir)
                          CP437_BOX_DRAWINGS_LIGHT_LEFT_T);
 
         // "Enabled" and "Page 1 of 1" in top border
-        string enabledText = " Enabled ";
+        string enabledText = _(" Enabled ");
         int enabledX = dlgX + dlgW - 24;
         g_term->setAttr(titleAttr);
         g_term->printStr(dlgY, enabledX, enabledText);
 
-        string pageText = " Page 1 of 1 ";
+        string pageText = _(" Page 1 of 1 ");
         g_term->printStr(dlgY, dlgX + dlgW - static_cast<int>(pageText.size()) - 1, pageText);
 
         // Draw all items
@@ -787,7 +939,7 @@ bool showEditorSettings(Settings& settings, const string& baseDir)
                          CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
 
         // Help text with T-characters around it
-        string helpText = "Up, Dn, Enter=Select/toggle, ?=Help, ESC/Q/Ctrl-U=Close";
+        string helpText = _("Up, Dn, Enter=Select/toggle, ?=Help, ESC/Q/Ctrl-U=Close");
         int helpTextX = dlgX + 2;
         g_term->setAttr(borderAttr);
         g_term->putCP437(helpY, helpTextX, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
@@ -899,6 +1051,18 @@ bool showEditorSettings(Settings& settings, const string& baseDir)
                         drawESetRow(selected);
                         g_term->refresh();
                         break;
+                    case ESET_LANGUAGE:
+                    {
+                        string newCode = showLanguageSelector(settings.language);
+                        if (newCode != settings.language)
+                        {
+                            settings.language = newCode;
+                            changed = true;
+                            messageDialog(_("Language"), _("Restart required for language change to take effect."));
+                        }
+                        needFullRedraw = true;
+                        break;
+                    }
                 }
                 break;
             }
@@ -938,7 +1102,7 @@ bool showSettingsDialog(Settings& settings, const string& baseDir)
     if (dlgW > g_term->getCols() - 4) dlgW = g_term->getCols() - 4;
 
     int visibleItems = g_term->getRows() - 10;
-    const int itemCount = 13;
+    const int itemCount = 14;
     if (visibleItems > itemCount) visibleItems = itemCount;
     int dlgH = visibleItems + 5;
     int dlgY = (g_term->getRows() - dlgH) / 2;
@@ -961,34 +1125,57 @@ bool showSettingsDialog(Settings& settings, const string& baseDir)
     {
         // Build items fresh each iteration (values reflect current settings)
         vector<SettingItem> items;
-        items.push_back({"Show kludge lines",
+        items.push_back({_("Show kludge lines"),
                          settings.showKludgeLines ? "Y" : "N", true, false, SET_SHOW_KLUDGE});
-        items.push_back({"Show tear/origin lines",
+        items.push_back({_("Show tear/origin lines"),
                          settings.showTearLine ? "Y" : "N", true, false, SET_SHOW_TEAR});
-        items.push_back({"Scrollbar in reader",
+        items.push_back({_("Scrollbar in reader"),
                          settings.useScrollbar ? "Y" : "N", true, false, SET_USE_SCROLLBAR});
-        items.push_back({"Only show areas with new mail",
+        items.push_back({_("Only show areas with new mail"),
                          settings.onlyShowAreasWithNewMail ? "Y" : "N", true, false, SET_ONLY_AREAS_WITH_MAIL});
-        items.push_back({"Strip ANSI codes from messages",
+        items.push_back({_("Strip ANSI codes from messages"),
                          settings.stripAnsi ? "Y" : "N", true, false, SET_STRIP_ANSI});
-        items.push_back({"Attribute code toggles...",
+        items.push_back({_("Attribute code toggles..."),
                          "", false, true, SET_ATTR_CODE_TOGGLES});
-        items.push_back({"Search using regular expression",
+        items.push_back({_("Search using regular expression"),
                          settings.useRegexSearch ? "Y" : "N", true, false, SET_REGEX_SEARCH});
-        items.push_back({"List messages in reversed",
+        items.push_back({_("List messages in reversed"),
                          settings.reverseOrder ? "Y" : "N", true, false, SET_REVERSE_ORDER});
-        items.push_back({"Show splash screen on startup",
+        items.push_back({_("Show splash screen on startup"),
                          settings.showSplashScreen ? "Y" : "N", true, false, SET_SPLASH_SCREEN});
-        items.push_back({"Reply packet directory",
-                         settings.replyDir.empty() ? "(current dir)" : settings.replyDir,
+        items.push_back({_("Reply packet directory"),
+                         settings.replyDir.empty() ? _("(current dir)") : settings.replyDir,
                          false, false, SET_REPLY_DIR});
-        items.push_back({"Use external editor",
+        items.push_back({_("Use external editor"),
                          settings.useExternalEditor ? "Y" : "N", true, false, SET_USE_EXTERNAL_EDITOR});
-        items.push_back({"External Editors...",
+        items.push_back({_("External Editors..."),
                          "", false, true, SET_EXTERNAL_EDITORS_LIST});
-        items.push_back({"External Editor",
-                         settings.selectedEditor.empty() ? "(none)" : settings.selectedEditor,
+        items.push_back({_("External Editor"),
+                         settings.selectedEditor.empty() ? _("(none)") : settings.selectedEditor,
                          false, false, SET_SELECT_EXTERNAL_EDITOR});
+        {
+            // Determine language display name
+            string langDisplay;
+            if (settings.language.empty())
+            {
+                langDisplay = _("OS Default");
+            }
+            else
+            {
+                langDisplay = settings.language; // fallback
+                for (const auto& le : i18n_supported_languages())
+                {
+                    if (le.code == settings.language)
+                    {
+                        langDisplay = le.displayName;
+                        break;
+                    }
+                }
+            }
+            items.push_back({_("Language"),
+                             langDisplay,
+                             false, false, SET_LANGUAGE});
+        }
 
         // Clamp scroll
         if (selected < scrollOffset) scrollOffset = selected;
@@ -1049,7 +1236,7 @@ bool showSettingsDialog(Settings& settings, const string& baseDir)
             g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
 
             // Title with T-characters
-            string title = " Reader Settings ";
+            string title = _(" Reader Settings ");
             int titleX = dlgX + 3;
             g_term->setAttr(borderAttr);
             g_term->putCP437(dlgY, titleX, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
@@ -1062,7 +1249,7 @@ bool showSettingsDialog(Settings& settings, const string& baseDir)
             // "Enabled" and page info
             int enabledX = dlgX + dlgW - 24;
             g_term->setAttr(titleAttr);
-            g_term->printStr(dlgY, enabledX, " Enabled ");
+            g_term->printStr(dlgY, enabledX, _(" Enabled "));
 
             int totalPages  = (itemCount + visibleItems - 1) / visibleItems;
             int currentPage = (scrollOffset / visibleItems) + 1;
@@ -1086,7 +1273,7 @@ bool showSettingsDialog(Settings& settings, const string& baseDir)
             g_term->putCP437(helpY, dlgX + dlgW - 1,
                              CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
 
-            string helpText = "Up, Dn, Enter=Select/toggle, S=Save, ESC/Q=Close";
+            string helpText = _("Up, Dn, Enter=Select/toggle, S=Save, ESC/Q=Close");
             int helpTextX = dlgX + 2;
             g_term->setAttr(borderAttr);
             g_term->putCP437(helpY, helpTextX, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
@@ -1191,7 +1378,7 @@ bool showSettingsDialog(Settings& settings, const string& baseDir)
                         {
                             startDir = getSlyMailDataDir() + PATH_SEP_STR + "REP";
                         }
-                        string val = showDirChooser(startDir, "Select Reply Packet Directory");
+                        string val = showDirChooser(startDir, _("Select Reply Packet Directory"));
                         if (!val.empty())
                         {
                             settings.replyDir = val;
@@ -1247,6 +1434,18 @@ bool showSettingsDialog(Settings& settings, const string& baseDir)
                         needFullRedraw = true;
                         break;
                     }
+                    case SET_LANGUAGE:
+                    {
+                        string newCode = showLanguageSelector(settings.language);
+                        if (newCode != settings.language)
+                        {
+                            settings.language = newCode;
+                            changed = true;
+                            messageDialog(_("Language"), _("Restart required for language change to take effect."));
+                        }
+                        needFullRedraw = true;
+                        break;
+                    }
                 }
                 break;
             case 's':
@@ -1254,7 +1453,7 @@ bool showSettingsDialog(Settings& settings, const string& baseDir)
                 if (changed)
                 {
                     settings.save();
-                    messageDialog("Settings", "Settings saved successfully.");
+                    messageDialog(_("Settings"), _("Settings saved successfully."));
                 }
                 return changed;
             case TK_ESCAPE:
@@ -1262,7 +1461,7 @@ bool showSettingsDialog(Settings& settings, const string& baseDir)
             case 'Q':
                 if (changed)
                 {
-                    if (confirmDialog("Save changes before closing?"))
+                    if (confirmDialog(_("Save changes before closing?")))
                     {
                         settings.save();
                     }
@@ -1291,11 +1490,11 @@ bool showAttrCodeToggles(Settings& settings)
     };
     vector<AttrItem> items =
     {
-        {"Synchronet Ctrl-A attribute codes",   &settings.attrSynchronet},
-        {"WWIV attribute codes",                &settings.attrWWIV},
-        {"Celerity attribute codes",            &settings.attrCelerity},
-        {"Renegade attribute codes",            &settings.attrRenegade},
-        {"PCBoard/Wildcat attribute codes",     &settings.attrPCBoard},
+        {_("Synchronet Ctrl-A attribute codes"),   &settings.attrSynchronet},
+        {_("WWIV attribute codes"),                &settings.attrWWIV},
+        {_("Celerity attribute codes"),            &settings.attrCelerity},
+        {_("Renegade attribute codes"),            &settings.attrRenegade},
+        {_("PCBoard/Wildcat attribute codes"),     &settings.attrPCBoard},
     };
 
     int itemCount = static_cast<int>(items.size());
@@ -1332,7 +1531,7 @@ bool showAttrCodeToggles(Settings& settings)
         g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
 
         // Title
-        string titleText = " Attribute Code Toggles ";
+        string titleText = _(" Attribute Code Toggles ");
         int titleX = dlgX + 3;
         g_term->setAttr(borderAttr);
         g_term->putCP437(dlgY, titleX, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
@@ -1344,7 +1543,7 @@ bool showAttrCodeToggles(Settings& settings)
 
         // "Enabled" column header
         g_term->setAttr(titleAttr);
-        g_term->printStr(dlgY, checkCol - 2, " Enabled ");
+        g_term->printStr(dlgY, checkCol - 2, _(" Enabled "));
 
         // Items
         for (int i = 0; i < itemCount; ++i)
@@ -1381,12 +1580,12 @@ bool showAttrCodeToggles(Settings& settings)
 
         // Notes
         int noteY = dlgY + 1 + itemCount;
-        printAt(noteY, dlgX + 2, "ANSI escape codes are always enabled.", noteAttr);
-        printAt(noteY + 1, dlgX + 2, "These apply to the reader and editor.", noteAttr);
+        printAt(noteY, dlgX + 2, _("ANSI escape codes are always enabled."), noteAttr);
+        printAt(noteY + 1, dlgX + 2, _("These apply to the reader and editor."), noteAttr);
 
         // Bottom help
         int helpY = dlgY + dlgH - 1;
-        string helpText = " Up/Dn, Enter/Space=Toggle, ESC=Done ";
+        string helpText = _(" Up/Dn, Enter/Space=Toggle, ESC=Done ");
         int helpX = dlgX + (dlgW - static_cast<int>(helpText.size())) / 2;
         g_term->setAttr(titleAttr);
         g_term->printStr(helpY, helpX, helpText);
@@ -1459,7 +1658,7 @@ DropFileType showDropFileTypeSelector(DropFileType current)
         g_term->clear();
         g_term->setAttr(borderAttr);
         g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
-        string title = " Drop File Type ";
+        string title = _(" Drop File Type ");
         int titleX = dlgX + (dlgW - static_cast<int>(title.size())) / 2;
         g_term->setAttr(titleAttr);
         g_term->printStr(dlgY, titleX, title);
@@ -1480,7 +1679,7 @@ DropFileType showDropFileTypeSelector(DropFileType current)
         g_term->putCP437(helpY, dlgX, CP437_BOX_DRAWINGS_LIGHT_LEFT_T);
         g_term->drawHLine(helpY, dlgX + 1, dlgW - 2);
         g_term->putCP437(helpY, dlgX + dlgW - 1, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
-        string helpText = "Enter=Select, ESC=Cancel";
+        string helpText = _("Enter=Select, ESC=Cancel");
         g_term->setAttr(titleAttr);
         g_term->printStr(helpY, dlgX + (dlgW - static_cast<int>(helpText.size())) / 2, helpText);
 
@@ -1534,7 +1733,7 @@ bool showExternalEditorConfig(ExternalEditorConfig& editor)
         g_term->setAttr(borderAttr);
         g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
 
-        string title = " External Editor ";
+        string title = _(" External Editor ");
         int tX = dlgX + 3;
         g_term->setAttr(borderAttr);
         g_term->putCP437(dlgY, tX, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
@@ -1547,19 +1746,19 @@ bool showExternalEditorConfig(ExternalEditorConfig& editor)
         // Build display values
         string wrapStr;
         if (editor.wordWrapQuotedText)
-            wrapStr = "Yes, for " + std::to_string(editor.wordWrapNumCols) + " columns";
+            wrapStr = string(_("Yes, for ")) + std::to_string(editor.wordWrapNumCols) + _(" columns");
         else
-            wrapStr = "No";
+            wrapStr = _("No");
 
         struct FieldInfo { string label; string value; };
         vector<FieldInfo> fields = {
-            {"Name:",                 editor.name},
-            {"Startup Directory:",    editor.startupDir.empty() ? "(not set)" : editor.startupDir},
-            {"Command Line:",         editor.commandLine.empty() ? "(not set)" : editor.commandLine},
-            {"Word-wrap Quoted Text:", wrapStr},
-            {"Auto Quoted Text:",     extQuoteModeStr(editor.autoQuoteMode)},
-            {"Editor Info Files:",    dropFileTypeStr(editor.dropFileType)},
-            {"Strip FidoNet Kludges:", editor.stripFidoKludges ? "Yes" : "No"},
+            {_("Name:"),                 editor.name},
+            {_("Startup Directory:"),    editor.startupDir.empty() ? _("(not set)") : editor.startupDir},
+            {_("Command Line:"),         editor.commandLine.empty() ? _("(not set)") : editor.commandLine},
+            {_("Word-wrap Quoted Text:"), wrapStr},
+            {_("Auto Quoted Text:"),     extQuoteModeStr(editor.autoQuoteMode)},
+            {_("Editor Info Files:"),    dropFileTypeStr(editor.dropFileType)},
+            {_("Strip FidoNet Kludges:"), editor.stripFidoKludges ? _("Yes") : _("No")},
         };
 
         for (int i = 0; i < FIELD_COUNT; ++i)
@@ -1579,7 +1778,7 @@ bool showExternalEditorConfig(ExternalEditorConfig& editor)
         // Note about %f
         int noteY = dlgY + 1 + FIELD_COUNT;
         fillRow(noteY, tAttr(TC_BLACK, TC_BLACK, false), dlgX + 1, dlgX + dlgW - 1);
-        printAt(noteY, dlgX + 2, "Note: %f = temp filename in command line",
+        printAt(noteY, dlgX + 2, _("Note: %f = temp filename in command line"),
                 tAttr(TC_YELLOW, TC_BLACK, false));
 
         // Help bar
@@ -1588,7 +1787,7 @@ bool showExternalEditorConfig(ExternalEditorConfig& editor)
         g_term->putCP437(helpY, dlgX, CP437_BOX_DRAWINGS_LIGHT_LEFT_T);
         g_term->drawHLine(helpY, dlgX + 1, dlgW - 2);
         g_term->putCP437(helpY, dlgX + dlgW - 1, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
-        string helpText = "Enter=Edit, Del=Clear, ESC=Done";
+        string helpText = _("Enter=Edit, Del=Clear, ESC=Done");
         g_term->setAttr(titleAttr);
         g_term->printStr(helpY, dlgX + (dlgW - static_cast<int>(helpText.size())) / 2, helpText);
 
@@ -1690,13 +1889,13 @@ bool showExternalEditorConfig(ExternalEditorConfig& editor)
                     case FIELD_WORDWRAP:
                     {
                         // Prompt Yes/No first
-                        if (confirmDialog("Word-wrap quoted text?"))
+                        if (confirmDialog(_("Word-wrap quoted text?")))
                         {
                             editor.wordWrapQuotedText = true;
                             // Prompt for column count
                             int y = dlgY + 1 + selected;
                             fillRow(y, tAttr(TC_BLACK, TC_BLACK, false), dlgX + 1, dlgX + dlgW - 1);
-                            printAt(y, dlgX + 2, "For how many columns? ", valueAttr);
+                            printAt(y, dlgX + 2, _("For how many columns? "), valueAttr);
                             string numStr = getNumericInput(y, dlgX + 24, 5, valueAttr);
                             int cols = 79;
                             if (!numStr.empty())
@@ -1787,7 +1986,7 @@ bool showExternalEditorsList(Settings& settings)
         g_term->setAttr(borderAttr);
         g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
 
-        string title = " External Editors ";
+        string title = _(" External Editors ");
         int tX = dlgX + 3;
         g_term->setAttr(borderAttr);
         g_term->putCP437(dlgY, tX, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
@@ -1821,7 +2020,7 @@ bool showExternalEditorsList(Settings& settings)
             }
             else
             {
-                printAt(y, dlgX + 2, "(Add new editor...)", isSel ? selAttr : itemAttr);
+                printAt(y, dlgX + 2, _("(Add new editor...)"), isSel ? selAttr : itemAttr);
             }
         }
 
@@ -1839,7 +2038,7 @@ bool showExternalEditorsList(Settings& settings)
         g_term->putCP437(helpY, dlgX, CP437_BOX_DRAWINGS_LIGHT_LEFT_T);
         g_term->drawHLine(helpY, dlgX + 1, dlgW - 2);
         g_term->putCP437(helpY, dlgX + dlgW - 1, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
-        string helpText = "Enter=Edit, S=Select, D=Delete, ESC=Done";
+        string helpText = _("Enter=Edit, S=Select, D=Delete, ESC=Done");
         g_term->setAttr(titleAttr);
         g_term->printStr(helpY, dlgX + (dlgW - static_cast<int>(helpText.size())) / 2, helpText);
 
@@ -1890,7 +2089,7 @@ bool showExternalEditorsList(Settings& settings)
                 if (selected < static_cast<int>(settings.externalEditors.size()))
                 {
                     string name = settings.externalEditors[selected].name;
-                    if (confirmDialog("Delete editor '" + name + "'?"))
+                    if (confirmDialog(_("Delete editor '") + name + _("'?")))
                     {
                         settings.externalEditors.erase(
                             settings.externalEditors.begin() + selected);

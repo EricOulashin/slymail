@@ -2,6 +2,7 @@
 #include "ui_common.h"
 #include "file_dir_utils.h"
 #include "file_browser.h"
+#include "i18n.h"
 #include <cctype>
 #include <ctime>
 #include <fstream>
@@ -346,7 +347,7 @@ bool editRemoteSystem(RemoteSystem& sys)
         {
             fillRow(dlgY + r, tAttr(TC_BLACK, TC_BLACK, false), dlgX, dlgX + dlgW);
         }
-        drawBox(dlgY, dlgX, dlgH, dlgW, borderAttr, "Edit Remote System", borderAttr);
+        drawBox(dlgY, dlgX, dlgH, dlgW, borderAttr, _("Edit Remote System"), borderAttr);
 
         int y = dlgY + 1;
         int labelX = dlgX + 2;
@@ -377,29 +378,29 @@ bool editRemoteSystem(RemoteSystem& sys)
             ++y;
         };
 
-        drawField(0, "Name:       ", name);
-        drawField(1, "Type:       ", typeIdx == 0 ? "FTP" : "SSH");
-        drawField(2, "Host:       ", host);
-        drawField(3, "Port:       ", portStr);
-        drawField(4, "Username:   ", username);
-        drawField(5, "Password:   ", string(password.size(), '*'));
+        drawField(0, _("Name:       "), name);
+        drawField(1, _("Type:       "), typeIdx == 0 ? "FTP" : "SSH");
+        drawField(2, _("Host:       "), host);
+        drawField(3, _("Port:       "), portStr);
+        drawField(4, _("Username:   "), username);
+        drawField(5, _("Password:   "), string(password.size(), '*'));
         if (typeIdx == 0)
         {
-            drawField(6, "Passive FTP:", passiveFTP ? "Yes" : "No");
+            drawField(6, _("Passive FTP:"), passiveFTP ? _("Yes") : _("No"));
         }
         else
         {
             TermAttr dimAttr = tAttr(TC_BLACK, TC_BLACK, true);
             fillRow(y, tAttr(TC_BLACK, TC_BLACK, false), dlgX + 1, dlgX + dlgW - 1);
-            printAt(y, labelX, "Passive FTP:", dimAttr);
-            printAt(y, valX, "(N/A for SSH)", dimAttr);
+            printAt(y, labelX, _("Passive FTP:"), dimAttr);
+            printAt(y, valX, _("(N/A for SSH)"), dimAttr);
             ++y;
         }
-        drawField(7, "Remote Path:", remotePath.empty() ? "/" : remotePath);
+        drawField(7, _("Remote Path:"), remotePath.empty() ? "/" : remotePath);
 
         // Help
-        printAt(dlgY + dlgH - 3, labelX, "Up/Dn=Move, Enter=Edit field, Space=Toggle", helpAttr);
-        printAt(dlgY + dlgH - 2, labelX, "Ctrl-S=Save & close, ESC/Ctrl-C/Q=Cancel", helpAttr);
+        printAt(dlgY + dlgH - 3, labelX, _("Up/Dn=Move, Enter=Edit field, Space=Toggle"), helpAttr);
+        printAt(dlgY + dlgH - 2, labelX, _("Ctrl-S=Save & close, ESC/Ctrl-C/Q=Cancel"), helpAttr);
 
         g_term->refresh();
 
@@ -981,7 +982,7 @@ string connectAndBrowse(RemoteSystem& sys, const string& downloadDir)
 
     // Show connecting message
     g_term->clear();
-    printCentered(rows / 2, "Connecting to " + sys.name + " (" + sys.host + ")...",
+    printCentered(rows / 2, string(_("Connecting to")) + " " + sys.name + " (" + sys.host + ")" + _("..."),
                   tAttr(TC_CYAN, TC_BLACK, true));
     g_term->refresh();
 
@@ -1012,12 +1013,12 @@ string connectAndBrowse(RemoteSystem& sys, const string& downloadDir)
         {
             if (!connErrMsg.empty())
             {
-                messageDialog("Connection Error", connErrMsg);
+                messageDialog(_("Connection Error"), connErrMsg);
             }
             else
             {
-                messageDialog("Connection Error",
-                    "Failed to connect or list directory on " + sys.host);
+                messageDialog(_("Connection Error"),
+                    string(_("Failed to connect or list directory on")) + " " + sys.host);
             }
             return "";
         }
@@ -1052,8 +1053,8 @@ string connectAndBrowse(RemoteSystem& sys, const string& downloadDir)
         // Column headers
         g_term->setAttr(borderAttr);
         g_term->drawHLine(2, 0, cols);
-        printAt(2, 1, " Name", titleAttr);
-        printAt(2, cols - 20, "Size", titleAttr);
+        printAt(2, 1, string(" ") + _("Name"), titleAttr);
+        printAt(2, cols - 20, _("Size"), titleAttr);
 
         int listTop = 3;
         int listHeight = rows - 5;
@@ -1123,8 +1124,8 @@ string connectAndBrowse(RemoteSystem& sys, const string& downloadDir)
         }
 
         // Help bar
-        drawDDHelpBar(rows - 1, "Up/Dn/PgUp/PgDn, ",
-                      {{'E', "nter=Select"}, {'U', "pload REP"}, {'/', "=Root"}, {'Q', "uit"}, {'?', ""}});
+        drawDDHelpBar(rows - 1, _("Up/Dn/PgUp/PgDn, "),
+                      {{'E', _("nter=Select")}, {'U', _("pload REP")}, {'/', _("=Root")}, {'Q', _("uit")}, {'?', ""}});
 
         // Status
         printAt(rows - 2, 0, string(cols, ' '), statusAttr);
@@ -1162,7 +1163,7 @@ string connectAndBrowse(RemoteSystem& sys, const string& downloadDir)
                 // Go to root
                 currentPath = "/";
                 g_term->clear();
-                printCentered(rows / 2, "Loading /...", tAttr(TC_CYAN, TC_BLACK, true));
+                printCentered(rows / 2, _("Loading /..."), tAttr(TC_CYAN, TC_BLACK, true));
                 g_term->refresh();
                 if (sys.type == RemoteConnType::FTP)
                     entries = ftpListDir(sys, currentPath);
@@ -1181,7 +1182,7 @@ string connectAndBrowse(RemoteSystem& sys, const string& downloadDir)
                     currentPath = p.parent_path().string();
                     if (currentPath.empty()) currentPath = "/";
                     g_term->clear();
-                    printCentered(rows / 2, "Loading " + currentPath + "...",
+                    printCentered(rows / 2, string(_("Loading ")) + currentPath + _("..."),
                                   tAttr(TC_CYAN, TC_BLACK, true));
                     g_term->refresh();
                     if (sys.type == RemoteConnType::FTP)
@@ -1204,7 +1205,7 @@ string connectAndBrowse(RemoteSystem& sys, const string& downloadDir)
                                 currentPath += "/";
                             currentPath += fe.name;
                             g_term->clear();
-                            printCentered(rows / 2, "Loading " + currentPath + "...",
+                            printCentered(rows / 2, string(_("Loading ")) + currentPath + _("..."),
                                           tAttr(TC_CYAN, TC_BLACK, true));
                             g_term->refresh();
                             if (sys.type == RemoteConnType::FTP)
@@ -1234,7 +1235,7 @@ string connectAndBrowse(RemoteSystem& sys, const string& downloadDir)
 
                             g_term->clear();
                             printCentered(rows / 2,
-                                "Downloading " + fe.name + "...",
+                                string(_("Downloading ")) + fe.name + _("..."),
                                 tAttr(TC_CYAN, TC_BLACK, true));
                             g_term->refresh();
 
@@ -1253,7 +1254,7 @@ string connectAndBrowse(RemoteSystem& sys, const string& downloadDir)
                             {
                                 // Clean up any empty/partial file
                                 try { fs::remove(localPath); } catch (...) {}
-                                messageDialog("Download Error", dlErrMsg);
+                                messageDialog(_("Download Error"), dlErrMsg);
                             }
                         }
                     }
@@ -1274,16 +1275,16 @@ string connectAndBrowse(RemoteSystem& sys, const string& downloadDir)
 
                     g_term->clear();
                     printCentered(rows / 2,
-                        "Uploading " + fs::path(repFile).filename().string() + "...",
+                        string(_("Uploading ")) + fs::path(repFile).filename().string() + _("..."),
                         tAttr(TC_CYAN, TC_BLACK, true));
                     g_term->refresh();
 
                     string uploadErr;
                     if (uploadFileToRemote(sys, repFile, remoteFile, uploadErr))
                     {
-                        messageDialog("Upload Complete",
-                            fs::path(repFile).filename().string() + " uploaded successfully.");
-                        if (confirmDialog("Delete local file " + fs::path(repFile).filename().string() + "?"))
+                        messageDialog(_("Upload Complete"),
+                            fs::path(repFile).filename().string() + _(" uploaded successfully."));
+                        if (confirmDialog(string(_("Delete local file ")) + fs::path(repFile).filename().string() + "?"))
                         {
                             try
                             {
@@ -1291,19 +1292,19 @@ string connectAndBrowse(RemoteSystem& sys, const string& downloadDir)
                             }
                             catch (const fs::filesystem_error& e)
                             {
-                                messageDialog("Delete Error",
-                                    "Failed to delete file: " + string(e.what()));
+                                messageDialog(_("Delete Error"),
+                                    string(_("Failed to delete file: ")) + string(e.what()));
                             }
                             catch (...)
                             {
-                                messageDialog("Delete Error",
-                                    "Failed to delete " + fs::path(repFile).filename().string());
+                                messageDialog(_("Delete Error"),
+                                    string(_("Failed to delete ")) + fs::path(repFile).filename().string());
                             }
                         }
                     }
                     else
                     {
-                        messageDialog("Upload Error", uploadErr);
+                        messageDialog(_("Upload Error"), uploadErr);
                     }
                 }
                 break;
@@ -1326,21 +1327,21 @@ string connectAndBrowse(RemoteSystem& sys, const string& downloadDir)
                     printAt(r, 24, ": " + desc, descC);
                     ++r;
                 };
-                helpLine("Up/Down arrow", "Navigate files and directories");
-                helpLine("PageUp/PageDown", "Scroll up/down a page");
-                helpLine("HOME/END", "Jump to first/last entry");
-                helpLine("Enter", "Open directory or download file");
-                helpLine("U", "Upload a reply packet (.rep)");
-                helpLine("/", "Go to root directory");
-                helpLine("Q / ESC / Ctrl-C", "Disconnect and go back");
-                helpLine("? / F1", "Show this help screen");
+                helpLine(_("Up/Down arrow"), _("Navigate files and directories"));
+                helpLine(_("PageUp/PageDown"), _("Scroll up/down a page"));
+                helpLine(_("HOME/END"), _("Jump to first/last entry"));
+                helpLine(_("Enter"), _("Open directory or download file"));
+                helpLine(_("U"), _("Upload a reply packet (.rep)"));
+                helpLine(_("/"), _("Go to root directory"));
+                helpLine(_("Q / ESC / Ctrl-C"), _("Disconnect and go back"));
+                helpLine(_("? / F1"), _("Show this help screen"));
                 r += 2;
-                string connInfo = "Connected to: " + sys.name + " (" + sys.host + ")";
+                string connInfo = string(_("Connected to: ")) + sys.name + " (" + sys.host + ")";
                 printAt(r++, 2, connInfo, tAttr(TC_WHITE, TC_BLACK, false));
-                string typeInfo = "Type: " + string(sys.type == RemoteConnType::SSH ? "SSH/SFTP" : "FTP");
+                string typeInfo = string(_("Type: ")) + string(sys.type == RemoteConnType::SSH ? _("SSH/SFTP") : _("FTP"));
                 printAt(r++, 2, typeInfo, tAttr(TC_WHITE, TC_BLACK, false));
                 r++;
-                printAt(r, 2, "Hit a key", tAttr(TC_GREEN, TC_BLACK, false));
+                printAt(r, 2, _("Hit a key"), tAttr(TC_GREEN, TC_BLACK, false));
                 g_term->refresh();
                 g_term->getKey();
                 break;
@@ -1383,7 +1384,7 @@ string showRemoteSystems(const string& dataDir, const string& downloadDir)
 
         // Title
         printAt(0, 0, string(cols, ' '), tAttr(TC_WHITE, TC_BLUE, true));
-        printCentered(0, " Remote Systems ", tAttr(TC_WHITE, TC_BLUE, true));
+        printCentered(0, _(" Remote Systems "), tAttr(TC_WHITE, TC_BLUE, true));
 
         // Column headers
         g_term->setAttr(borderAttr);
@@ -1397,8 +1398,8 @@ string showRemoteSystems(const string& dataDir, const string& downloadDir)
 
         if (totalSys == 0)
         {
-            printCentered(rows / 2, "No remote systems configured.", emptyAttr);
-            printCentered(rows / 2 + 1, "Press A to add a new system.", emptyAttr);
+            printCentered(rows / 2, _("No remote systems configured."), emptyAttr);
+            printCentered(rows / 2 + 1, _("Press A to add a new system."), emptyAttr);
         }
         else
         {
@@ -1505,7 +1506,7 @@ string showRemoteSystems(const string& dataDir, const string& downloadDir)
                 // Delete selected system
                 if (selected >= 0 && selected < totalSys)
                 {
-                    if (confirmDialog("Delete '" + systems[selected].name + "'?"))
+                    if (confirmDialog(string(_("Delete '")) + systems[selected].name + _("'?")))
                     {
                         systems.erase(systems.begin() + selected);
                         saveRemoteSystems(dataDir, systems);

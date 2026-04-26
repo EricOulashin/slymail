@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Eric Oulashin" />
+  <meta name="dcterms.date" content="2026-04-02" />
+  <title>SlyMail User Manual</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">SlyMail User Manual</h1>
+<p class="subtitle">QWK Offline-postlæser</p>
+<p class="author">Eric Oulashin</p>
+<p class="date">2026-04-02</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#slymail-brugermanual"
+id="toc-slymail-brugermanual">SlyMail Brugermanual</a>
+<ul>
+<li><a href="#introduktion" id="toc-introduktion">Introduktion</a></li>
+<li><a href="#kom-godt-i-gang" id="toc-kom-godt-i-gang">Kom godt i
+gang</a>
+<ul>
+<li><a href="#start-af-slymail" id="toc-start-af-slymail">Start af
+SlyMail</a></li>
+<li><a href="#slymail-datamappen"
+id="toc-slymail-datamappen">SlyMail-datamappen</a></li>
+<li><a href="#konfigurationsprogrammet"
+id="toc-konfigurationsprogrammet">Konfigurationsprogrammet</a></li>
+</ul></li>
+<li><a href="#filbrowser" id="toc-filbrowser">Filbrowser</a>
+<ul>
+<li><a href="#filbrowsertaster"
+id="toc-filbrowsertaster">Filbrowsertaster</a></li>
+</ul></li>
+<li><a href="#fjernsystemer-ctrl-r"
+id="toc-fjernsystemer-ctrl-r">Fjernsystemer (Ctrl-R)</a></li>
+<li><a href="#konferenceliste"
+id="toc-konferenceliste">Konferenceliste</a>
+<ul>
+<li><a href="#konferencelistetaster"
+id="toc-konferencelistetaster">Konferencelistetaster</a></li>
+</ul></li>
+<li><a href="#meddelelseliste"
+id="toc-meddelelseliste">Meddelelseliste</a>
+<ul>
+<li><a href="#sporing-af-senest-læste-meddelelse"
+id="toc-sporing-af-senest-læste-meddelelse">Sporing af senest læste
+meddelelse</a></li>
+<li><a href="#meddelelselistetaster"
+id="toc-meddelelselistetaster">Meddelelselistetaster</a></li>
+<li><a href="#søgning-i-meddelelser"
+id="toc-søgning-i-meddelelser">Søgning i meddelelser</a></li>
+</ul></li>
+<li><a href="#meddelelselæser"
+id="toc-meddelelselæser">Meddelelselæser</a>
+<ul>
+<li><a href="#meddelelselæsertaster"
+id="toc-meddelelselæsertaster">Meddelelselæsertaster</a></li>
+<li><a href="#ansi-kunst" id="toc-ansi-kunst">ANSI-kunst</a></li>
+<li><a href="#vedhæftede-filer" id="toc-vedhæftede-filer">Vedhæftede
+filer</a></li>
+<li><a href="#afstemning-og-meningsmålinger"
+id="toc-afstemning-og-meningsmålinger">Afstemning og
+meningsmålinger</a></li>
+</ul></li>
+<li><a href="#meddelelseredigerer"
+id="toc-meddelelseredigerer">Meddelelseredigerer</a>
+<ul>
+<li><a href="#redigerertaster"
+id="toc-redigerertaster">Redigerertaster</a></li>
+<li><a href="#skråstreg-kommandoer"
+id="toc-skråstreg-kommandoer">Skråstreg-kommandoer</a></li>
+<li><a href="#citatvindue" id="toc-citatvindue">Citatvindue</a></li>
+<li><a href="#farvevælger-ctrl-k"
+id="toc-farvevælger-ctrl-k">Farvevælger (Ctrl-K)</a></li>
+<li><a href="#filimport-ctrl-o" id="toc-filimport-ctrl-o">Filimport
+(Ctrl-O)</a></li>
+<li><a href="#håndtering-af-citatlinjer"
+id="toc-håndtering-af-citatlinjer">Håndtering af citatlinjer</a></li>
+<li><a href="#afsnitsbaseret-lagring"
+id="toc-afsnitsbaseret-lagring">Afsnitsbaseret lagring</a></li>
+<li><a href="#tomme-meddelelser" id="toc-tomme-meddelelser">Tomme
+meddelelser</a></li>
+<li><a href="#eksterne-redigerere" id="toc-eksterne-redigerere">Eksterne
+redigerere</a></li>
+</ul></li>
+<li><a href="#indstillinger" id="toc-indstillinger">Indstillinger</a>
+<ul>
+<li><a href="#læserindstillinger-ctrl-u"
+id="toc-læserindstillinger-ctrl-u">Læserindstillinger (Ctrl-U)</a></li>
+<li><a href="#redigeringsindstillinger-ctrl-u-i-redigereren"
+id="toc-redigeringsindstillinger-ctrl-u-i-redigereren">Redigeringsindstillinger
+(Ctrl-U i redigereren)</a></li>
+</ul></li>
+<li><a href="#bbs-farvekodeunderstøttelse"
+id="toc-bbs-farvekodeunderstøttelse">BBS-farvekodeunderstøttelse</a></li>
+<li><a href="#farvetemaer" id="toc-farvetemaer">Farvetemaer</a>
+<ul>
+<li><a href="#ice-temaer" id="toc-ice-temaer">Ice-temaer</a></li>
+<li><a href="#dct-temaer" id="toc-dct-temaer">DCT-temaer</a></li>
+<li><a href="#temafarveformat"
+id="toc-temafarveformat">Temafarveformat</a></li>
+</ul></li>
+<li><a href="#stavekontrol" id="toc-stavekontrol">Stavekontrol</a>
+<ul>
+<li><a href="#ordbøger" id="toc-ordbøger">Ordbøger</a></li>
+<li><a href="#brug-af-stavekontrollen"
+id="toc-brug-af-stavekontrollen">Brug af stavekontrollen</a></li>
+</ul></li>
+<li><a href="#taglines" id="toc-taglines">Taglines</a>
+<ul>
+<li><a href="#opsætning" id="toc-opsætning">Opsætning</a></li>
+<li><a href="#brug" id="toc-brug">Brug</a></li>
+</ul></li>
+<li><a href="#rep-svarspakker"
+id="toc-rep-svarspakker">REP-svarspakker</a>
+<ul>
+<li><a href="#gemning-af-rep-pakker"
+id="toc-gemning-af-rep-pakker">Gemning af REP-pakker</a></li>
+<li><a href="#rep-pakkens-indhold"
+id="toc-rep-pakkens-indhold">REP-pakkens indhold</a></li>
+</ul></li>
+<li><a href="#utf-8-understøttelse"
+id="toc-utf-8-understøttelse">UTF-8-understøttelse</a></li>
+<li><a href="#indstillingsfilreference"
+id="toc-indstillingsfilreference">Indstillingsfilreference</a>
+<ul>
+<li><a href="#general" id="toc-general">[General]</a></li>
+<li><a href="#reader" id="toc-reader">[Reader]</a></li>
+<li><a href="#messagelist" id="toc-messagelist">[MessageList]</a></li>
+<li><a href="#editor" id="toc-editor">[Editor]</a></li>
+<li><a href="#themes" id="toc-themes">[Themes]</a></li>
+</ul></li>
+<li><a href="#synchronet-bbs-qwk-indstillinger"
+id="toc-synchronet-bbs-qwk-indstillinger">Synchronet BBS
+QWK-indstillinger</a></li>
+<li><a href="#ændringslog" id="toc-ændringslog">Ændringslog</a>
+<ul>
+<li><a href="#version-0.54-2026-03-31"
+id="toc-version-0.54-2026-03-31">Version 0.54 (2026-03-31)</a></li>
+<li><a href="#version-0.53-2026-03-29"
+id="toc-version-0.53-2026-03-29">Version 0.53 (2026-03-29)</a></li>
+<li><a href="#version-0.52-2026-03-26"
+id="toc-version-0.52-2026-03-26">Version 0.52 (2026-03-26)</a></li>
+<li><a href="#version-0.51-2026-03-25"
+id="toc-version-0.51-2026-03-25">Version 0.51 (2026-03-25)</a></li>
+<li><a href="#version-0.50-2026-03-24"
+id="toc-version-0.50-2026-03-24">Version 0.50 (2026-03-24)</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+<p><em>(Maskinoversættelse — for det engelske original, se <a
+href="SlyMail_User_Manual.md">SlyMail_User_Manual.md</a>)</em></p>
+<h1 id="slymail-brugermanual">SlyMail Brugermanual</h1>
+<h2 id="introduktion">Introduktion</h2>
+<p>SlyMail er en platformsuafhængig tekstbaseret offline-postlæser til
+QWK-pakkeformatet. QWK-pakker bruges til at udveksle post på Bulletin
+Board Systems (BBSer). SlyMail giver en komplet brugerflade til at læse,
+søge i og besvare meddelelser fra QWK-postpakker.</p>
+<p>Brugerfladen er inspireret af Digital Distortion Message Reader
+(DDMsgReader) til meddelelselæsning og SlyEdit til meddelelseredigering,
+begge oprindeligt skabt til Synchronet BBS.</p>
+<p>SlyMail kører på Linux, macOS, BSD og Windows.</p>
+<h2 id="kom-godt-i-gang">Kom godt i gang</h2>
+<h3 id="start-af-slymail">Start af SlyMail</h3>
+<figure>
+<img src="screenshots/SlyMail_01_OpeningScreen.png"
+alt="SlyMail Opening Screen" />
+<figcaption aria-hidden="true">SlyMail Opening Screen</figcaption>
+</figure>
+<p>Start SlyMail fra kommandolinjen:</p>
+<pre><code>slymail</code></pre>
+<p>Dette viser startskærmen (hvis aktiveret) og åbner filbrowseren til
+valg af en QWK-pakke.</p>
+<p>Åbn en specifik QWK-pakke direkte:</p>
+<pre><code>slymail MYBBS.qwk</code></pre>
+<p>Eller brug den navngivne parameter:</p>
+<pre><code>slymail -qwk_file=/path/to/MYBBS.qwk</code></pre>
+<p>Andre kommandolinjemuligheder:</p>
+<ul>
+<li><code>-v</code> eller <code>--version</code> - Vis
+versionsinformation</li>
+<li><code>-?</code> eller <code>--help</code> - Vis hjælp</li>
+</ul>
+<h3 id="slymail-datamappen">SlyMail-datamappen</h3>
+<p>Ved første kørsel opretter SlyMail en datamappe på
+<code>~/.slymail</code> (på Linux, macOS og BSD) eller i din hjemmemappe
+på Windows. Denne mappe indeholder:</p>
+<ul>
+<li><code>slymail.ini</code> - Dine indstillinger</li>
+<li><code>QWK/</code> - Standardmappe for QWK-postpakker</li>
+<li><code>REP/</code> - Standardmappe for svarspakker</li>
+<li><code>config_files/</code> - Farvetemaefiler</li>
+<li><code>dictionary_files/</code> - Stavekontrolordbøger</li>
+<li><code>tagline_files/</code> - Tagline-filer</li>
+<li><code>remote_systems.json</code> - Gemte
+fjernsystemsforbindelser</li>
+<li><code>lastread_&lt;BBSID&gt;.json</code> - Senest-læste
+meddelelsemarkører per konference</li>
+</ul>
+<h3 id="konfigurationsprogrammet">Konfigurationsprogrammet</h3>
+<p>SlyMail inkluderer et selvstændigt konfigurationsprogram kaldet
+<code>config</code> (eller <code>slymail-config</code> hvis installeret
+via <code>make install</code>). Dette program giver en tekstbaseret
+brugerflade til konfigurering af alle SlyMail-indstillinger uden at åbne
+hovedprogrammet.</p>
+<p>Kør det fra kommandolinjen:</p>
+<pre><code>config</code></pre>
+<p>Konfigurationsprogrammet tilbyder disse kategorier:</p>
+<ul>
+<li><strong>Redigeringsindstillinger</strong> - Redigeringsstil,
+taglines, stavekontrol, citeringsmuligheder, temavalg</li>
+<li><strong>Læserindstillinger</strong> - Kludge-linjer, rivningslinjer,
+rulleliste, ANSI-fjernelse, omvendt rækkefølge,
+attributkodeomskiftere</li>
+<li><strong>Temaindstillinger</strong> - Vælg Ice- og
+DCT-farvetemaefiler</li>
+<li><strong>Generelle indstillinger</strong> - Dit navn til svar,
+svarspakkemappe, ekstern redigererkonfiguration, lysstangsindstilling,
+startskærm</li>
+</ul>
+<p>Indstillinger gemmes automatisk, når du afslutter hver kategori. Både
+SlyMail og konfigurationsprogrammet læser og skriver den samme
+<code>slymail.ini</code>-fil.</p>
+<h2 id="filbrowser">Filbrowser</h2>
+<p>Når SlyMail starter, vises en filbrowser til valg af en QWK-pakke der
+skal åbnes.</p>
+<figure>
+<img src="screenshots/SlyMail_02_File_Chooser.png" alt="File Browser" />
+<figcaption aria-hidden="true">File Browser</figcaption>
+</figure>
+<h3 id="filbrowsertaster">Filbrowsertaster</h3>
+<table>
+<thead>
+<tr>
+<th>Tast</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Op / Ned</td>
+<td>Naviger filer og mapper</td>
+</tr>
+<tr>
+<td>Enter</td>
+<td>Åbn mappe eller vælg en QWK-fil</td>
+</tr>
+<tr>
+<td>PgUp / PgDn</td>
+<td>Rul fillisten</td>
+</tr>
+<tr>
+<td>Home / End</td>
+<td>Spring til første eller sidste post</td>
+</tr>
+<tr>
+<td>Ctrl-R</td>
+<td>Åbn fjernsystemsmappen</td>
+</tr>
+<tr>
+<td>Q / ESC</td>
+<td>Afslut SlyMail</td>
+</tr>
+<tr>
+<td>? / F1</td>
+<td>Hjælp</td>
+</tr>
+</tbody>
+</table>
+<p>Kun <code>.qwk</code>-filer kan vælges. Mapper vises i blåt og kan
+navigeres ind i ved at trykke Enter.</p>
+<h2 id="fjernsystemer-ctrl-r">Fjernsystemer (Ctrl-R)</h2>
+<figure>
+<img src="screenshots/SlyMail_03_remote_system_list.png"
+alt="Remote Systems List" />
+<figcaption aria-hidden="true">Remote Systems List</figcaption>
+</figure>
+<p>SlyMail kan downloade QWK-pakker direkte fra fjern-BBSer via FTP
+eller SFTP (SSH).</p>
+<p>Tryk <strong>Ctrl-R</strong> fra filbrowseren, konferencelisten eller
+meddelelselisten for at åbne fjernsystemsadministratoren. Herfra kan
+du:</p>
+<ul>
+<li><strong>Tilføje</strong> et nyt fjernsystem med dets værtsnavn,
+port, forbindelsestype (FTP eller SSH), brugernavn, adgangskode, passiv
+FTP-omskifter og indledende fjernsti</li>
+<li><strong>Redigere</strong> eller <strong>Slette</strong> eksisterende
+poster</li>
+<li><strong>Forbinde</strong> til et fjernsystem og gennemse dets
+mapper</li>
+<li><strong>Downloade</strong> QWK-filer direkte til din
+<code>QWK/</code>-mappe</li>
+<li><strong>Uploade</strong> REP-svarspakker til fjernsystemet</li>
+</ul>
+<p>Fjernsystemposter gemmes i <code>remote_systems.json</code> i din
+SlyMail-datamappe. Den seneste forbindelsesdato/-tid spores for hvert
+system.</p>
+<p>SlyMail bruger systemets <code>curl</code>-kommando til FTP- og
+SFTP-filoverførsler.</p>
+<h2 id="konferenceliste">Konferenceliste</h2>
+<figure>
+<img src="screenshots/SlyMail_06_msg_area_list.png"
+alt="Conference List" />
+<figcaption aria-hidden="true">Conference List</figcaption>
+</figure>
+<p>Efter åbning af en QWK-pakke viser konferencelisten alle
+meddelelsesområder (konferencer) med deres meddelelsesantal. En
+“Ny”-kolonne viser et flueben ud for konferencer der har nye
+meddelelser. Hvis indstillingen “Vis kun områder med ny post” er
+aktiveret, skjules konferencer med nul meddelelser.</p>
+<h3 id="konferencelistetaster">Konferencelistetaster</h3>
+<table>
+<thead>
+<tr>
+<th>Tast</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Op / Ned</td>
+<td>Naviger konferencer</td>
+</tr>
+<tr>
+<td>PgUp / PgDn</td>
+<td>Rul listen</td>
+</tr>
+<tr>
+<td>Home / End</td>
+<td>Spring til første eller sidste konference</td>
+</tr>
+<tr>
+<td>Enter (E)</td>
+<td>Åbn den valgte konference</td>
+</tr>
+<tr>
+<td>G</td>
+<td>Gå til et specifikt konferencenummer</td>
+</tr>
+<tr>
+<td>/</td>
+<td>Søg konferencer efter navn</td>
+</tr>
+<tr>
+<td>V</td>
+<td>Vis meningsmålinger og stemmer i pakken</td>
+</tr>
+<tr>
+<td>O / Ctrl-L</td>
+<td>Åbn en anden QWK-fil</td>
+</tr>
+<tr>
+<td>Ctrl-R</td>
+<td>Åbn fjernsystemer</td>
+</tr>
+<tr>
+<td>Ctrl-P</td>
+<td>Gem REP-svarspakken</td>
+</tr>
+<tr>
+<td>S / Ctrl-U</td>
+<td>Åbn indstillinger</td>
+</tr>
+<tr>
+<td>Q / ESC</td>
+<td>Afslut SlyMail</td>
+</tr>
+<tr>
+<td>? / F1</td>
+<td>Hjælp</td>
+</tr>
+</tbody>
+</table>
+<p>Når et søgefilter er aktivt, rydder <strong>Q</strong> filteret i
+stedet for at afslutte.</p>
+<h2 id="meddelelseliste">Meddelelseliste</h2>
+<figure>
+<img src="screenshots/SlyMail_07_msg_list.png" alt="Message List" />
+<figcaption aria-hidden="true">Message List</figcaption>
+</figure>
+<p>Meddelelselisten viser alle meddelelser i den valgte konference med
+kolonner for meddelelsenummer, fra, til, emne, dato og tidspunkt.</p>
+<h3 id="sporing-af-senest-læste-meddelelse">Sporing af senest læste
+meddelelse</h3>
+<p>SlyMail husker den seneste meddelelse du læste i hver konference. Når
+du åbner en konference, placeres markøren automatisk ved den første
+ulæste meddelelse (meddelelsen efter den sidste du læste). Denne
+information gemmes per BBS i SlyMail-datamappen.</p>
+<h3 id="meddelelselistetaster">Meddelelselistetaster</h3>
+<table>
+<thead>
+<tr>
+<th>Tast</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Op / Ned</td>
+<td>Naviger meddelelser</td>
+</tr>
+<tr>
+<td>PgUp / PgDn</td>
+<td>Rul listen</td>
+</tr>
+<tr>
+<td>Home / End</td>
+<td>Spring til første eller sidste meddelelse</td>
+</tr>
+<tr>
+<td>Enter / R</td>
+<td>Læs den valgte meddelelse</td>
+</tr>
+<tr>
+<td>N</td>
+<td>Skriv en ny meddelelse</td>
+</tr>
+<tr>
+<td>G</td>
+<td>Gå til et specifikt meddelelsenummer</td>
+</tr>
+<tr>
+<td>/</td>
+<td>Søg meddelelser</td>
+</tr>
+<tr>
+<td>Ctrl-A</td>
+<td>Avanceret søgning (med datointerval)</td>
+</tr>
+<tr>
+<td>Ctrl-L</td>
+<td>Åbn en anden QWK-fil</td>
+</tr>
+<tr>
+<td>Ctrl-R</td>
+<td>Åbn fjernsystemer</td>
+</tr>
+<tr>
+<td>Ctrl-P</td>
+<td>Gem REP-svarspakken</td>
+</tr>
+<tr>
+<td>S / Ctrl-U</td>
+<td>Åbn indstillinger</td>
+</tr>
+<tr>
+<td>C / ESC</td>
+<td>Tilbage til konferencelisten</td>
+</tr>
+<tr>
+<td>Q</td>
+<td>Afslut</td>
+</tr>
+<tr>
+<td>? / F1</td>
+<td>Hjælp</td>
+</tr>
+</tbody>
+</table>
+<h3 id="søgning-i-meddelelser">Søgning i meddelelser</h3>
+<figure>
+<img src="screenshots/SlyMail_16_msg_search.png" alt="Message Search" />
+<figcaption aria-hidden="true">Message Search</figcaption>
+</figure>
+<p>Tryk <strong>/</strong> for at søge meddelelser efter emne,
+brødtekst, afsender eller modtager. Tryk <strong>Ctrl-A</strong> for
+avanceret søgning, der inkluderer datointervalfiltrering med en visuel
+kalenderdatovælger. Når et søgefilter er aktivt, rydder
+<strong>Q</strong> filteret.</p>
+<p>Søgningen kan bruge simpel delstrengsmatchning eller regulære udtryk,
+afhængigt af indstillingen “Søg med regulært udtryk”.</p>
+<h2 id="meddelelselæser">Meddelelselæser</h2>
+<figure>
+<img src="screenshots/SlyMail_08_reading_msg.png"
+alt="Reading a Message" />
+<figcaption aria-hidden="true">Reading a Message</figcaption>
+</figure>
+<p>Meddelelselæseren viser meddelelsesindhold med en rubrik der viser
+felterne Fra, Til, Emne og Dato.</p>
+<h3 id="meddelelselæsertaster">Meddelelselæsertaster</h3>
+<table>
+<thead>
+<tr>
+<th>Tast</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Op / Ned</td>
+<td>Rul meddelelsesindhold</td>
+</tr>
+<tr>
+<td>PgUp / PgDn</td>
+<td>Side op eller ned</td>
+</tr>
+<tr>
+<td>Home / End</td>
+<td>Spring til toppen eller bunden</td>
+</tr>
+<tr>
+<td>Venstre / Højre</td>
+<td>Forrige eller næste meddelelse</td>
+</tr>
+<tr>
+<td>F / L</td>
+<td>Første eller sidste meddelelse</td>
+</tr>
+<tr>
+<td>R</td>
+<td>Besvar meddelelsen</td>
+</tr>
+<tr>
+<td>V</td>
+<td>Stem (op-/nedafstemning eller meningsmålingsrøst)</td>
+</tr>
+<tr>
+<td>D / Ctrl-D</td>
+<td>Download vedhæftede filer</td>
+</tr>
+<tr>
+<td>H</td>
+<td>Vis detaljeret meddelelsesrubrik</td>
+</tr>
+<tr>
+<td>S / Ctrl-U</td>
+<td>Åbn indstillinger</td>
+</tr>
+<tr>
+<td>C / Q / ESC / M</td>
+<td>Tilbage til meddelelselisten</td>
+</tr>
+<tr>
+<td>? / F1</td>
+<td>Hjælp</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ansi-kunst">ANSI-kunst</h3>
+<figure>
+<img src="screenshots/SlyMail_20_reading_ANSI_art.png" alt="ANSI Art" />
+<figcaption aria-hidden="true">ANSI Art</figcaption>
+</figure>
+<p>SlyMail gengiver ANSI-kunst i meddelelser og understøtter
+markørpositionering, farver og CP437-bloktegn. Meddelelser der
+indeholder ANSI-markørsekvenser registreres automatisk og gengives via
+en virtuel skærmbuffer for korrekt visning.</p>
+<h3 id="vedhæftede-filer">Vedhæftede filer</h3>
+<p>Når en meddelelse har vedhæftede filer (angivet med
+<strong>[ATT]</strong> i rubriken), tryk <strong>D</strong> eller
+<strong>Ctrl-D</strong> for at se og downloade dem. Du vises en liste
+over vedhæftede filer med deres størrelser og opfordres til at vælge en
+destinationsmappe.</p>
+<h3 id="afstemning-og-meningsmålinger">Afstemning og
+meningsmålinger</h3>
+<p>SlyMail understøtter Synchronet-stil afstemning:</p>
+<ul>
+<li><strong>Meningsmålinger</strong>: Meddelelser identificeret som
+meningsmålinger viser svarmuligheder med stemmeantal og procentstænger.
+Tryk <strong>V</strong> for at åbne en stemmeseddeldialog, hvor du kan
+skifte dine valg og afgive din stemme.</li>
+<li><strong>Op-/Nedafstemninger</strong>: For almindelige meddelelser,
+tryk <strong>V</strong> for at stemme op eller ned. Aktuelle
+stemmeresultater og nettoscore vises i rubriken.</li>
+<li><strong>Meningsmålingsbrowser</strong>: Tryk <strong>V</strong> fra
+konferencelisten for at gennemse alle meningsmålinger i pakken.</li>
+</ul>
+<p>Stemmer sættes i kø ved siden af meddelelsebesvarelser og skrives til
+REP-pakken.</p>
+<h2 id="meddelelseredigerer">Meddelelseredigerer</h2>
+<figure>
+<img src="screenshots/SlyMail_09_msg_edit_start.png"
+alt="Message Editor" />
+<figcaption aria-hidden="true">Message Editor</figcaption>
+</figure>
+<p>Meddelelseredigereren bruges til at komponere svar og nye
+meddelelser. Den tilbyder to visuelle tilstande inspireret af SlyEdit:
+<strong>Ice</strong>-tilstand og <strong>DCT</strong>-tilstand.</p>
+<h3 id="redigerertaster">Redigerertaster</h3>
+<table>
+<thead>
+<tr>
+<th>Tast</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Piletaster</td>
+<td>Flyt markøren</td>
+</tr>
+<tr>
+<td>Home / End</td>
+<td>Begyndelse eller slutning af linje</td>
+</tr>
+<tr>
+<td>PgUp / PgDn</td>
+<td>Side op eller ned</td>
+</tr>
+<tr>
+<td>Insert</td>
+<td>Skift Indsæt-/Overskrivningstilstand</td>
+</tr>
+<tr>
+<td>Delete</td>
+<td>Slet tegn ved markøren</td>
+</tr>
+<tr>
+<td>Backspace</td>
+<td>Slet tegn før markøren</td>
+</tr>
+<tr>
+<td>ESC</td>
+<td>Åbn redigeringsmenuen</td>
+</tr>
+<tr>
+<td>Ctrl-Z</td>
+<td>Gem meddelelsen</td>
+</tr>
+<tr>
+<td>Ctrl-A</td>
+<td>Afbryd meddelelsen</td>
+</tr>
+<tr>
+<td>Ctrl-Q</td>
+<td>Åbn eller luk citatvinduet</td>
+</tr>
+<tr>
+<td>Ctrl-K</td>
+<td>Åbn farvevælgeren</td>
+</tr>
+<tr>
+<td>Ctrl-G</td>
+<td>Indsæt et CP437-grafiktegn</td>
+</tr>
+<tr>
+<td>Ctrl-O</td>
+<td>Importer en tekstfil ved markørpositionen</td>
+</tr>
+<tr>
+<td>Ctrl-W</td>
+<td>Søg efter tekst</td>
+</tr>
+<tr>
+<td>Ctrl-S</td>
+<td>Skift emnet</td>
+</tr>
+<tr>
+<td>Ctrl-D</td>
+<td>Slet den aktuelle linje</td>
+</tr>
+<tr>
+<td>Ctrl-T</td>
+<td>Vis teksterstatninger</td>
+</tr>
+<tr>
+<td>Ctrl-U</td>
+<td>Åbn redigeringsindstillinger</td>
+</tr>
+<tr>
+<td>F1</td>
+<td>Hjælpeskærm</td>
+</tr>
+</tbody>
+</table>
+<h3 id="skråstreg-kommandoer">Skråstreg-kommandoer</h3>
+<p>Du kan også skrive skråstreg-kommandoer på en tom linje og trykke
+Enter:</p>
+<table>
+<thead>
+<tr>
+<th>Kommando</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/S</td>
+<td>Gem meddelelsen</td>
+</tr>
+<tr>
+<td>/A</td>
+<td>Afbryd meddelelsen</td>
+</tr>
+<tr>
+<td>/Q</td>
+<td>Åbn citatvinduet</td>
+</tr>
+<tr>
+<td>/U</td>
+<td>Åbn redigeringsindstillinger</td>
+</tr>
+<tr>
+<td>/?</td>
+<td>Vis hjælp</td>
+</tr>
+</tbody>
+</table>
+<h3 id="citatvindue">Citatvindue</h3>
+<figure>
+<img src="screenshots/SlyMail_10_quote_line_selection.png"
+alt="Quote Window" />
+<figcaption aria-hidden="true">Quote Window</figcaption>
+</figure>
+<p>Når du besvarer en meddelelse, tryk <strong>Ctrl-Q</strong> eller
+skriv <code>/Q</code> på en tom linje for at åbne citatvinduet.
+Citatvinduet viser den originale meddelelsetekst med citatpræfikser.</p>
+<table>
+<thead>
+<tr>
+<th>Tast</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Op / Ned</td>
+<td>Naviger citatlinjer</td>
+</tr>
+<tr>
+<td>PgUp / PgDn</td>
+<td>Side op eller ned</td>
+</tr>
+<tr>
+<td>Home / End</td>
+<td>Spring til første eller sidste linje</td>
+</tr>
+<tr>
+<td>Enter</td>
+<td>Indsæt den valgte citatlinje i din meddelelse</td>
+</tr>
+<tr>
+<td>Ctrl-Q / ESC</td>
+<td>Luk citatvinduet</td>
+</tr>
+</tbody>
+</table>
+<p>Hvis antallet af citatlinjer overstiger citatvinduets højde, vises en
+rulleliste på højre kant.</p>
+<h3 id="farvevælger-ctrl-k">Farvevælger (Ctrl-K)</h3>
+<p>Tryk <strong>Ctrl-K</strong> for at åbne en interaktiv
+farvevælgerdialog. Vælg en forgrundfarve (16 muligheder: 8 normale + 8
+lyse) og en baggrundsfarve (8 muligheder). En forhåndsvisning viser den
+valgte kombination. Tryk <strong>Enter</strong> for at indsætte
+ANSI-farvekoden ved markørpositionen. Tryk <strong>N</strong> for at
+indsætte en nulstillings-(normal) kode.</p>
+<h3 id="filimport-ctrl-o">Filimport (Ctrl-O)</h3>
+<p>Tryk <strong>Ctrl-O</strong> for at importere indholdet af en
+tekstfil til din meddelelse ved den aktuelle markørposition. En
+filbrowser åbnes for at lade dig vælge en hvilken som helst fil. Filens
+indhold indsættes linje for linje ved markøren med bevarede
+linjeskift.</p>
+<figure>
+<img src="screenshots/SlyMail_11_writing_reply_msg.png"
+alt="Editing a message" />
+<figcaption aria-hidden="true">Editing a message</figcaption>
+</figure>
+<h3 id="håndtering-af-citatlinjer">Håndtering af citatlinjer</h3>
+<p>Når du besvarer en meddelelse, spores linjer indsat fra citatvinduet
+som citatlinjer. Hvis du redigerer en citatlinje og den bryder, går
+spildet på en ny linje (også markeret som en citatlinje) frem for at
+flette med tilstødende tekst. Sletning af tekst fra en citatlinje
+trækker ikke tekst op fra den næste linje, hvis den også er en
+citatlinje. Dette bevarer integriteten af citeret tekst.</p>
+<h3 id="afsnitsbaseret-lagring">Afsnitsbaseret lagring</h3>
+<p>Når en meddelelse gemmes, samler SlyMail blødt brudte linjer med ny
+skrevet tekst til enkle lange afsnit. Det giver andre personers
+postlæsere mulighed for at bryde teksten om til at passe til deres egen
+terminalbredde. Citatlinjer bevares altid nøjagtigt som de vises og
+samles aldrig.</p>
+<h3 id="tomme-meddelelser">Tomme meddelelser</h3>
+<p>Hvis du gemmer en meddelelse der ikke har tekstindhold (tom eller kun
+blanktegn), afbryder SlyMail meddelelsen og viser en notifikation i
+stedet for at sende den.</p>
+<h3 id="eksterne-redigerere">Eksterne redigerere</h3>
+<p>SlyMail understøtter brug af eksterne tekstredigerere i stedet for
+den indbyggede redigerer. For at konfigurere en ekstern redigerer:</p>
+<ol type="1">
+<li>Åbn Indstillinger (Ctrl-U eller konfigurationsprogrammet)</li>
+<li>Gå til <strong>Eksterne redigerere…</strong> for at tilføje og
+konfigurere redigerere</li>
+<li>Indstil <strong>Ekstern redigerer</strong> til at vælge hvilken
+konfigureret redigerer der skal bruges</li>
+<li>Aktivér <strong>Brug ekstern redigerer</strong></li>
+</ol>
+<p>Hver ekstern redigerer kan konfigureres med:</p>
+<ul>
+<li><strong>Navn</strong> - Et beskrivende navn til redigereren</li>
+<li><strong>Startmappe</strong> - Mappen der indeholder redigeringens
+eksekverbare fil</li>
+<li><strong>Kommandolinje</strong> - Kommandoen der skal køres (brug
+<code>%f</code> til den midlertidige filsti)</li>
+<li><strong>Ordbryds citeret tekst</strong> - Om citeret tekst skal
+ordbrydes og kolonnebredden</li>
+<li><strong>Auto citeret tekst</strong> - Inkluder altid citater, spørg
+hver gang, eller inkluder aldrig</li>
+<li><strong>Redigeringsinformationsfiler</strong> - Drop-filtype (Ingen,
+MSGINF, EDITOR.INF, DOOR.SYS, DOOR32.SYS)</li>
+<li><strong>Fjern FidoNet-kludges</strong> - Fjern FidoNet-kontrollinjer
+fra citeret tekst</li>
+</ul>
+<p>Når en ekstern redigerer bruges, opretter SlyMail en midlertidig fil,
+starter redigereren og læser resultatet, når redigereren afsluttes. Hvis
+redigereren producerer en <code>RESULT.ED</code>-fil
+(Synchronet-kompatibel), læser SlyMail det nye emne og
+redigeringsdetaljer fra den.</p>
+<h2 id="indstillinger">Indstillinger</h2>
+<h3 id="læserindstillinger-ctrl-u">Læserindstillinger (Ctrl-U)</h3>
+<figure>
+<img src="screenshots/SlyMail_14_reader_settings.png"
+alt="Reader Settings" />
+<figcaption aria-hidden="true">Reader Settings</figcaption>
+</figure>
+<p>Åbn læserindstillinger ved at trykke <strong>Ctrl-U</strong> eller
+<strong>S</strong> fra konferencelisten, meddelelselisten eller
+meddelelselæseren.</p>
+<p>Tilgængelige indstillinger:</p>
+<ul>
+<li><strong>Vis kludge-linjer</strong> - Vis eller skjul
+kludge-/kontrollinjer i meddelelser</li>
+<li><strong>Vis rivnings-/oprindelseslinjer</strong> - Vis eller skjul
+rivnings- og oprindelseslinjer</li>
+<li><strong>Rulleliste i læser</strong> - Vis eller skjul
+rullelisten</li>
+<li><strong>Vis kun områder med ny post</strong> - Skjul konferencer med
+nul meddelelser</li>
+<li><strong>Fjern ANSI-koder fra meddelelser</strong> - Fjern alle ANSI
+escape-sekvenser</li>
+<li><strong>Attributkodeomskiftere</strong> - Aktivér/deaktivér
+BBS-farvekodefortolkning per type</li>
+<li><strong>Søg med regulært udtryk</strong> - Brug regex til
+søgninger</li>
+<li><strong>List meddelelser i omvendt rækkefølge</strong> - Vis nyeste
+meddelelser først</li>
+<li><strong>Vis startskærm ved opstart</strong> - Skift
+startskærmen</li>
+<li><strong>Svarspakkemappe</strong> - Indstil mappen til gemning af
+REP-pakker</li>
+<li><strong>Brug ekstern redigerer</strong> - Aktivér ekstern
+redigeringstilstand</li>
+<li><strong>Eksterne redigerere…</strong> - Konfigurer eksterne
+redigerere</li>
+<li><strong>Ekstern redigerer</strong> - Vælg hvilken konfigureret
+redigerer der skal bruges</li>
+</ul>
+<p>Tryk <strong>S</strong> for at gemme indstillinger, eller
+<strong>ESC/Q</strong> for at lukke (med en opfordring til at gemme,
+hvis der er foretaget ændringer).</p>
+<h3
+id="redigeringsindstillinger-ctrl-u-i-redigereren">Redigeringsindstillinger
+(Ctrl-U i redigereren)</h3>
+<p>Åbn redigeringsindstillinger ved at trykke <strong>Ctrl-U</strong>,
+mens du er i meddelelseredigereren.</p>
+<p>Tilgængelige indstillinger:</p>
+<ul>
+<li><strong>Vælg UI-tilstand</strong> - Skift mellem Ice-, DCT- og
+Tilfældig-stilarter</li>
+<li><strong>Taglines</strong> - Aktivér tagline-indsætning ved
+lagring</li>
+<li><strong>Stavekontrolsordbog/ordbøger</strong> - Vælg hvilke ordbøger
+der skal bruges</li>
+<li><strong>Spørg om stavekontrol ved gem</strong> - Aktivér
+stavekontrolsprompts</li>
+<li><strong>Ombryd citatlinjer til terminalbredde</strong> - Ordbryds
+citatlinjer</li>
+<li><strong>Citér med forfatterens initialer</strong> - Brug
+initialbaserede citatpræfikser</li>
+<li><strong>Indryk citatlinjer med initialer</strong> - Tilføj mellemrum
+før initialer</li>
+<li><strong>Fjern mellemrum fra citatlinjer</strong> - Fjern
+foranstående blanktegn fra citater</li>
+</ul>
+<h2 id="bbs-farvekodeunderstøttelse">BBS-farvekodeunderstøttelse</h2>
+<p>SlyMail fortolker farve- og attributkoder fra flere
+BBS-softwarepakker:</p>
+<ul>
+<li><strong>ANSI escape-koder</strong> - Altid aktiverede; standard
+SGR-sekvenser</li>
+<li><strong>Synchronet Ctrl-A-koder</strong> - Ctrl-A +
+attributtegn</li>
+<li><strong>WWIV hjertkoder</strong> - Ctrl-C + ciffer 0–9</li>
+<li><strong>PCBoard/Wildcat <span class="citation"
+data-cites="X-koder">@X-koder</span></strong> - <span class="citation"
+data-cites="X">@X</span> efterfulgt af to hexcifre</li>
+<li><strong>Celerity pipe-koder</strong> - Pipe + bogstav</li>
+<li><strong>Renegade pipe-koder</strong> - Pipe + tocifret tal</li>
+</ul>
+<p>Hver kodetype kan aktiveres eller deaktiveres individuelt via
+underdialogruden Attributkodeomskiftere i indstillinger.</p>
+<h2 id="farvetemaer">Farvetemaer</h2>
+<p>SlyMails redigerer bruger konfigurerbare farvetemaer indlæst fra
+<code>.ini</code>-filer i mappen <code>config_files/</code>.</p>
+<h3 id="ice-temaer">Ice-temaer</h3>
+<p>Ice-temaer styrer udseendet af Ice-redigeringstilstanden:</p>
+<ul>
+<li>BlueIce (standard)</li>
+<li>EmeraldCity</li>
+<li>FieryInferno</li>
+<li>Fire-N-Ice</li>
+<li>GeneralClean</li>
+<li>GenericBlue</li>
+<li>PurpleHaze</li>
+<li>ShadesOfGrey</li>
+</ul>
+<h3 id="dct-temaer">DCT-temaer</h3>
+<p>DCT-temaer styrer udseendet af DCT-redigeringstilstanden:</p>
+<ul>
+<li>Default</li>
+<li>Default-Modified</li>
+<li>Midnight</li>
+</ul>
+<h3 id="temafarveformat">Temafarveformat</h3>
+<p>Temafarver bruger et kompakt format baseret på
+Synchronet-attributkoder:</p>
+<ul>
+<li><code>n</code> - Normal (nulstil alle attributter)</li>
+<li>Forgrundsbogstaver: <code>k</code>=sort, <code>r</code>=rød,
+<code>g</code>=grøn, <code>y</code>=gul, <code>b</code>=blå,
+<code>m</code>=magenta, <code>c</code>=cyan, <code>w</code>=hvid</li>
+<li><code>h</code> - Høj/lys intensitet</li>
+<li>Baggrundscifre: <code>0</code>=sort, <code>1</code>=rød,
+<code>2</code>=grøn, <code>3</code>=brun, <code>4</code>=blå,
+<code>5</code>=magenta, <code>6</code>=cyan, <code>7</code>=lysegrå</li>
+</ul>
+<p>Eksempler: <code>nbh</code> = lys blå, <code>n4wh</code> = lys hvid
+på blå baggrund, <code>nk7</code> = sort på lysegrå</p>
+<h2 id="stavekontrol">Stavekontrol</h2>
+<p>SlyMail inkluderer en indbygget stavekontrol ved hjælp af
+klartekstordbøger.</p>
+<h3 id="ordbøger">Ordbøger</h3>
+<p>Ordbogsfiler gemmes i <code>dictionary_files/</code>:</p>
+<ul>
+<li><code>dictionary_en.txt</code> - Engelsk (generel)</li>
+<li><code>dictionary_en-US-supplemental.txt</code> - Amerikansk engelsk
+tillæg</li>
+<li><code>dictionary_en-GB-supplemental.txt</code> - Britisk engelsk
+tillæg</li>
+<li><code>dictionary_en-AU-supplemental.txt</code> - Australsk engelsk
+tillæg</li>
+<li><code>dictionary_en-CA-supplemental.txt</code> - Canadisk engelsk
+tillæg</li>
+</ul>
+<p>Flere ordbøger kan vælges samtidigt for kombineret orddekning.</p>
+<h3 id="brug-af-stavekontrollen">Brug af stavekontrollen</h3>
+<p>Aktivér “Spørg om stavekontrol ved gem” i indstillingerne. Når du
+gemmer en meddelelse, scanner stavekontrollen for forkert stavede ord og
+præsenterer muligheder for hvert:</p>
+<ul>
+<li><strong>E</strong>rstat - Skriv et erstatningsord</li>
+<li><strong>S</strong>pring over - Spring over dette ord</li>
+<li><strong>A</strong>fslut - Stop stavekontrol</li>
+</ul>
+<h2 id="taglines">Taglines</h2>
+<p>Taglines er korte citater eller ordsprog der tilføjes meddelelser,
+når de gemmes.</p>
+<h3 id="opsætning">Opsætning</h3>
+<ol type="1">
+<li>Aktivér “Taglines” i redigeringsindstillinger</li>
+<li>Placer taglines i <code>tagline_files/taglines.txt</code>, én per
+linje</li>
+<li>Linjer der starter med <code>#</code> eller <code>;</code> behandles
+som kommentarer</li>
+</ol>
+<h3 id="brug">Brug</h3>
+<p>Når en meddelelse gemmes med taglines aktiveret, opfordres du til at
+vælge en specifik tagline eller vælge én tilfældigt. Den valgte tagline
+tilføjes din meddelelse med præfikset <code>...</code>.</p>
+<h2 id="rep-svarspakker">REP-svarspakker</h2>
+<p>Når du skriver svar eller nye meddelelser, sættes de i kø som
+afventende. Stemmer (meningsmålingsrøster, op-/nedafstemninger) sættes
+også i kø.</p>
+<h3 id="gemning-af-rep-pakker">Gemning af REP-pakker</h3>
+<ul>
+<li>Tryk <strong>Ctrl-P</strong> fra konferencen eller meddelelselisten
+for at gemme REP-pakken til enhver tid</li>
+<li>SlyMail beder om at gemme efter at have komponeret en
+meddelelse</li>
+<li>Ved afslutning beder SlyMail om at gemme eventuelle ugemte
+afventende elementer</li>
+</ul>
+<p>REP-pakken gemmes som <code>&lt;BBS-ID&gt;.rep</code> i din
+konfigurerede svarmappe (standard <code>~/.slymail/REP/</code>). Upload
+denne fil tilbage til BBS for at sende dine svar.</p>
+<h3 id="rep-pakkens-indhold">REP-pakkens indhold</h3>
+<ul>
+<li>Meddelelsebesvarelser i standard QWK-format</li>
+<li><code>HEADERS.DAT</code> for udvidede felter der overstiger 25
+tegn</li>
+<li><code>VOTING.DAT</code> for afventende stemmer
+(Synchronet-kompatibelt)</li>
+</ul>
+<h2 id="utf-8-understøttelse">UTF-8-understøttelse</h2>
+<p>SlyMail registrerer og viser UTF-8-indhold korrekt:</p>
+<ul>
+<li>UTF-8-meddelelser registreres via <code>HEADERS.DAT</code>-flag og
+automatisk bytesekvensanalyse</li>
+<li>En <strong>[UTF8]</strong>-indikator vises i meddelelsesrubriken for
+UTF-8-meddelelser</li>
+<li>CP437-tegn fra ældre BBS-indhold konverteres til deres
+Unicode-ækvivalenter for korrekt visning i moderne terminaler</li>
+</ul>
+<h2 id="indstillingsfilreference">Indstillingsfilreference</h2>
+<p>Indstillinger gemmes i <code>slymail.ini</code> i SlyMail-datamappen.
+Filen bruger INI-format med sektioner:</p>
+<h3 id="general">[General]</h3>
+<table>
+<colgroup>
+<col style="width: 36%" />
+<col style="width: 27%" />
+<col style="width: 36%" />
+</colgroup>
+<thead>
+<tr>
+<th>Indstilling</th>
+<th>Standard</th>
+<th>Beskrivelse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>showSplashScreen</td>
+<td>true</td>
+<td>Vis startskærm ved opstart</td>
+</tr>
+<tr>
+<td>userName</td>
+<td>(tom)</td>
+<td>Dit navn til Fra-feltet i svar</td>
+</tr>
+<tr>
+<td>replyDir</td>
+<td>(tom)</td>
+<td>Mappe til gemning af REP-pakker</td>
+</tr>
+<tr>
+<td>useExternalEditor</td>
+<td>false</td>
+<td>Brug ekstern redigerer i stedet for indbygget</td>
+</tr>
+<tr>
+<td>selectedEditor</td>
+<td>(tom)</td>
+<td>Navn på den valgte eksterne redigerer</td>
+</tr>
+</tbody>
+</table>
+<h3 id="reader">[Reader]</h3>
+<table>
+<thead>
+<tr>
+<th>Indstilling</th>
+<th>Standard</th>
+<th>Beskrivelse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>showKludgeLines</td>
+<td>false</td>
+<td>Vis kludge-/kontrollinjer</td>
+</tr>
+<tr>
+<td>showTearLine</td>
+<td>true</td>
+<td>Vis rivnings- og oprindelseslinjer</td>
+</tr>
+<tr>
+<td>useScrollbar</td>
+<td>true</td>
+<td>Vis rulleliste i meddelelselæser</td>
+</tr>
+<tr>
+<td>onlyShowAreasWithNewMail</td>
+<td>false</td>
+<td>Skjul tomme konferencer</td>
+</tr>
+<tr>
+<td>stripAnsi</td>
+<td>false</td>
+<td>Fjern ANSI-koder fra meddelelser</td>
+</tr>
+<tr>
+<td>attrSynchronet</td>
+<td>true</td>
+<td>Fortolk Synchronet Ctrl-A-koder</td>
+</tr>
+<tr>
+<td>attrWWIV</td>
+<td>true</td>
+<td>Fortolk WWIV hjertkoder</td>
+</tr>
+<tr>
+<td>attrCelerity</td>
+<td>true</td>
+<td>Fortolk Celerity pipe-koder</td>
+</tr>
+<tr>
+<td>attrRenegade</td>
+<td>true</td>
+<td>Fortolk Renegade pipe-koder</td>
+</tr>
+<tr>
+<td>attrPCBoard</td>
+<td>true</td>
+<td>Fortolk PCBoard/Wildcat <span class="citation"
+data-cites="X-koder">@X-koder</span></td>
+</tr>
+<tr>
+<td>useRegexSearch</td>
+<td>false</td>
+<td>Brug regex til søgninger</td>
+</tr>
+</tbody>
+</table>
+<h3 id="messagelist">[MessageList]</h3>
+<table>
+<thead>
+<tr>
+<th>Indstilling</th>
+<th>Standard</th>
+<th>Beskrivelse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>lightbarMode</td>
+<td>true</td>
+<td>Lysstangsnavigation i meddelelselisten</td>
+</tr>
+<tr>
+<td>reverseOrder</td>
+<td>false</td>
+<td>Vis nyeste meddelelser først</td>
+</tr>
+</tbody>
+</table>
+<h3 id="editor">[Editor]</h3>
+<table>
+<thead>
+<tr>
+<th>Indstilling</th>
+<th>Standard</th>
+<th>Beskrivelse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>editorStyle</td>
+<td>Ice</td>
+<td>Redigeringstilstand: Ice, Dct eller Random</td>
+</tr>
+<tr>
+<td>insertMode</td>
+<td>true</td>
+<td>Standard indsætningstilstand</td>
+</tr>
+<tr>
+<td>wrapQuoteLines</td>
+<td>true</td>
+<td>Ordbryds citatlinjer</td>
+</tr>
+<tr>
+<td>quoteLineWidth</td>
+<td>76</td>
+<td>Maksimal bredde for citatlinjer</td>
+</tr>
+<tr>
+<td>quotePrefix</td>
+<td>&gt; (mellemrum)</td>
+<td>Citatlinjepræfiks</td>
+</tr>
+<tr>
+<td>taglines</td>
+<td>false</td>
+<td>Aktivér tagline-indsætning</td>
+</tr>
+<tr>
+<td>promptSpellCheck</td>
+<td>false</td>
+<td>Spørg om stavekontrol ved gem</td>
+</tr>
+<tr>
+<td>quoteWithInitials</td>
+<td>false</td>
+<td>Brug forfatterinitialer i citatpræfiks</td>
+</tr>
+<tr>
+<td>indentQuoteInitials</td>
+<td>true</td>
+<td>Tilføj mellemrum før initialer</td>
+</tr>
+<tr>
+<td>trimQuoteSpaces</td>
+<td>false</td>
+<td>Fjern blanktegn fra citatlinjer</td>
+</tr>
+</tbody>
+</table>
+<h3 id="themes">[Themes]</h3>
+<table>
+<thead>
+<tr>
+<th>Indstilling</th>
+<th>Standard</th>
+<th>Beskrivelse</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>iceThemeFile</td>
+<td>EditorIceColors_BlueIce.ini</td>
+<td>Ice-tilstandets temafil</td>
+</tr>
+<tr>
+<td>dctThemeFile</td>
+<td>EditorDCTColors_Default.ini</td>
+<td>DCT-tilstandets temafil</td>
+</tr>
+</tbody>
+</table>
+<h2 id="synchronet-bbs-qwk-indstillinger">Synchronet BBS
+QWK-indstillinger</h2>
+<p>Hvis du bruger et Synchronet BBS, anbefales følgende
+QWK-pakkeindstillinger for bedst kompatibilitet med SlyMail:</p>
+<table>
+<thead>
+<tr>
+<th>Indstilling</th>
+<th>Anbefalet værdi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ctrl-A Color Codes</td>
+<td>Leave in</td>
+</tr>
+<tr>
+<td>Archive Type</td>
+<td>ZIP</td>
+</tr>
+<tr>
+<td>Include File Attachments</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Include Index Files</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Include Control Files</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Include VOTING.DAT File</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Include HEADERS.DAT File</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Include UTF-8 Characters</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Extended (QWKE) Packet Format</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ændringslog">Ændringslog</h2>
+<h3 id="version-0.54-2026-03-31">Version 0.54 (2026-03-31)</h3>
+<h4 id="tilføjet">Tilføjet</h4>
+<ul>
+<li>Sporing af senest læste meddelelse per konference med automatisk
+markørpositionering</li>
+<li>Ny meddelelsesindikator (fluebenskolonne) i konferencelisten</li>
+<li>Filimport i meddelelseredigerer (Ctrl-O) til indsætning af
+tekstfiler ved markørposition</li>
+<li>Citatlinjesporing for at bevare citatlinjers integritet under
+redigering</li>
+<li>Afsnitsbaseret meddelelseslagring for bedre tekstomflydning hos
+modtagere</li>
+<li>Terminalstørrelsesregistrering: Det giver SlyMail mulighed for at
+ændre størrelse på sine vinduer og indhold som reaktion på
+terminalvinduets størrelse ændres</li>
+</ul>
+<h4 id="ændret">Ændret</h4>
+<ul>
+<li>Citatlinjeskift respekterer nu terminalbredden når aktiveret</li>
+<li>Konfiguration ved første start: Hvis brugeren ikke endnu har nogen
+SlyMail-indstillinger (dvs. deres .slymail-mappe ikke eksisterer endnu),
+køres config ved opstart, og brugerens navn vil blive bedt om inden
+fortsættelse til konfigurationsindstillinger</li>
+</ul>
+<h4 id="rettet">Rettet</h4>
+<ul>
+<li>Redigering af citatlinjer fusionerer ikke længere spildet med
+tilstødende linjer</li>
+</ul>
+<h3 id="version-0.53-2026-03-29">Version 0.53 (2026-03-29)</h3>
+<h4 id="tilføjet-1">Tilføjet</h4>
+<ul>
+<li>Indstilling til kun at vise konferencer med nye meddelelser</li>
+<li>Ekstern redigererunderstøttelse med flere
+redigererkonfigurationer</li>
+<li>Drop-filtypeunderstøttelse (MSGINF, EDITOR.INF, DOOR.SYS,
+DOOR32.SYS)</li>
+<li>RESULT.ED-fortolkning efter ekstern redigerer afsluttes</li>
+<li>Gå-til konferencenummer (G-tast) i konferencelisten</li>
+<li>Kun-cifre-inputvalidering for Gå-til-prompter</li>
+</ul>
+<h4 id="rettet-1">Rettet</h4>
+<ul>
+<li>Skråstreg-kommandoer (/Q, /S, osv.) virker nu på den første linje i
+redigereren</li>
+<li>DCT-citatvindufarver bruger nu det indlæste tema korrekt</li>
+<li>Citatvinduets rulleliste gendannet for lange citatlister</li>
+<li>Forbedret skærmopdatering i indstillingsdialoger</li>
+</ul>
+<h3 id="version-0.52-2026-03-26">Version 0.52 (2026-03-26)</h3>
+<h4 id="tilføjet-2">Tilføjet</h4>
+<ul>
+<li>REP-mappe oprettet automatisk</li>
+<li>Gem REP-pakke genvejstast (Ctrl-P)</li>
+<li>Upload svarspakker til fjernsystemer</li>
+<li>Citatlinje-genombrydning</li>
+<li>Mappevælger til svarspakkemappe</li>
+</ul>
+<h4 id="ændret-1">Ændret</h4>
+<ul>
+<li>Hurtigere redigeringsskærmopdateringer med reduceret flimmer</li>
+<li>Afsnitsbevidst meddelelseslagring</li>
+<li>Forbedret ANSI-gengivelse med 256-farve og ægte farve
+understøttelse</li>
+</ul>
+<h4 id="rettet-2">Rettet</h4>
+<ul>
+<li>Redigeringsfarvekodehåndtering under alle
+redigeringsoperationer</li>
+<li>Redigeringslinjesbrydningadfærd</li>
+<li>Citatpræfiks efterfølgende mellemrumsbevaring</li>
+<li>REP-lagringssporing</li>
+</ul>
+<h3 id="version-0.51-2026-03-25">Version 0.51 (2026-03-25)</h3>
+<h4 id="tilføjet-3">Tilføjet</h4>
+<ul>
+<li>QWKE (Udvidet QWK) understøttelse</li>
+<li>BBS-farve-/attributkodeunderstøttelse for flere BBS-typer</li>
+<li>Synchronet-afstemningsunderstøttelse (meningsmålinger og
+op-/nedafstemninger)</li>
+<li>Understøttelse af vedhæftede filer</li>
+<li>UTF-8-understøttelse</li>
+<li>Farvevælger (Ctrl-K)</li>
+<li>Fjernsystemsmappe (Ctrl-R)</li>
+<li>Søgning og filtrering med avanceret søgning</li>
+<li>Startskærmsskifter</li>
+</ul>
+<h3 id="version-0.50-2026-03-24">Version 0.50 (2026-03-24)</h3>
+<ul>
+<li>Indledende udgivelse</li>
+<li>Platformsuafhængig QWK offline-postlæser</li>
+<li>DDMsgReader-inspireret læsebruderflade</li>
+<li>SlyEdit-inspireret meddelelseredigerer med Ice- og
+DCT-tilstande</li>
+<li>Temaunderstøttelse, stavekontrol og taglines</li>
+<li>REP-svarspakkeoprettelse</li>
+<li>Filbrowser og selvstændigt konfigurationsværktøj</li>
+</ul>
+</body>
+</html>

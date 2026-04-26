@@ -1,0 +1,20 @@
+                              SlyMail User Manual
+                            QWK Offline Mail Reader
+                                  Version 0.55
+                            Release date: 2026-04-09
+
+                                       by
+
+                                 Eric Oulashin
+
+Contents
+========
+
+このファイルは、対応言語の範囲を Musicians Canvas と揃えるために追加されています。
+
+注意: まだ完全な翻訳は完了していません。最新の完全版は英語マニュアルを参照してください。
+
+  - SlyMail_User_Manual.md
+
+翻訳が完了したら、このファイルから HTML/PDF/TXT 版を生成します。
+

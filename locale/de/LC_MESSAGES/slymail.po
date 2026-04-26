@@ -1,0 +1,646 @@
+# SlyMail translations for German
+# Machine-generated translation
+msgid ""
+msgstr ""
+"Project-Id-Version: slymail\n"
+"PO-Revision-Date: 2026-04-26\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: main.cpp:75
+#: msg_list.cpp:728
+#: msg_list.cpp:1153
+msgid "Press any key to continue..."
+msgstr "Beliebige Taste drücken zum Fortfahren..."
+
+#: main.cpp:311
+#: main.cpp:740
+#: main.cpp:755
+msgid "Error"
+msgstr "Fehler"
+
+#: main.cpp:311
+msgid "Failed to create temporary file."
+msgstr "Temporäre Datei konnte nicht erstellt werden."
+
+#: main.cpp:377
+#: main.cpp:413
+msgid "Message Aborted"
+msgstr "Nachricht abgebrochen"
+
+#: main.cpp:378
+msgid "The external editor exited with a non-zero status. Message not posted."
+msgstr "Der externe Editor wurde mit einem Fehlercode beendet. Nachricht nicht gesendet."
+
+#: main.cpp:414
+msgid "The message was not changed in the editor. Message not posted."
+msgstr "Die Nachricht wurde im Editor nicht geändert. Nachricht nicht gesendet."
+
+#: main.cpp:493
+msgid "Include quoted text from original message?"
+msgstr "Zitierten Text der Originalnachricht einfügen?"
+
+#: main.cpp:558
+msgid "New Message"
+msgstr "Neue Nachricht"
+
+#: main.cpp:560
+msgid "Conference: "
+msgstr "Konferenz: "
+
+#: main.cpp:563
+msgid "     To: "
+msgstr "     An: "
+
+#: main.cpp:571
+msgid "Subject: "
+msgstr "Betreff: "
+
+#: main.cpp:735
+msgid "REP Packet"
+msgstr "REP Paket"
+
+#: main.cpp:735
+msgid "No pending messages or votes to save."
+msgstr "Keine ausstehenden Nachrichten oder Abstimmungen zum Speichern."
+
+#: main.cpp:740
+msgid "No QWK packet loaded."
+msgstr "Kein QWK-Paket geladen."
+
+#: main.cpp:749
+msgid "REP Saved"
+msgstr "REP gespeichert"
+
+#: main.cpp:749
+msgid "Reply packet saved: "
+msgstr "Antwortpaket gespeichert: "
+
+#: main.cpp:755
+msgid "Failed to create REP packet."
+msgstr "REP-Paket konnte nicht erstellt werden."
+
+#: main.cpp:795
+msgid "Loading QWK packet..."
+msgstr "QWK-Paket wird geladen..."
+
+#: main.cpp:805
+msgid "Failed to open or parse QWK file."
+msgstr "QWK-Datei konnte nicht geöffnet oder verarbeitet werden."
+
+#: main.cpp:955
+msgid "Reply Saved"
+msgstr "Antwort gespeichert"
+
+#: main.cpp:956
+msgid "Reply queued. "
+msgstr "Antwort in Warteschlange. "
+
+#: main.cpp:958
+msgid " pending reply(s)."
+msgstr " ausstehende Antwort(en)."
+
+#: main.cpp:959
+#: main.cpp:1047
+msgid "Save REP packet now?"
+msgstr "REP-Paket jetzt speichern?"
+
+#: main.cpp:988
+msgid "Up-vote"
+msgstr "Positiv bewerten"
+
+#: main.cpp:990
+msgid "Down-vote"
+msgstr "Negativ bewerten"
+
+#: main.cpp:992
+msgid "Poll vote"
+msgstr "Umfrage-Stimme"
+
+#: main.cpp:993
+msgid "Vote Queued"
+msgstr "Stimme in Warteschlange"
+
+#: main.cpp:994
+msgid " queued. "
+msgstr " in Warteschlange. "
+
+#: main.cpp:996
+msgid " pending vote(s)."
+msgstr " ausstehende Stimme(n)."
+
+#: main.cpp:1043
+msgid "Message Saved"
+msgstr "Nachricht gespeichert"
+
+#: main.cpp:1044
+msgid "Message queued. "
+msgstr "Nachricht in Warteschlange. "
+
+#: main.cpp:1046
+msgid " pending message(s)."
+msgstr " ausstehende Nachricht(en)."
+
+#: main.cpp:1073
+msgid "Save pending replies before opening new file?"
+msgstr "Ausstehende Antworten vor dem Öffnen einer neuen Datei speichern?"
+
+#: main.cpp:1103
+msgid "Save pending items before opening new file?"
+msgstr "Ausstehende Elemente vor dem Öffnen einer neuen Datei speichern?"
+
+#: msg_list.cpp:88
+msgid "Could not create temp file for external editor."
+msgstr "Temporäre Datei für externen Editor konnte nicht erstellt werden."
+
+#: msg_list.cpp:117
+msgid "Could not read back edited file."
+msgstr "Bearbeitete Datei konnte nicht zurückgelesen werden."
+
+#: msg_list.cpp:152
+msgid "Edit Pending"
+msgstr "Ausstehende bearbeiten"
+
+#: msg_list.cpp:152
+msgid "No messages have been written this session."
+msgstr "In dieser Sitzung wurden keine Nachrichten geschrieben."
+
+#: msg_list.cpp:196
+msgid "Edit Pending Messages"
+msgstr "Ausstehende Nachrichten bearbeiten"
+
+#: msg_list.cpp:205
+#: msg_list.cpp:904
+msgid "To"
+msgstr "An"
+
+#: msg_list.cpp:206
+#: msg_list.cpp:905
+msgid "Subject"
+msgstr "Betreff"
+
+#: msg_list.cpp:207
+#: msg_list.cpp:906
+msgid "Date"
+msgstr "Datum"
+
+#: msg_list.cpp:208
+#: msg_list.cpp:907
+msgid "Time"
+msgstr "Zeit"
+
+#: msg_list.cpp:252
+#: msg_list.cpp:521
+#: msg_list.cpp:921
+msgid "Up/Dn/PgUp/PgDn/HOME/END, "
+msgstr "Auf/Ab/BildAuf/BildAb/POS1/ENDE, "
+
+#: msg_list.cpp:253
+msgid "nter=Edit"
+msgstr "nter=Bearbeiten"
+
+#: msg_list.cpp:253
+msgid "uit/ESC"
+msgstr "eenden/ESC"
+
+#: msg_list.cpp:494
+msgid "Sysop: "
+msgstr "Sysop: "
+
+#: msg_list.cpp:496
+msgid "User: "
+msgstr "Benutzer: "
+
+#: msg_list.cpp:498
+#: msg_list.cpp:916
+#: msg_list.cpp:930
+msgid "msgs"
+msgstr "Nachr."
+
+#: msg_list.cpp:510
+msgid "Conf#"
+msgstr "Konf#"
+
+#: msg_list.cpp:511
+msgid "Conference Name"
+msgstr "Konferenzname"
+
+#: msg_list.cpp:512
+msgid "Msgs"
+msgstr "Nachr."
+
+#: msg_list.cpp:513
+msgid "New"
+msgstr "Neu"
+
+#: msg_list.cpp:522
+#: msg_list.cpp:922
+msgid "dit pending"
+msgstr "iten ausstehend"
+
+#: msg_list.cpp:522
+#: msg_list.cpp:613
+#: msg_list.cpp:922
+msgid "Search"
+msgstr "Suchen"
+
+#: msg_list.cpp:522
+#: msg_list.cpp:923
+msgid "o to #"
+msgstr "ehe zu #"
+
+#: msg_list.cpp:523
+msgid "pen file"
+msgstr "ffnen"
+
+#: msg_list.cpp:523
+msgid "ettings"
+msgstr "instellungen"
+
+#: msg_list.cpp:523
+#: msg_list.cpp:923
+msgid "uit"
+msgstr "eenden"
+
+#: msg_list.cpp:528
+#: msg_list.cpp:928
+msgid "Filter:"
+msgstr "Filter:"
+
+#: msg_list.cpp:613
+msgid "No conferences found matching the search."
+msgstr "Keine Konferenzen gefunden, die der Suche entsprechen."
+
+#: msg_list.cpp:653
+msgid "Go to conf #: "
+msgstr "Gehe zu Konferenz #: "
+
+#: msg_list.cpp:704
+msgid "Conference List Help"
+msgstr "Hilfe zur Konferenzliste"
+
+#: msg_list.cpp:714
+msgid "Navigate conferences"
+msgstr "Konferenzen navigieren"
+
+#: msg_list.cpp:715
+msgid "Open selected conference"
+msgstr "Ausgewählte Konferenz öffnen"
+
+#: msg_list.cpp:716
+#: msg_list.cpp:1142
+msgid "Scroll up/down a page"
+msgstr "Eine Seite auf/ab blättern"
+
+#: msg_list.cpp:717
+msgid "Jump to first/last conference"
+msgstr "Zur ersten/letzten Konferenz springen"
+
+#: msg_list.cpp:718
+msgid "Search/filter conferences"
+msgstr "Konferenzen suchen/filtern"
+
+#: msg_list.cpp:719
+#: msg_list.cpp:1140
+msgid "Edit pending messages (session)"
+msgstr "Ausstehende Nachrichten bearbeiten (Sitzung)"
+
+#: msg_list.cpp:720
+msgid "View polls/votes in packet"
+msgstr "Umfragen/Abstimmungen im Paket anzeigen"
+
+#: msg_list.cpp:721
+#: msg_list.cpp:1145
+msgid "Open a different QWK file"
+msgstr "Eine andere QWK-Datei öffnen"
+
+#: msg_list.cpp:722
+#: msg_list.cpp:1146
+msgid "Remote systems (download QWK)"
+msgstr "Entfernte Systeme (QWK herunterladen)"
+
+#: msg_list.cpp:723
+#: msg_list.cpp:1147
+msgid "Save REP reply packet"
+msgstr "REP-Antwortpaket speichern"
+
+#: msg_list.cpp:724
+#: msg_list.cpp:1148
+#: settings_dialog.cpp:1258
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: msg_list.cpp:725
+#: msg_list.cpp:1150
+msgid "Quit SlyMail"
+msgstr "SlyMail beenden"
+
+#: msg_list.cpp:726
+#: msg_list.cpp:1151
+msgid "This help screen"
+msgstr "Dieser Hilfebildschirm"
+
+#: msg_list.cpp:902
+msgid "Msg#"
+msgstr "Nachr#"
+
+#: msg_list.cpp:903
+msgid "From"
+msgstr "Von"
+
+#: msg_list.cpp:922
+msgid "ew msg"
+msgstr "eue Nachr."
+
+#: msg_list.cpp:922
+msgid "ead"
+msgstr "esen"
+
+#: msg_list.cpp:923
+msgid "onf list"
+msgstr "onferenzliste"
+
+#: msg_list.cpp:1013
+msgid "No messages found matching the search."
+msgstr "Keine Nachrichten gefunden, die der Suche entsprechen."
+
+#: msg_list.cpp:1092
+msgid "Go to msg #: "
+msgstr "Gehe zu Nachricht #: "
+
+#: msg_list.cpp:1127
+msgid "Message List Help"
+msgstr "Hilfe zur Nachrichtenliste"
+
+#: msg_list.cpp:1137
+msgid "Navigate messages"
+msgstr "Nachrichten navigieren"
+
+#: msg_list.cpp:1138
+msgid "Read selected message"
+msgstr "Ausgewählte Nachricht lesen"
+
+#: msg_list.cpp:1139
+msgid "Write a new message"
+msgstr "Neue Nachricht schreiben"
+
+#: msg_list.cpp:1141
+msgid "Go to message number"
+msgstr "Zur Nachrichtennummer gehen"
+
+#: msg_list.cpp:1143
+msgid "Jump to first/last message"
+msgstr "Zur ersten/letzten Nachricht springen"
+
+#: msg_list.cpp:1144
+msgid "Search/filter messages"
+msgstr "Nachrichten suchen/filtern"
+
+#: msg_list.cpp:1149
+msgid "Back to conference list"
+msgstr "Zurück zur Konferenzliste"
+
+#: msg_reader.cpp:98
+msgid "(Poll data not available)"
+msgstr "(Umfragedaten nicht verfügbar)"
+
+#: msg_reader.cpp:178
+msgid "Total votes:"
+msgstr "Stimmen gesamt:"
+
+#: msg_reader.cpp:182
+msgid "[Poll is closed]"
+msgstr "[Umfrage ist geschlossen]"
+
+#: settings_dialog.cpp:67
+msgid " UI Mode "
+msgstr " Anzeigemodus "
+
+#: settings_dialog.cpp:99
+msgid "Enter=OK, ESC=Cancel"
+msgstr "Enter=OK, ESC=Abbrechen"
+
+#: settings_dialog.cpp:251
+msgid "Themes"
+msgstr "Designs"
+
+#: settings_dialog.cpp:251
+msgid "No theme files found in config/"
+msgstr "Keine Design-Dateien in config/ gefunden"
+
+#: settings_dialog.cpp:338
+msgid " Select Theme "
+msgstr " Design auswählen "
+
+#: settings_dialog.cpp:351
+msgid "Theme File"
+msgstr "Design-Datei"
+
+#: settings_dialog.cpp:375
+msgid "Up, Dn, Enter=Select, ESC/Q=Cancel"
+msgstr "Auf, Ab, Enter=Auswählen, ESC/Q=Abbrechen"
+
+#: settings_dialog.cpp:437
+msgid "Dictionaries"
+msgstr "Wörterbücher"
+
+#: settings_dialog.cpp:437
+msgid "No dictionary files found in dictionary_files/"
+msgstr "Keine Wörterbuchdateien in dictionary_files/ gefunden"
+
+#: settings_dialog.cpp:547
+msgid " Select Dictionaries "
+msgstr " Wörterbücher auswählen "
+
+#: settings_dialog.cpp:560
+msgid "Dictionary"
+msgstr "Wörterbuch"
+
+#: settings_dialog.cpp:561
+msgid "Selected"
+msgstr "Ausgewählt"
+
+#: settings_dialog.cpp:585
+msgid "Up, Dn, Enter/Space=Toggle, ESC/Q=Done"
+msgstr "Auf, Ab, Enter/Leertaste=Umschalten, ESC/Q=Fertig"
+
+#: settings_dialog.cpp:668
+msgid "Choose UI mode"
+msgstr "Anzeigemodus wählen"
+
+#: settings_dialog.cpp:669
+msgid "Taglines"
+msgstr "Taglines"
+
+#: settings_dialog.cpp:670
+msgid "Spell-check dictionary/dictionaries"
+msgstr "Rechtschreibprüfungs-Wörterbuch/-Wörterbücher"
+
+#: settings_dialog.cpp:671
+msgid "Prompt for spell checker on save"
+msgstr "Rechtschreibprüfung beim Speichern abfragen"
+
+#: settings_dialog.cpp:672
+msgid "Wrap quote lines to terminal width"
+msgstr "Zitatzeilen auf Terminalbreite umbrechen"
+
+#: settings_dialog.cpp:673
+msgid "Quote with author's initials"
+msgstr "Mit Initialen des Autors zitieren"
+
+#: settings_dialog.cpp:674
+msgid "Indent quote lines containing initials"
+msgstr "Zitatzeilen mit Initialen einrücken"
+
+#: settings_dialog.cpp:675
+msgid "Trim spaces from quote lines"
+msgstr "Leerzeichen aus Zitatzeilen entfernen"
+
+#: settings_dialog.cpp:757
+msgid " Setting "
+msgstr " Einstellung "
+
+#: settings_dialog.cpp:768
+#: settings_dialog.cpp:1066
+#: settings_dialog.cpp:1348
+msgid " Enabled "
+msgstr " Aktiviert "
+
+#: settings_dialog.cpp:773
+msgid " Page 1 of 1 "
+msgstr " Seite 1 von 1 "
+
+#: settings_dialog.cpp:791
+msgid "Up, Dn, Enter=Select/toggle, ?=Help, ESC/Q/Ctrl-U=Close"
+msgstr "Auf, Ab, Enter=Auswählen/Umschalten, ?=Hilfe, ESC/Q/Ctrl-U=Schließen"
+
+#: settings_dialog.cpp:965
+msgid "Show kludge lines"
+msgstr "Kludge-Zeilen anzeigen"
+
+#: settings_dialog.cpp:967
+msgid "Show tear/origin lines"
+msgstr "Trennungs-/Ursprungszeilen anzeigen"
+
+#: settings_dialog.cpp:969
+msgid "Scrollbar in reader"
+msgstr "Bildlaufleiste im Leseprogramm"
+
+#: settings_dialog.cpp:971
+msgid "Only show areas with new mail"
+msgstr "Nur Bereiche mit neuer Post anzeigen"
+
+#: settings_dialog.cpp:973
+msgid "Strip ANSI codes from messages"
+msgstr "ANSI-Codes aus Nachrichten entfernen"
+
+#: settings_dialog.cpp:975
+msgid "Attribute code toggles..."
+msgstr "Attributcode-Umschaltungen..."
+
+#: settings_dialog.cpp:977
+msgid "Search using regular expression"
+msgstr "Suche mit regulärem Ausdruck"
+
+#: settings_dialog.cpp:979
+msgid "List messages in reversed"
+msgstr "Nachrichten in umgekehrter Reihenfolge anzeigen"
+
+#: settings_dialog.cpp:981
+msgid "Show splash screen on startup"
+msgstr "Begrüßungsbildschirm beim Start anzeigen"
+
+#: settings_dialog.cpp:983
+msgid "Reply packet directory"
+msgstr "Antwortpaket-Verzeichnis"
+
+#: settings_dialog.cpp:984
+msgid "(current dir)"
+msgstr "(aktuelles Verzeichnis)"
+
+#: settings_dialog.cpp:986
+msgid "Use external editor"
+msgstr "Externen Editor verwenden"
+
+#: settings_dialog.cpp:988
+msgid "External Editors..."
+msgstr "Externe Editoren..."
+
+#: settings_dialog.cpp:990
+msgid "External Editor"
+msgstr "Externer Editor"
+
+#: settings_dialog.cpp:991
+msgid "(none)"
+msgstr "(keiner)"
+
+#: settings_dialog.cpp:1053
+msgid " Reader Settings "
+msgstr " Leser-Einstellungen "
+
+#: settings_dialog.cpp:1090
+msgid "Up, Dn, Enter=Select/toggle, S=Save, ESC/Q=Close"
+msgstr "Auf, Ab, Enter=Auswählen/Umschalten, S=Speichern, ESC/Q=Schließen"
+
+#: settings_dialog.cpp:1195
+msgid "Select Reply Packet Directory"
+msgstr "Antwortpaket-Verzeichnis auswählen"
+
+#: settings_dialog.cpp:1258
+msgid "Settings saved successfully."
+msgstr "Einstellungen erfolgreich gespeichert."
+
+#: settings_dialog.cpp:1266
+msgid "Save changes before closing?"
+msgstr "Änderungen vor dem Schließen speichern?"
+
+#: settings_dialog.cpp:1295
+msgid "Synchronet Ctrl-A attribute codes"
+msgstr "Synchronet Ctrl-A-Attributcodes"
+
+#: settings_dialog.cpp:1296
+msgid "WWIV attribute codes"
+msgstr "WWIV-Attributcodes"
+
+#: settings_dialog.cpp:1297
+msgid "Celerity attribute codes"
+msgstr "Celerity-Attributcodes"
+
+#: settings_dialog.cpp:1298
+msgid "Renegade attribute codes"
+msgstr "Renegade-Attributcodes"
+
+#: settings_dialog.cpp:1299
+msgid "PCBoard/Wildcat attribute codes"
+msgstr "PCBoard/Wildcat-Attributcodes"
+
+#: settings_dialog.cpp:1336
+msgid " Attribute Code Toggles "
+msgstr " Attributcode-Umschaltungen "
+
+#: settings_dialog.cpp:1385
+msgid "ANSI escape codes are always enabled."
+msgstr "ANSI-Escape-Codes sind immer aktiviert."
+
+#: settings_dialog.cpp:1386
+msgid "These apply to the reader and editor."
+msgstr "Diese gelten für den Leser und den Editor."
+
+#: settings_dialog.cpp:1390
+msgid " Up/Dn, Enter/Space=Toggle, ESC=Done "
+msgstr " Auf/Ab, Enter/Leertaste=Umschalten, ESC=Fertig "
+
+#: settings_dialog.cpp:1463
+msgid " Drop File Type "
+msgstr " Drop-Dateityp "
+
+#: settings_dialog.cpp:1484
+msgid "Enter=Select, ESC=Cancel"
+msgstr "Enter=Auswählen, ESC=Abbrechen"
+
+#: settings_dialog.cpp:1538
+msgid " External Editor "
+msgstr " Externer Editor "

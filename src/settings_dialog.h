@@ -33,6 +33,7 @@ enum EditorSettingID
     ESET_QUOTE_INITIALS,
     ESET_INDENT_INITIALS,
     ESET_TRIM_QUOTE_SPACES,
+    ESET_LANGUAGE,
     ESET_THEME_FILE,
     ESET_COUNT
 };
@@ -69,6 +70,7 @@ enum SettingID
     SET_USE_EXTERNAL_EDITOR,
     SET_EXTERNAL_EDITORS_LIST,
     SET_SELECT_EXTERNAL_EDITOR,
+    SET_LANGUAGE,
     SET_COUNT
 };
 
@@ -94,5 +96,8 @@ bool showAttrCodeToggles(Settings& settings);
 DropFileType showDropFileTypeSelector(DropFileType current);
 bool showExternalEditorConfig(ExternalEditorConfig& editor);
 bool showExternalEditorsList(Settings& settings);
+
+// Language selector dialog — returns the chosen language code, or current on cancel
+std::string showLanguageSelector(const std::string& currentCode);
 
 #endif // SLYMAIL_SETTINGS_DIALOG_H

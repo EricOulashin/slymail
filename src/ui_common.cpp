@@ -1,4 +1,5 @@
 #include "ui_common.h"
+#include "i18n.h"
 
 using std::string;
 using std::vector;
@@ -40,15 +41,15 @@ void drawProgramInfoLine(int y)
 
     printAt(y, x, name, tAttr(TC_CYAN, TC_BLACK, true));
     x += static_cast<int>(name.size());
-    printAt(y, x, " version ", tAttr(TC_CYAN, TC_BLACK, false));
+    printAt(y, x, _(" version "), tAttr(TC_CYAN, TC_BLACK, false));
     x += 9;
     printAt(y, x, ver, tAttr(TC_GREEN, TC_BLACK, false));
     x += static_cast<int>(ver.size());
-    printAt(y, x, " (", tAttr(TC_WHITE, TC_BLACK, true));
+    printAt(y, x, _(" ("), tAttr(TC_WHITE, TC_BLACK, true));
     x += 2;
     printAt(y, x, date, tAttr(TC_BLUE, TC_BLACK, true));
     x += static_cast<int>(date.size());
-    printAt(y, x, ")", tAttr(TC_WHITE, TC_BLACK, true));
+    printAt(y, x, _(")"), tAttr(TC_WHITE, TC_BLACK, true));
 }
 
 void fillRow(int y, const TermAttr& attr, int startX, int endX)

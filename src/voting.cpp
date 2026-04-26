@@ -1,5 +1,6 @@
 #include "voting.h"
 #include "ui_common.h"
+#include "i18n.h"
 #include <filesystem>
 #include <cctype>
 
@@ -269,19 +270,19 @@ void showPollDialog(const VotingPoll& poll)
 
     // Build display lines
     vector<string> displayLines;
-    displayLines.push_back("Poll: " + poll.question);
-    displayLines.push_back("From: " + poll.from);
+    displayLines.push_back(string(_("Poll: ")) + poll.question);
+    displayLines.push_back(string(_("From: ")) + poll.from);
     if (!poll.date.empty())
     {
-        displayLines.push_back("Date: " + poll.date);
+        displayLines.push_back(string(_("Date: ")) + poll.date);
     }
     if (poll.maxVotes > 0)
     {
-        displayLines.push_back("Max selections: " + std::to_string(poll.maxVotes));
+        displayLines.push_back(string(_("Max selections: ")) + std::to_string(poll.maxVotes));
     }
     if (poll.closed)
     {
-        displayLines.push_back("[CLOSED]");
+        displayLines.push_back(_("[CLOSED]"));
     }
     displayLines.push_back("");
 
@@ -303,7 +304,7 @@ void showPollDialog(const VotingPoll& poll)
     }
 
     // Answers with vote counts and bar chart
-    displayLines.push_back("Answers:");
+    displayLines.push_back(_("Answers:"));
     displayLines.push_back(string(40, '-'));
     int maxBarWidth = cols - 30;
     if (maxBarWidth < 10) maxBarWidth = 10;
@@ -329,11 +330,11 @@ void showPollDialog(const VotingPoll& poll)
             pct = " (" + std::to_string(pctVal) + "%)";
         }
         displayLines.push_back("     " + std::to_string(answer.votes)
-                                + " vote(s)" + pct + "  " + bar);
+                                + _(" vote(s)") + pct + "  " + bar);
     }
 
     displayLines.push_back("");
-    displayLines.push_back("Total votes: " + std::to_string(totalVotes));
+    displayLines.push_back(string(_("Total votes: ")) + std::to_string(totalVotes));
 
     // Scrollable display
     int totalLines = static_cast<int>(displayLines.size());
@@ -350,7 +351,7 @@ void showPollDialog(const VotingPoll& poll)
         g_term->clear();
 
         // Title
-        printAt(0, 0, " Poll/Vote Results ", titleAttr);
+        printAt(0, 0, _(" Poll/Vote Results "), titleAttr);
         g_term->setAttr(borderAttr);
         g_term->drawHLine(1, 0, cols);
 
@@ -364,12 +365,12 @@ void showPollDialog(const VotingPoll& poll)
             int row = bodyTop + i;
 
             TermAttr lineAttr = textAttr;
-            if (line.find("Poll:") == 0 || line.find("Answers:") == 0)
+            if (line.find(_("Poll:")) == 0 || line.find(_("Answers:")) == 0)
             {
                 lineAttr = titleAttr;
             }
             else if (!line.empty() && line[0] == ' ' && line.find('#') != string::npos
-                     && line.find("vote(s)") != string::npos)
+                     && line.find(_("vote(s)")) != string::npos)
             {
                 lineAttr = barAttr;
             }
@@ -392,7 +393,7 @@ void showPollDialog(const VotingPoll& poll)
 
         // Help bar
         fillRow(rows - 1, tAttr(TC_BLACK, TC_BLACK, false));
-        printAt(rows - 1, 1, "Up/Dn/PgUp/PgDn=Scroll, Q/ESC=Close", helpAttr);
+        printAt(rows - 1, 1, _("Up/Dn/PgUp/PgDn=Scroll, Q/ESC=Close"), helpAttr);
 
         g_term->refresh();
 
@@ -437,7 +438,7 @@ void showVotingList(const VotingData& voting, const Settings& /* settings */)
 {
     if (voting.polls.empty())
     {
-        messageDialog("Voting", "No polls found in this packet.");
+        messageDialog(_("Voting"), _("No polls found in this packet."));
         return;
     }
 
@@ -459,15 +460,15 @@ void showVotingList(const VotingData& voting, const Settings& /* settings */)
         g_term->clear();
 
         // Title
-        printAt(0, 0, " Polls/Votes in Packet ", titleAttr);
+        printAt(0, 0, _(" Polls/Votes in Packet "), titleAttr);
         g_term->setAttr(borderAttr);
         g_term->drawHLine(1, 0, cols);
 
         // Column headers
-        printAt(2, 1, "#", titleAttr);
-        printAt(2, 5, "Question", titleAttr);
-        printAt(2, cols - 20, "From", titleAttr);
-        printAt(2, cols - 8, "Status", titleAttr);
+        printAt(2, 1, _("#"), titleAttr);
+        printAt(2, 5, _("Question"), titleAttr);
+        printAt(2, cols - 20, _("From"), titleAttr);
+        printAt(2, cols - 8, _("Status"), titleAttr);
 
         g_term->setAttr(borderAttr);
         g_term->drawHLine(3, 0, cols);
@@ -504,17 +505,17 @@ void showVotingList(const VotingData& voting, const Settings& /* settings */)
 
             if (poll.closed)
             {
-                printAt(row, cols - 8, "Closed", isSel ? lineAttr : closedAttr);
+                printAt(row, cols - 8, _("Closed"), isSel ? lineAttr : closedAttr);
             }
             else
             {
-                printAt(row, cols - 8, "Open", lineAttr);
+                printAt(row, cols - 8, _("Open"), lineAttr);
             }
         }
 
         // Help bar
         fillRow(rows - 1, tAttr(TC_BLACK, TC_BLACK, false));
-        printAt(rows - 1, 1, "Up/Dn=Select, Enter=View, Q/ESC=Close", helpAttr);
+        printAt(rows - 1, 1, _("Up/Dn=Select, Enter=View, Q/ESC=Close"), helpAttr);
 
         g_term->refresh();
 

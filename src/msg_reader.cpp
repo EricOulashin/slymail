@@ -4,6 +4,7 @@
 #include "file_dir_utils.h"
 #include "utf8_util.h"
 #include "ansi_render.h"
+#include "i18n.h"
 #include <filesystem>
 
 using std::string;
@@ -94,7 +95,7 @@ static vector<string> buildPollDisplayLines(const QwkMessage& msg,
     if (!votingData || msg.pollIndex < 0 ||
         msg.pollIndex >= static_cast<int>(votingData->polls.size()))
     {
-        lines.push_back("(Poll data not available)");
+        lines.push_back(_("(Poll data not available)"));
         return lines;
     }
 
@@ -174,16 +175,16 @@ static vector<string> buildPollDisplayLines(const QwkMessage& msg,
     }
 
     lines.push_back("");
-    lines.push_back("Total votes: " + std::to_string(totalVotes));
+    lines.push_back(string(_("Total votes:")) + " " + std::to_string(totalVotes));
 
     if (poll.closed)
     {
-        lines.push_back("[Poll is closed]");
+        lines.push_back(_("[Poll is closed]"));
     }
 
     if (poll.maxVotes > 1)
     {
-        lines.push_back("(Up to " + std::to_string(poll.maxVotes) + " selections allowed)");
+        lines.push_back(string("(") + _("Up to") + " " + std::to_string(poll.maxVotes) + " " + _("selections allowed)"));
     }
 
     return lines;
@@ -296,20 +297,20 @@ int drawMessageHeader(const QwkMessage& msg, const string& confName,
 
     // Row 1: Msg#: NN/TOTAL
     drawSideBorders(y);
-    printAt(y, 1, "Msg#: ", labelAttr);
+    printAt(y, 1, _("Msg#: "), labelAttr);
     string msgNumStr = std::to_string(msgIndex + 1) + "/" + std::to_string(totalMsgs);
     printAt(y, 7, msgNumStr, valueAttr);
     // Show indicators on the right side
     int indicatorX = w - 2;
     if (msg.isPrivate)
     {
-        string pvt = "[Private]";
+        string pvt = _("[Private]");
         indicatorX -= static_cast<int>(pvt.size());
         printAt(y, indicatorX, pvt, tAttr(TC_RED, TC_BLACK, true));
     }
     if (msg.hasAttachment)
     {
-        string att = "[ATT]";
+        string att = _("[ATT]");
         indicatorX -= static_cast<int>(att.size()) + 1;
         printAt(y, indicatorX, att, tAttr(TC_YELLOW, TC_BLACK, true));
     }
@@ -323,29 +324,29 @@ int drawMessageHeader(const QwkMessage& msg, const string& confName,
 
     // Row 2: From:
     drawSideBorders(y);
-    printAt(y, 1, "From: ", labelAttr);
+    printAt(y, 1, _("From: "), labelAttr);
     printAt(y, 7, msg.from, valueAttr);
     ++y;
 
     // Row 3: To  :
     drawSideBorders(y);
-    printAt(y, 1, "To  : ", labelAttr);
+    printAt(y, 1, _("To  : "), labelAttr);
     printAt(y, 7, msg.to, valueAttr);
     ++y;
 
     // Row 4: Subj:
     drawSideBorders(y);
-    printAt(y, 1, "Subj: ", labelAttr);
+    printAt(y, 1, _("Subj: "), labelAttr);
     printAt(y, 7, truncateStr(msg.subject, w - 9), valueAttr);
     ++y;
 
     // Row 5: Date:
     drawSideBorders(y);
-    printAt(y, 1, "Date: ", labelAttr);
+    printAt(y, 1, _("Date: "), labelAttr);
     printAt(y, 7, msg.date + "  " + msg.time, valueAttr);
     if (msg.replyTo > 0)
     {
-        string replyStr = "Reply to #" + std::to_string(msg.replyTo);
+        string replyStr = string(_("Reply to #")) + std::to_string(msg.replyTo);
         printAt(y, w - static_cast<int>(replyStr.size()) - 2, replyStr,
                 tAttr(TC_YELLOW, TC_BLACK, false));
     }
@@ -357,30 +358,30 @@ int drawMessageHeader(const QwkMessage& msg, const string& confName,
         drawSideBorders(y);
         if (msg.isPoll)
         {
-            printAt(y, 1, "Poll: ", labelAttr);
-            string pollInfo = "Press V to vote";
+            printAt(y, 1, _("Poll: "), labelAttr);
+            string pollInfo = _("Press V to vote");
             if (msg.userVoted != 0)
             {
-                pollInfo = "You have voted on this poll";
+                pollInfo = _("You have voted on this poll");
             }
             printAt(y, 7, pollInfo, tAttr(TC_YELLOW, TC_BLACK, true));
         }
         else
         {
             // Show upvote/downvote tally like Synchronet
-            printAt(y, 1, "Votes:", labelAttr);
-            string voteStr = " Up " + std::to_string(msg.upvotes);
+            printAt(y, 1, _("Votes:"), labelAttr);
+            string voteStr = string(" ") + _("Up") + " " + std::to_string(msg.upvotes);
             if (msg.userVoted == 1)
             {
                 voteStr += " *";
             }
-            voteStr += "  Down " + std::to_string(msg.downvotes);
+            voteStr += string("  ") + _("Down") + " " + std::to_string(msg.downvotes);
             if (msg.userVoted == 2)
             {
                 voteStr += " *";
             }
             int score = static_cast<int>(msg.upvotes) - static_cast<int>(msg.downvotes);
-            voteStr += "  (Score: " + std::to_string(score) + ")";
+            voteStr += string("  (") + _("Score:") + " " + std::to_string(score) + ")";
             printAt(y, 7, voteStr, tAttr(TC_GREEN, TC_BLACK, false));
         }
         ++y;
@@ -399,9 +400,9 @@ int drawMessageHeader(const QwkMessage& msg, const string& confName,
 // Draw the DDMsgReader-style help bar at the bottom
 void drawReaderHelpBar(int y)
 {
-    drawDDHelpBar(y, "Up/Dn/<-/->/PgUp/PgDn, ",
-                  {{'F', "irst"}, {'L', "ast"}, {'R', "eply"}, {'V', "ote"},
-                   {'D', "wnld"}, {'H', "dr"}, {'S', "et"}, {'C', "onf"}, {'Q', "uit"}, {'?', ""}});
+    drawDDHelpBar(y, _("Up/Dn/<-/->/PgUp/PgDn, "),
+                  {{'F', _("irst")}, {'L', _("ast")}, {'R', _("eply")}, {'V', _("ote")},
+                   {'D', _("wnld")}, {'H', _("dr")}, {'S', _("et")}, {'C', _("onf")}, {'Q', _("uit")}, {'?', ""}});
 }
 
 // Build a list of header information lines for display
@@ -410,7 +411,7 @@ vector<string> buildHeaderInfoLines(const QwkMessage& msg,
 {
     vector<string> lines;
 
-    lines.push_back("Message Header Information");
+    lines.push_back(_("Message Header Information"));
     lines.push_back(string(40, '-'));
     lines.push_back("");
     lines.push_back("    Msg Num: " + std::to_string(msg.number));
@@ -420,26 +421,26 @@ vector<string> buildHeaderInfoLines(const QwkMessage& msg,
     lines.push_back("       Date: " + msg.date);
     lines.push_back("       Time: " + msg.time);
     lines.push_back(" Conference: " + confName + " (#" + std::to_string(msg.conference) + ")");
-    lines.push_back("   Reply To: " + (msg.replyTo > 0 ? std::to_string(msg.replyTo) : "(none)"));
+    lines.push_back("   Reply To: " + (msg.replyTo > 0 ? std::to_string(msg.replyTo) : string(_("(none)"))));
 
     // Status
     string statusStr;
     switch (msg.status)
     {
-        case QwkStatus::NewPublic:    statusStr = "New (public)"; break;
-        case QwkStatus::OldPublic:    statusStr = "Read (public)"; break;
-        case QwkStatus::NewPrivate:   statusStr = "New (private)"; break;
-        case QwkStatus::OldPrivate:   statusStr = "Read (private)"; break;
-        case QwkStatus::Comment:      statusStr = "Comment"; break;
-        case QwkStatus::Vote:         statusStr = "Vote/Poll"; break;
-        default:                      statusStr = "Unknown"; break;
+        case QwkStatus::NewPublic:    statusStr = _("New (public)"); break;
+        case QwkStatus::OldPublic:    statusStr = _("Read (public)"); break;
+        case QwkStatus::NewPrivate:   statusStr = _("New (private)"); break;
+        case QwkStatus::OldPrivate:   statusStr = _("Read (private)"); break;
+        case QwkStatus::Comment:      statusStr = _("Comment"); break;
+        case QwkStatus::Vote:         statusStr = _("Vote/Poll"); break;
+        default:                      statusStr = _("Unknown"); break;
     }
     lines.push_back("     Status: " + statusStr);
-    lines.push_back("    Private: " + string(msg.isPrivate ? "Yes" : "No"));
+    lines.push_back("    Private: " + string(msg.isPrivate ? _("Yes") : _("No")));
 
     // Add blank line then show any kludge lines from the body
     lines.push_back("");
-    lines.push_back("Kludge Lines");
+    lines.push_back(_("Kludge Lines"));
     lines.push_back(string(40, '-'));
 
     bool foundKludge = false;
@@ -464,7 +465,7 @@ vector<string> buildHeaderInfoLines(const QwkMessage& msg,
     }
     if (!foundKludge)
     {
-        lines.push_back("(none)");
+        lines.push_back(_("(none)"));
     }
 
     return lines;
@@ -555,7 +556,7 @@ void showHeaderInfo(const QwkMessage& msg, const string& confName,
         // Help bar
         fillRow(g_term->getRows() - 1, tAttr(TC_BLACK, TC_BLACK, false));
         printAt(g_term->getRows() - 1, 1,
-                "Up/Dn/PgUp/PgDn=Scroll, Q/ESC=Close headers",
+                _("Up/Dn/PgUp/PgDn=Scroll, Q/ESC=Close headers"),
                 helpAttr);
 
         g_term->refresh();
@@ -600,7 +601,7 @@ void downloadAttachments(const QwkMessage& msg, const string& extractDir)
 {
     if (!msg.hasAttachment || msg.attachmentFiles.empty())
     {
-        messageDialog("Attachments", "No file attachments found.");
+        messageDialog(_("Attachments"), _("No file attachments found."));
         return;
     }
 
@@ -625,9 +626,9 @@ void downloadAttachments(const QwkMessage& msg, const string& extractDir)
     {
         fillRow(dlgY + r, tAttr(TC_WHITE, TC_BLACK, false), dlgX, dlgX + dlgW);
     }
-    drawBox(dlgY, dlgX, dlgH, dlgW, borderAttr, "File Attachments", borderAttr);
+    drawBox(dlgY, dlgX, dlgH, dlgW, borderAttr, _("File Attachments"), borderAttr);
 
-    printAt(dlgY + 1, dlgX + 2, "Attached files:", textAttr);
+    printAt(dlgY + 1, dlgX + 2, _("Attached files:"), textAttr);
 
     int fileRow = dlgY + 2;
     for (size_t i = 0; i < msg.attachmentFiles.size() && fileRow < dlgY + dlgH - 3; ++i)
@@ -650,7 +651,7 @@ void downloadAttachments(const QwkMessage& msg, const string& extractDir)
         ++fileRow;
     }
 
-    printAt(dlgY + dlgH - 2, dlgX + 2, "Save to directory (Enter for home):", helpAttr);
+    printAt(dlgY + dlgH - 2, dlgX + 2, _("Save to directory (Enter for home):"), helpAttr);
 
     // Get destination directory
     string homeDir = ".";
@@ -685,23 +686,23 @@ void downloadAttachments(const QwkMessage& msg, const string& extractDir)
             }
             catch (const fs::filesystem_error& e)
             {
-                messageDialog("Copy Error",
-                    "Failed to copy " + fname + ": " + string(e.what()));
+                messageDialog(_("Copy Error"),
+                    string(_("Failed to copy")) + " " + fname + ": " + string(e.what()));
             }
             catch (...)
             {
-                messageDialog("Copy Error", "Failed to copy " + fname);
+                messageDialog(_("Copy Error"), string(_("Failed to copy")) + " " + fname);
             }
         }
     }
 
     if (copied > 0)
     {
-        messageDialog("Download", std::to_string(copied) + " file(s) saved to " + destDir);
+        messageDialog(_("Download"), std::to_string(copied) + " " + _("file(s) saved to") + " " + destDir);
     }
     else
     {
-        messageDialog("Download", "No files could be saved. Files may not exist in packet.");
+        messageDialog(_("Download"), _("No files could be saved. Files may not exist in packet."));
     }
 }
 
@@ -724,31 +725,31 @@ static bool showUpDownVoteUI(const QwkMessage& msg, const string& userName,
     if (msg.upvotes > 0 || msg.downvotes > 0)
     {
         fillRow(y - 1, tAttr(TC_BLACK, TC_BLACK, false));
-        string tally = "Current: Up " + std::to_string(msg.upvotes)
-                     + ", Down " + std::to_string(msg.downvotes)
-                     + " (Score: " + std::to_string(static_cast<int>(msg.upvotes) - static_cast<int>(msg.downvotes)) + ")";
+        string tally = string(_("Current:")) + " " + _("Up") + " " + std::to_string(msg.upvotes)
+                     + ", " + _("Down") + " " + std::to_string(msg.downvotes)
+                     + " (" + _("Score:") + " " + std::to_string(static_cast<int>(msg.upvotes) - static_cast<int>(msg.downvotes)) + ")";
         if (msg.userVoted == 1)
         {
-            tally += " [You voted Up]";
+            tally += string(" [") + _("You voted Up") + "]";
         }
         else if (msg.userVoted == 2)
         {
-            tally += " [You voted Down]";
+            tally += string(" [") + _("You voted Down") + "]";
         }
         printAt(y - 1, 1, tally, tAttr(TC_GREEN, TC_BLACK, false));
     }
 
     fillRow(y, tAttr(TC_BLACK, TC_BLACK, false));
-    printAt(y, 1, "Vote for message: ", promptAttr);
+    printAt(y, 1, _("Vote for message: "), promptAttr);
     int x = 19;
     printAt(y, x, "U", keyAttr);
-    printAt(y, x + 1, "p, ", promptAttr);
+    printAt(y, x + 1, _("p, "), promptAttr);
     x += 4;
     printAt(y, x, "D", keyAttr);
-    printAt(y, x + 1, "own, or ", promptAttr);
+    printAt(y, x + 1, _("own, or "), promptAttr);
     x += 9;
     printAt(y, x, "Q", keyAttr);
-    printAt(y, x + 1, "uit: ", promptAttr);
+    printAt(y, x + 1, _("uit: "), promptAttr);
 
     g_term->refresh();
 
@@ -790,7 +791,7 @@ static bool showPollBallotUI(const QwkMessage& msg, const VotingData* votingData
     if (!votingData || msg.pollIndex < 0 ||
         msg.pollIndex >= static_cast<int>(votingData->polls.size()))
     {
-        messageDialog("Vote", "No poll data available for this message.");
+        messageDialog(_("Vote"), _("No poll data available for this message."));
         return false;
     }
 
@@ -798,13 +799,13 @@ static bool showPollBallotUI(const QwkMessage& msg, const VotingData* votingData
 
     if (poll.closed)
     {
-        messageDialog("Vote", "This poll is closed.");
+        messageDialog(_("Vote"), _("This poll is closed."));
         return false;
     }
 
     if (poll.answers.empty())
     {
-        messageDialog("Vote", "This poll has no answer options.");
+        messageDialog(_("Vote"), _("This poll has no answer options."));
         return false;
     }
 
@@ -850,7 +851,7 @@ static bool showPollBallotUI(const QwkMessage& msg, const VotingData* votingData
         {
             fillRow(dlgY + r, tAttr(TC_BLACK, TC_BLACK, false), dlgX, dlgX + dlgW);
         }
-        drawBox(dlgY, dlgX, dlgH, dlgW, borderAttr, "Ballot", borderAttr);
+        drawBox(dlgY, dlgX, dlgH, dlgW, borderAttr, _("Ballot"), borderAttr);
 
         // Poll question
         string questionStr = poll.question;
@@ -923,10 +924,10 @@ static bool showPollBallotUI(const QwkMessage& msg, const VotingData* votingData
 
         // Vote count and help info
         int bottomY = dlgY + dlgH - 2;
-        string selectInfo = "Selected: " + std::to_string(numSelected) + "/" + std::to_string(maxVotes);
+        string selectInfo = string(_("Selected:")) + " " + std::to_string(numSelected) + "/" + std::to_string(maxVotes);
         printAt(bottomY, dlgX + 2, selectInfo, infoAttr);
 
-        string helpStr = "Up/Dn=Move, Space/Enter=Toggle, C=Cast vote, Q=Quit";
+        string helpStr = _("Up/Dn=Move, Space/Enter=Toggle, C=Cast vote, Q=Quit");
         if (static_cast<int>(helpStr.size()) > dlgW - 4)
         {
             helpStr = helpStr.substr(0, dlgW - 4);
@@ -989,7 +990,7 @@ static bool showPollBallotUI(const QwkMessage& msg, const VotingData* votingData
                 // Cast vote
                 if (selections == 0)
                 {
-                    messageDialog("Vote", "No answers selected. Select at least one.");
+                    messageDialog(_("Vote"), _("No answers selected. Select at least one."));
                     break;
                 }
                 voteOut.msgId = msg.msgId;
@@ -1040,7 +1041,7 @@ bool showVoteUI(const QwkMessage& msg, const VotingData* votingData,
 {
     if (msg.msgId.empty())
     {
-        messageDialog("Vote", "This message has no Message-ID. Voting requires QWKE headers.");
+        messageDialog(_("Vote"), _("This message has no Message-ID. Voting requires QWKE headers."));
         return false;
     }
 
@@ -1314,7 +1315,7 @@ MsgReadResult showMessageReader(const QwkMessage& msg,
                 }
                 else
                 {
-                    messageDialog("Attachments", "This message has no file attachments.");
+                    messageDialog(_("Attachments"), _("This message has no file attachments."));
                 }
                 needFullRedraw = true;
                 break;
@@ -1350,7 +1351,7 @@ MsgReadResult showMessageReader(const QwkMessage& msg,
                 int r = 1;
                 drawProgramInfoLine(r++);
                 r++;
-                printCentered(r++, "Enhanced reader mode keys",
+                printCentered(r++, _("Enhanced reader mode keys"),
                     tAttr(TC_GREEN, TC_BLACK, true));
                 r++;
                 TermAttr keyC  = tAttr(TC_CYAN, TC_BLACK, true);
@@ -1361,23 +1362,23 @@ MsgReadResult showMessageReader(const QwkMessage& msg,
                     printAt(r, 24, ": " + desc, descC);
                     ++r;
                 };
-                helpLine("Down/Up arrow", "Scroll down/up in the message");
-                helpLine("Left/Right arrow", "Go to the previous/next message");
-                helpLine("Enter", "Go to the next message");
-                helpLine("PageUp/PageDown", "Scroll up/down a page in the message");
-                helpLine("HOME", "Go to the top of the message");
-                helpLine("END", "Go to the bottom of the message");
-                helpLine("F", "First message in conference");
-                helpLine("L", "Last message in conference");
-                helpLine("R", "Reply to the message");
-                helpLine("V", "Vote (up/down or poll ballot)");
-                helpLine("D / Ctrl-D", "Download file attachments");
-                helpLine("H", "Show message header information");
-                helpLine("C", "Back to conference list");
-                helpLine("Ctrl-U", "Change your user settings");
-                helpLine("Q", "Quit SlyMail");
+                helpLine("Down/Up arrow", _("Scroll down/up in the message"));
+                helpLine("Left/Right arrow", _("Go to the previous/next message"));
+                helpLine("Enter", _("Go to the next message"));
+                helpLine("PageUp/PageDown", _("Scroll up/down a page in the message"));
+                helpLine("HOME", _("Go to the top of the message"));
+                helpLine("END", _("Go to the bottom of the message"));
+                helpLine("F", _("First message in conference"));
+                helpLine("L", _("Last message in conference"));
+                helpLine("R", _("Reply to the message"));
+                helpLine("V", _("Vote (up/down or poll ballot)"));
+                helpLine("D / Ctrl-D", _("Download file attachments"));
+                helpLine("H", _("Show message header information"));
+                helpLine("C", _("Back to conference list"));
+                helpLine("Ctrl-U", _("Change your user settings"));
+                helpLine("Q", _("Quit SlyMail"));
                 r += 2;
-                printAt(r, 2, "Hit a key", tAttr(TC_GREEN, TC_BLACK, false));
+                printAt(r, 2, _("Hit a key"), tAttr(TC_GREEN, TC_BLACK, false));
                 g_term->refresh();
                 g_term->getKey();
                 needFullRedraw = true;

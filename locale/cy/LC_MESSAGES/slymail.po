@@ -1,0 +1,646 @@
+# SlyMail translations for Welsh
+# Machine-generated translation
+msgid ""
+msgstr ""
+"Project-Id-Version: slymail\n"
+"PO-Revision-Date: 2026-04-26\n"
+"Language: cy\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n==1) ? 0 : (n==2) ? 1 : (n != 8 && n != 11) ? 2 : 3;\n"
+
+#: main.cpp:75
+#: msg_list.cpp:728
+#: msg_list.cpp:1153
+msgid "Press any key to continue..."
+msgstr "Pwyswch unrhyw allwedd i barhau..."
+
+#: main.cpp:311
+#: main.cpp:740
+#: main.cpp:755
+msgid "Error"
+msgstr "Gwall"
+
+#: main.cpp:311
+msgid "Failed to create temporary file."
+msgstr "Methwyd â chreu ffeil dros dro."
+
+#: main.cpp:377
+#: main.cpp:413
+msgid "Message Aborted"
+msgstr "Neges wedi'i Habortio"
+
+#: main.cpp:378
+msgid "The external editor exited with a non-zero status. Message not posted."
+msgstr "Gadawodd y golygydd allanol gyda statws ansero. Ni phostiwyd y neges."
+
+#: main.cpp:414
+msgid "The message was not changed in the editor. Message not posted."
+msgstr "Ni newidiwyd y neges yn y golygydd. Ni phostiwyd y neges."
+
+#: main.cpp:493
+msgid "Include quoted text from original message?"
+msgstr "Cynnwys testun dyfynol o'r neges wreiddiol?"
+
+#: main.cpp:558
+msgid "New Message"
+msgstr "Neges Newydd"
+
+#: main.cpp:560
+msgid "Conference: "
+msgstr "Cynhadledd: "
+
+#: main.cpp:563
+msgid "     To: "
+msgstr "     At: "
+
+#: main.cpp:571
+msgid "Subject: "
+msgstr "Pwnc: "
+
+#: main.cpp:735
+msgid "REP Packet"
+msgstr "Pecyn REP"
+
+#: main.cpp:735
+msgid "No pending messages or votes to save."
+msgstr "Dim negeseuon na phleidleisiau i'w cadw."
+
+#: main.cpp:740
+msgid "No QWK packet loaded."
+msgstr "Dim pecyn QWK wedi'i lwytho."
+
+#: main.cpp:749
+msgid "REP Saved"
+msgstr "REP wedi'i Gadw"
+
+#: main.cpp:749
+msgid "Reply packet saved: "
+msgstr "Pecyn ateb wedi'i gadw: "
+
+#: main.cpp:755
+msgid "Failed to create REP packet."
+msgstr "Methwyd â chreu pecyn REP."
+
+#: main.cpp:795
+msgid "Loading QWK packet..."
+msgstr "Yn llwytho pecyn QWK..."
+
+#: main.cpp:805
+msgid "Failed to open or parse QWK file."
+msgstr "Methwyd ag agor neu ddehongli ffeil QWK."
+
+#: main.cpp:955
+msgid "Reply Saved"
+msgstr "Ateb wedi'i Gadw"
+
+#: main.cpp:956
+msgid "Reply queued. "
+msgstr "Ateb yn y ciw. "
+
+#: main.cpp:958
+msgid " pending reply(s)."
+msgstr " ateb(-ion) yn aros."
+
+#: main.cpp:959
+#: main.cpp:1047
+msgid "Save REP packet now?"
+msgstr "Cadw pecyn REP nawr?"
+
+#: main.cpp:988
+msgid "Up-vote"
+msgstr "Pleidlais o blaid"
+
+#: main.cpp:990
+msgid "Down-vote"
+msgstr "Pleidlais yn erbyn"
+
+#: main.cpp:992
+msgid "Poll vote"
+msgstr "Pleidlais arolwg"
+
+#: main.cpp:993
+msgid "Vote Queued"
+msgstr "Pleidlais yn y Ciw"
+
+#: main.cpp:994
+msgid " queued. "
+msgstr " yn y ciw. "
+
+#: main.cpp:996
+msgid " pending vote(s)."
+msgstr " pleidlais(-iau) yn aros."
+
+#: main.cpp:1043
+msgid "Message Saved"
+msgstr "Neges wedi'i Chadw"
+
+#: main.cpp:1044
+msgid "Message queued. "
+msgstr "Neges yn y ciw. "
+
+#: main.cpp:1046
+msgid " pending message(s)."
+msgstr " neges(-euon) yn aros."
+
+#: main.cpp:1073
+msgid "Save pending replies before opening new file?"
+msgstr "Cadw atebion sy'n aros cyn agor ffeil newydd?"
+
+#: main.cpp:1103
+msgid "Save pending items before opening new file?"
+msgstr "Cadw eitemau sy'n aros cyn agor ffeil newydd?"
+
+#: msg_list.cpp:88
+msgid "Could not create temp file for external editor."
+msgstr "Methai â chreu ffeil dros dro ar gyfer y golygydd allanol."
+
+#: msg_list.cpp:117
+msgid "Could not read back edited file."
+msgstr "Methai â darllen yn ôl y ffeil a olygwyd."
+
+#: msg_list.cpp:152
+msgid "Edit Pending"
+msgstr "Golygu yn Aros"
+
+#: msg_list.cpp:152
+msgid "No messages have been written this session."
+msgstr "Nid ysgrifennwyd unrhyw negeseuon yn y sesiwn hon."
+
+#: msg_list.cpp:196
+msgid "Edit Pending Messages"
+msgstr "Golygu Negeseuon sy'n Aros"
+
+#: msg_list.cpp:205
+#: msg_list.cpp:904
+msgid "To"
+msgstr "At"
+
+#: msg_list.cpp:206
+#: msg_list.cpp:905
+msgid "Subject"
+msgstr "Pwnc"
+
+#: msg_list.cpp:207
+#: msg_list.cpp:906
+msgid "Date"
+msgstr "Dyddiad"
+
+#: msg_list.cpp:208
+#: msg_list.cpp:907
+msgid "Time"
+msgstr "Amser"
+
+#: msg_list.cpp:252
+#: msg_list.cpp:521
+#: msg_list.cpp:921
+msgid "Up/Dn/PgUp/PgDn/HOME/END, "
+msgstr "Up/Dn/PgUp/PgDn/HOME/END, "
+
+#: msg_list.cpp:253
+msgid "nter=Edit"
+msgstr "nter=Golygu"
+
+#: msg_list.cpp:253
+msgid "uit/ESC"
+msgstr "mwel/ESC"
+
+#: msg_list.cpp:494
+msgid "Sysop: "
+msgstr "Sysop: "
+
+#: msg_list.cpp:496
+msgid "User: "
+msgstr "Defnyddiwr: "
+
+#: msg_list.cpp:498
+#: msg_list.cpp:916
+#: msg_list.cpp:930
+msgid "msgs"
+msgstr "neg."
+
+#: msg_list.cpp:510
+msgid "Conf#"
+msgstr "Cyn#"
+
+#: msg_list.cpp:511
+msgid "Conference Name"
+msgstr "Enw Cynhadledd"
+
+#: msg_list.cpp:512
+msgid "Msgs"
+msgstr "Neg."
+
+#: msg_list.cpp:513
+msgid "New"
+msgstr "Newydd"
+
+#: msg_list.cpp:522
+#: msg_list.cpp:922
+msgid "dit pending"
+msgstr "olygu rhai'n aros"
+
+#: msg_list.cpp:522
+#: msg_list.cpp:613
+#: msg_list.cpp:922
+msgid "Search"
+msgstr "Chwilio"
+
+#: msg_list.cpp:522
+#: msg_list.cpp:923
+msgid "o to #"
+msgstr "ynd i #"
+
+#: msg_list.cpp:523
+msgid "pen file"
+msgstr "gor ffeil"
+
+#: msg_list.cpp:523
+msgid "ettings"
+msgstr "osodiadau"
+
+#: msg_list.cpp:523
+#: msg_list.cpp:923
+msgid "uit"
+msgstr "mwel"
+
+#: msg_list.cpp:528
+#: msg_list.cpp:928
+msgid "Filter:"
+msgstr "Hidlo:"
+
+#: msg_list.cpp:613
+msgid "No conferences found matching the search."
+msgstr "Dim cynhadledd wedi'i chanfod sy'n cyfateb i'r chwiliad."
+
+#: msg_list.cpp:653
+msgid "Go to conf #: "
+msgstr "Mynd i gyn. #: "
+
+#: msg_list.cpp:704
+msgid "Conference List Help"
+msgstr "Cymorth Rhestr Cynhadledd"
+
+#: msg_list.cpp:714
+msgid "Navigate conferences"
+msgstr "Llywio drwy gynhadleddau"
+
+#: msg_list.cpp:715
+msgid "Open selected conference"
+msgstr "Agor y gynhadledd a ddewiswyd"
+
+#: msg_list.cpp:716
+#: msg_list.cpp:1142
+msgid "Scroll up/down a page"
+msgstr "Sgrolio tudalen i fyny/lawr"
+
+#: msg_list.cpp:717
+msgid "Jump to first/last conference"
+msgstr "Neidio i'r gynhadledd gyntaf/olaf"
+
+#: msg_list.cpp:718
+msgid "Search/filter conferences"
+msgstr "Chwilio/hidlo cynhadleddau"
+
+#: msg_list.cpp:719
+#: msg_list.cpp:1140
+msgid "Edit pending messages (session)"
+msgstr "Golygu negeseuon sy'n aros (sesiwn)"
+
+#: msg_list.cpp:720
+msgid "View polls/votes in packet"
+msgstr "Gweld arolygon/pleidleisiau yn y pecyn"
+
+#: msg_list.cpp:721
+#: msg_list.cpp:1145
+msgid "Open a different QWK file"
+msgstr "Agor ffeil QWK wahanol"
+
+#: msg_list.cpp:722
+#: msg_list.cpp:1146
+msgid "Remote systems (download QWK)"
+msgstr "Systemau o bell (lawrlwytho QWK)"
+
+#: msg_list.cpp:723
+#: msg_list.cpp:1147
+msgid "Save REP reply packet"
+msgstr "Cadw pecyn ateb REP"
+
+#: msg_list.cpp:724
+#: msg_list.cpp:1148
+#: settings_dialog.cpp:1258
+msgid "Settings"
+msgstr "Gosodiadau"
+
+#: msg_list.cpp:725
+#: msg_list.cpp:1150
+msgid "Quit SlyMail"
+msgstr "Gadael SlyMail"
+
+#: msg_list.cpp:726
+#: msg_list.cpp:1151
+msgid "This help screen"
+msgstr "Y sgrin gymorth hon"
+
+#: msg_list.cpp:902
+msgid "Msg#"
+msgstr "Neg#"
+
+#: msg_list.cpp:903
+msgid "From"
+msgstr "Oddi wrth"
+
+#: msg_list.cpp:922
+msgid "ew msg"
+msgstr "eges newydd"
+
+#: msg_list.cpp:922
+msgid "ead"
+msgstr "arllen"
+
+#: msg_list.cpp:923
+msgid "onf list"
+msgstr "rhestr cyn."
+
+#: msg_list.cpp:1013
+msgid "No messages found matching the search."
+msgstr "Dim negeseuon wedi'u canfod sy'n cyfateb i'r chwiliad."
+
+#: msg_list.cpp:1092
+msgid "Go to msg #: "
+msgstr "Mynd i neg. #: "
+
+#: msg_list.cpp:1127
+msgid "Message List Help"
+msgstr "Cymorth Rhestr Negeseuon"
+
+#: msg_list.cpp:1137
+msgid "Navigate messages"
+msgstr "Llywio drwy negeseuon"
+
+#: msg_list.cpp:1138
+msgid "Read selected message"
+msgstr "Darllen y neges a ddewiswyd"
+
+#: msg_list.cpp:1139
+msgid "Write a new message"
+msgstr "Ysgrifennu neges newydd"
+
+#: msg_list.cpp:1141
+msgid "Go to message number"
+msgstr "Mynd i rif y neges"
+
+#: msg_list.cpp:1143
+msgid "Jump to first/last message"
+msgstr "Neidio i'r neges gyntaf/olaf"
+
+#: msg_list.cpp:1144
+msgid "Search/filter messages"
+msgstr "Chwilio/hidlo negeseuon"
+
+#: msg_list.cpp:1149
+msgid "Back to conference list"
+msgstr "Yn ôl i'r rhestr gynhadledd"
+
+#: msg_reader.cpp:98
+msgid "(Poll data not available)"
+msgstr "(Data arolwg ar gael)"
+
+#: msg_reader.cpp:178
+msgid "Total votes:"
+msgstr "Cyfanswm pleidleisiau:"
+
+#: msg_reader.cpp:182
+msgid "[Poll is closed]"
+msgstr "[Mae'r arolwg ar gau]"
+
+#: settings_dialog.cpp:67
+msgid " UI Mode "
+msgstr " Modd Rhyngwyneb "
+
+#: settings_dialog.cpp:99
+msgid "Enter=OK, ESC=Cancel"
+msgstr "Enter=Iawn, ESC=Diddymu"
+
+#: settings_dialog.cpp:251
+msgid "Themes"
+msgstr "Themâu"
+
+#: settings_dialog.cpp:251
+msgid "No theme files found in config/"
+msgstr "Dim ffeiliau thema wedi'u canfod yn config/"
+
+#: settings_dialog.cpp:338
+msgid " Select Theme "
+msgstr " Dewis Thema "
+
+#: settings_dialog.cpp:351
+msgid "Theme File"
+msgstr "Ffeil Thema"
+
+#: settings_dialog.cpp:375
+msgid "Up, Dn, Enter=Select, ESC/Q=Cancel"
+msgstr "Up, Dn, Enter=Dewis, ESC/Q=Diddymu"
+
+#: settings_dialog.cpp:437
+msgid "Dictionaries"
+msgstr "Geiriaduron"
+
+#: settings_dialog.cpp:437
+msgid "No dictionary files found in dictionary_files/"
+msgstr "Dim ffeiliau geiriadur wedi'u canfod yn dictionary_files/"
+
+#: settings_dialog.cpp:547
+msgid " Select Dictionaries "
+msgstr " Dewis Geiriaduron "
+
+#: settings_dialog.cpp:560
+msgid "Dictionary"
+msgstr "Geiriadur"
+
+#: settings_dialog.cpp:561
+msgid "Selected"
+msgstr "Dewisywyd"
+
+#: settings_dialog.cpp:585
+msgid "Up, Dn, Enter/Space=Toggle, ESC/Q=Done"
+msgstr "Up, Dn, Enter/Gofod=Toglo, ESC/Q=Gorffen"
+
+#: settings_dialog.cpp:668
+msgid "Choose UI mode"
+msgstr "Dewis modd rhyngwyneb"
+
+#: settings_dialog.cpp:669
+msgid "Taglines"
+msgstr "Llinellau tag"
+
+#: settings_dialog.cpp:670
+msgid "Spell-check dictionary/dictionaries"
+msgstr "Geiriadur/geiriaduron sillafu"
+
+#: settings_dialog.cpp:671
+msgid "Prompt for spell checker on save"
+msgstr "Gofyn am wiriad sillafu wrth gadw"
+
+#: settings_dialog.cpp:672
+msgid "Wrap quote lines to terminal width"
+msgstr "Lapio llinellau dyfyniad i led y terfynell"
+
+#: settings_dialog.cpp:673
+msgid "Quote with author's initials"
+msgstr "Dyfynnu gydag enghreifftiau cychwynnol yr awdur"
+
+#: settings_dialog.cpp:674
+msgid "Indent quote lines containing initials"
+msgstr "Mewnoli llinellau dyfyniad sy'n cynnwys blaenlythrennau"
+
+#: settings_dialog.cpp:675
+msgid "Trim spaces from quote lines"
+msgstr "Torri bylchau o linellau dyfyniad"
+
+#: settings_dialog.cpp:757
+msgid " Setting "
+msgstr " Gosodiad "
+
+#: settings_dialog.cpp:768
+#: settings_dialog.cpp:1066
+#: settings_dialog.cpp:1348
+msgid " Enabled "
+msgstr " Galluogwyd "
+
+#: settings_dialog.cpp:773
+msgid " Page 1 of 1 "
+msgstr " Tudalen 1 o 1 "
+
+#: settings_dialog.cpp:791
+msgid "Up, Dn, Enter=Select/toggle, ?=Help, ESC/Q/Ctrl-U=Close"
+msgstr "Up, Dn, Enter=Dewis/toglo, ?=Cymorth, ESC/Q/Ctrl-U=Cau"
+
+#: settings_dialog.cpp:965
+msgid "Show kludge lines"
+msgstr "Dangos llinellau technegol (kludge)"
+
+#: settings_dialog.cpp:967
+msgid "Show tear/origin lines"
+msgstr "Dangos llinellau tear/origin"
+
+#: settings_dialog.cpp:969
+msgid "Scrollbar in reader"
+msgstr "Bar sgrolio yn y darllenydd"
+
+#: settings_dialog.cpp:971
+msgid "Only show areas with new mail"
+msgstr "Dangos ardaloedd â phost newydd yn unig"
+
+#: settings_dialog.cpp:973
+msgid "Strip ANSI codes from messages"
+msgstr "Tynnu codau ANSI o negeseuon"
+
+#: settings_dialog.cpp:975
+msgid "Attribute code toggles..."
+msgstr "Togls cod priodoledd..."
+
+#: settings_dialog.cpp:977
+msgid "Search using regular expression"
+msgstr "Chwilio gan ddefnyddio mynegiant rheolaidd"
+
+#: settings_dialog.cpp:979
+msgid "List messages in reversed"
+msgstr "Rhestru negeseuon mewn trefn wrthdro"
+
+#: settings_dialog.cpp:981
+msgid "Show splash screen on startup"
+msgstr "Dangos sgrin groeso wrth gychwyn"
+
+#: settings_dialog.cpp:983
+msgid "Reply packet directory"
+msgstr "Cyfeiriadur pecyn ateb"
+
+#: settings_dialog.cpp:984
+msgid "(current dir)"
+msgstr "(cyfeiriadur cyfredol)"
+
+#: settings_dialog.cpp:986
+msgid "Use external editor"
+msgstr "Defnyddio golygydd allanol"
+
+#: settings_dialog.cpp:988
+msgid "External Editors..."
+msgstr "Golygyddion allanol..."
+
+#: settings_dialog.cpp:990
+msgid "External Editor"
+msgstr "Golygydd allanol"
+
+#: settings_dialog.cpp:991
+msgid "(none)"
+msgstr "(dim)"
+
+#: settings_dialog.cpp:1053
+msgid " Reader Settings "
+msgstr " Gosodiadau Darllenydd "
+
+#: settings_dialog.cpp:1090
+msgid "Up, Dn, Enter=Select/toggle, S=Save, ESC/Q=Close"
+msgstr "Up, Dn, Enter=Dewis/toglo, S=Cadw, ESC/Q=Cau"
+
+#: settings_dialog.cpp:1195
+msgid "Select Reply Packet Directory"
+msgstr "Dewis Cyfeiriadur Pecyn Ateb"
+
+#: settings_dialog.cpp:1258
+msgid "Settings saved successfully."
+msgstr "Gosodiadau wedi'u cadw'n llwyddiannus."
+
+#: settings_dialog.cpp:1266
+msgid "Save changes before closing?"
+msgstr "Cadw newidiadau cyn cau?"
+
+#: settings_dialog.cpp:1295
+msgid "Synchronet Ctrl-A attribute codes"
+msgstr "Codau priodoledd Synchronet Ctrl-A"
+
+#: settings_dialog.cpp:1296
+msgid "WWIV attribute codes"
+msgstr "Codau priodoledd WWIV"
+
+#: settings_dialog.cpp:1297
+msgid "Celerity attribute codes"
+msgstr "Codau priodoledd Celerity"
+
+#: settings_dialog.cpp:1298
+msgid "Renegade attribute codes"
+msgstr "Codau priodoledd Renegade"
+
+#: settings_dialog.cpp:1299
+msgid "PCBoard/Wildcat attribute codes"
+msgstr "Codau priodoledd PCBoard/Wildcat"
+
+#: settings_dialog.cpp:1336
+msgid " Attribute Code Toggles "
+msgstr " Togls Cod Priodoledd "
+
+#: settings_dialog.cpp:1385
+msgid "ANSI escape codes are always enabled."
+msgstr "Mae codau dianc ANSI bob amser wedi'u galluogi."
+
+#: settings_dialog.cpp:1386
+msgid "These apply to the reader and editor."
+msgstr "Mae'r rhain yn berthnasol i'r darllenydd a'r golygydd."
+
+#: settings_dialog.cpp:1390
+msgid " Up/Dn, Enter/Space=Toggle, ESC=Done "
+msgstr " Up/Dn, Enter/Gofod=Toglo, ESC=Gorffen "
+
+#: settings_dialog.cpp:1463
+msgid " Drop File Type "
+msgstr " Math Ffeil Drop "
+
+#: settings_dialog.cpp:1484
+msgid "Enter=Select, ESC=Cancel"
+msgstr "Enter=Dewis, ESC=Diddymu"
+
+#: settings_dialog.cpp:1538
+msgid " External Editor "
+msgstr " Golygydd Allanol "

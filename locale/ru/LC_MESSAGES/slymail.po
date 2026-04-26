@@ -1,0 +1,646 @@
+# SlyMail translations for Russian
+# Machine-generated translation
+msgid ""
+msgstr ""
+"Project-Id-Version: slymail\n"
+"PO-Revision-Date: 2026-04-26\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: main.cpp:75
+#: msg_list.cpp:728
+#: msg_list.cpp:1153
+msgid "Press any key to continue..."
+msgstr "Нажмите любую клавишу для продолжения..."
+
+#: main.cpp:311
+#: main.cpp:740
+#: main.cpp:755
+msgid "Error"
+msgstr "Ошибка"
+
+#: main.cpp:311
+msgid "Failed to create temporary file."
+msgstr "Не удалось создать временный файл."
+
+#: main.cpp:377
+#: main.cpp:413
+msgid "Message Aborted"
+msgstr "Сообщение отменено"
+
+#: main.cpp:378
+msgid "The external editor exited with a non-zero status. Message not posted."
+msgstr "Внешний редактор завершил работу с ненулевым кодом. Сообщение не отправлено."
+
+#: main.cpp:414
+msgid "The message was not changed in the editor. Message not posted."
+msgstr "Сообщение не было изменено в редакторе. Сообщение не отправлено."
+
+#: main.cpp:493
+msgid "Include quoted text from original message?"
+msgstr "Включить цитату из исходного сообщения?"
+
+#: main.cpp:558
+msgid "New Message"
+msgstr "Новое сообщение"
+
+#: main.cpp:560
+msgid "Conference: "
+msgstr "Конференция: "
+
+#: main.cpp:563
+msgid "     To: "
+msgstr "     Кому: "
+
+#: main.cpp:571
+msgid "Subject: "
+msgstr "Тема: "
+
+#: main.cpp:735
+msgid "REP Packet"
+msgstr "Пакет REP"
+
+#: main.cpp:735
+msgid "No pending messages or votes to save."
+msgstr "Нет ожидающих сообщений или голосов для сохранения."
+
+#: main.cpp:740
+msgid "No QWK packet loaded."
+msgstr "Пакет QWK не загружен."
+
+#: main.cpp:749
+msgid "REP Saved"
+msgstr "REP сохранён"
+
+#: main.cpp:749
+msgid "Reply packet saved: "
+msgstr "Пакет ответов сохранён: "
+
+#: main.cpp:755
+msgid "Failed to create REP packet."
+msgstr "Не удалось создать пакет REP."
+
+#: main.cpp:795
+msgid "Loading QWK packet..."
+msgstr "Загрузка пакета QWK..."
+
+#: main.cpp:805
+msgid "Failed to open or parse QWK file."
+msgstr "Не удалось открыть или разобрать файл QWK."
+
+#: main.cpp:955
+msgid "Reply Saved"
+msgstr "Ответ сохранён"
+
+#: main.cpp:956
+msgid "Reply queued. "
+msgstr "Ответ в очереди. "
+
+#: main.cpp:958
+msgid " pending reply(s)."
+msgstr " ожидающий(-е) ответ(-а/-ов)."
+
+#: main.cpp:959
+#: main.cpp:1047
+msgid "Save REP packet now?"
+msgstr "Сохранить пакет REP сейчас?"
+
+#: main.cpp:988
+msgid "Up-vote"
+msgstr "Голос «за»"
+
+#: main.cpp:990
+msgid "Down-vote"
+msgstr "Голос «против»"
+
+#: main.cpp:992
+msgid "Poll vote"
+msgstr "Голос в опросе"
+
+#: main.cpp:993
+msgid "Vote Queued"
+msgstr "Голос в очереди"
+
+#: main.cpp:994
+msgid " queued. "
+msgstr " в очереди. "
+
+#: main.cpp:996
+msgid " pending vote(s)."
+msgstr " ожидающий(-е) голос(-а/-ов)."
+
+#: main.cpp:1043
+msgid "Message Saved"
+msgstr "Сообщение сохранено"
+
+#: main.cpp:1044
+msgid "Message queued. "
+msgstr "Сообщение в очереди. "
+
+#: main.cpp:1046
+msgid " pending message(s)."
+msgstr " ожидающее(-ие) сообщение(-я/-й)."
+
+#: main.cpp:1073
+msgid "Save pending replies before opening new file?"
+msgstr "Сохранить ожидающие ответы перед открытием нового файла?"
+
+#: main.cpp:1103
+msgid "Save pending items before opening new file?"
+msgstr "Сохранить ожидающие элементы перед открытием нового файла?"
+
+#: msg_list.cpp:88
+msgid "Could not create temp file for external editor."
+msgstr "Не удалось создать временный файл для внешнего редактора."
+
+#: msg_list.cpp:117
+msgid "Could not read back edited file."
+msgstr "Не удалось прочитать отредактированный файл."
+
+#: msg_list.cpp:152
+msgid "Edit Pending"
+msgstr "Редактирование ожидает"
+
+#: msg_list.cpp:152
+msgid "No messages have been written this session."
+msgstr "В этой сессии сообщения не написаны."
+
+#: msg_list.cpp:196
+msgid "Edit Pending Messages"
+msgstr "Редактировать ожидающие сообщения"
+
+#: msg_list.cpp:205
+#: msg_list.cpp:904
+msgid "To"
+msgstr "Кому"
+
+#: msg_list.cpp:206
+#: msg_list.cpp:905
+msgid "Subject"
+msgstr "Тема"
+
+#: msg_list.cpp:207
+#: msg_list.cpp:906
+msgid "Date"
+msgstr "Дата"
+
+#: msg_list.cpp:208
+#: msg_list.cpp:907
+msgid "Time"
+msgstr "Время"
+
+#: msg_list.cpp:252
+#: msg_list.cpp:521
+#: msg_list.cpp:921
+msgid "Up/Dn/PgUp/PgDn/HOME/END, "
+msgstr "Up/Dn/PgUp/PgDn/HOME/END, "
+
+#: msg_list.cpp:253
+msgid "nter=Edit"
+msgstr "nter=Редакт."
+
+#: msg_list.cpp:253
+msgid "uit/ESC"
+msgstr "ыход/ESC"
+
+#: msg_list.cpp:494
+msgid "Sysop: "
+msgstr "Сисоп: "
+
+#: msg_list.cpp:496
+msgid "User: "
+msgstr "Пользователь: "
+
+#: msg_list.cpp:498
+#: msg_list.cpp:916
+#: msg_list.cpp:930
+msgid "msgs"
+msgstr "сообщ."
+
+#: msg_list.cpp:510
+msgid "Conf#"
+msgstr "Конф#"
+
+#: msg_list.cpp:511
+msgid "Conference Name"
+msgstr "Название конференции"
+
+#: msg_list.cpp:512
+msgid "Msgs"
+msgstr "Сообщ."
+
+#: msg_list.cpp:513
+msgid "New"
+msgstr "Новые"
+
+#: msg_list.cpp:522
+#: msg_list.cpp:922
+msgid "dit pending"
+msgstr "дакт. ожидающие"
+
+#: msg_list.cpp:522
+#: msg_list.cpp:613
+#: msg_list.cpp:922
+msgid "Search"
+msgstr "Поиск"
+
+#: msg_list.cpp:522
+#: msg_list.cpp:923
+msgid "o to #"
+msgstr "ерейти к #"
+
+#: msg_list.cpp:523
+msgid "pen file"
+msgstr "ткрыть файл"
+
+#: msg_list.cpp:523
+msgid "ettings"
+msgstr "астройки"
+
+#: msg_list.cpp:523
+#: msg_list.cpp:923
+msgid "uit"
+msgstr "ыход"
+
+#: msg_list.cpp:528
+#: msg_list.cpp:928
+msgid "Filter:"
+msgstr "Фильтр:"
+
+#: msg_list.cpp:613
+msgid "No conferences found matching the search."
+msgstr "Конференции, соответствующие поиску, не найдены."
+
+#: msg_list.cpp:653
+msgid "Go to conf #: "
+msgstr "Перейти к конф. #: "
+
+#: msg_list.cpp:704
+msgid "Conference List Help"
+msgstr "Справка по списку конференций"
+
+#: msg_list.cpp:714
+msgid "Navigate conferences"
+msgstr "Навигация по конференциям"
+
+#: msg_list.cpp:715
+msgid "Open selected conference"
+msgstr "Открыть выбранную конференцию"
+
+#: msg_list.cpp:716
+#: msg_list.cpp:1142
+msgid "Scroll up/down a page"
+msgstr "Прокрутить страницу вверх/вниз"
+
+#: msg_list.cpp:717
+msgid "Jump to first/last conference"
+msgstr "Перейти к первой/последней конференции"
+
+#: msg_list.cpp:718
+msgid "Search/filter conferences"
+msgstr "Поиск/фильтрация конференций"
+
+#: msg_list.cpp:719
+#: msg_list.cpp:1140
+msgid "Edit pending messages (session)"
+msgstr "Редактировать ожидающие сообщения (сессия)"
+
+#: msg_list.cpp:720
+msgid "View polls/votes in packet"
+msgstr "Просмотр опросов/голосований в пакете"
+
+#: msg_list.cpp:721
+#: msg_list.cpp:1145
+msgid "Open a different QWK file"
+msgstr "Открыть другой файл QWK"
+
+#: msg_list.cpp:722
+#: msg_list.cpp:1146
+msgid "Remote systems (download QWK)"
+msgstr "Удалённые системы (загрузить QWK)"
+
+#: msg_list.cpp:723
+#: msg_list.cpp:1147
+msgid "Save REP reply packet"
+msgstr "Сохранить пакет ответов REP"
+
+#: msg_list.cpp:724
+#: msg_list.cpp:1148
+#: settings_dialog.cpp:1258
+msgid "Settings"
+msgstr "Настройки"
+
+#: msg_list.cpp:725
+#: msg_list.cpp:1150
+msgid "Quit SlyMail"
+msgstr "Выйти из SlyMail"
+
+#: msg_list.cpp:726
+#: msg_list.cpp:1151
+msgid "This help screen"
+msgstr "Этот экран справки"
+
+#: msg_list.cpp:902
+msgid "Msg#"
+msgstr "Сообщ#"
+
+#: msg_list.cpp:903
+msgid "From"
+msgstr "От"
+
+#: msg_list.cpp:922
+msgid "ew msg"
+msgstr "овое сообщ."
+
+#: msg_list.cpp:922
+msgid "ead"
+msgstr "читать"
+
+#: msg_list.cpp:923
+msgid "onf list"
+msgstr "писок конф."
+
+#: msg_list.cpp:1013
+msgid "No messages found matching the search."
+msgstr "Сообщения, соответствующие поиску, не найдены."
+
+#: msg_list.cpp:1092
+msgid "Go to msg #: "
+msgstr "Перейти к сообщ. #: "
+
+#: msg_list.cpp:1127
+msgid "Message List Help"
+msgstr "Справка по списку сообщений"
+
+#: msg_list.cpp:1137
+msgid "Navigate messages"
+msgstr "Навигация по сообщениям"
+
+#: msg_list.cpp:1138
+msgid "Read selected message"
+msgstr "Читать выбранное сообщение"
+
+#: msg_list.cpp:1139
+msgid "Write a new message"
+msgstr "Написать новое сообщение"
+
+#: msg_list.cpp:1141
+msgid "Go to message number"
+msgstr "Перейти к номеру сообщения"
+
+#: msg_list.cpp:1143
+msgid "Jump to first/last message"
+msgstr "Перейти к первому/последнему сообщению"
+
+#: msg_list.cpp:1144
+msgid "Search/filter messages"
+msgstr "Поиск/фильтрация сообщений"
+
+#: msg_list.cpp:1149
+msgid "Back to conference list"
+msgstr "Назад к списку конференций"
+
+#: msg_reader.cpp:98
+msgid "(Poll data not available)"
+msgstr "(Данные опроса недоступны)"
+
+#: msg_reader.cpp:178
+msgid "Total votes:"
+msgstr "Всего голосов:"
+
+#: msg_reader.cpp:182
+msgid "[Poll is closed]"
+msgstr "[Голосование закрыто]"
+
+#: settings_dialog.cpp:67
+msgid " UI Mode "
+msgstr " Режим интерфейса "
+
+#: settings_dialog.cpp:99
+msgid "Enter=OK, ESC=Cancel"
+msgstr "Enter=OK, ESC=Отмена"
+
+#: settings_dialog.cpp:251
+msgid "Themes"
+msgstr "Темы"
+
+#: settings_dialog.cpp:251
+msgid "No theme files found in config/"
+msgstr "Файлы тем не найдены в config/"
+
+#: settings_dialog.cpp:338
+msgid " Select Theme "
+msgstr " Выбор темы "
+
+#: settings_dialog.cpp:351
+msgid "Theme File"
+msgstr "Файл темы"
+
+#: settings_dialog.cpp:375
+msgid "Up, Dn, Enter=Select, ESC/Q=Cancel"
+msgstr "Up, Dn, Enter=Выбрать, ESC/Q=Отмена"
+
+#: settings_dialog.cpp:437
+msgid "Dictionaries"
+msgstr "Словари"
+
+#: settings_dialog.cpp:437
+msgid "No dictionary files found in dictionary_files/"
+msgstr "Файлы словарей не найдены в dictionary_files/"
+
+#: settings_dialog.cpp:547
+msgid " Select Dictionaries "
+msgstr " Выбор словарей "
+
+#: settings_dialog.cpp:560
+msgid "Dictionary"
+msgstr "Словарь"
+
+#: settings_dialog.cpp:561
+msgid "Selected"
+msgstr "Выбрано"
+
+#: settings_dialog.cpp:585
+msgid "Up, Dn, Enter/Space=Toggle, ESC/Q=Done"
+msgstr "Up, Dn, Enter/Пробел=Переключить, ESC/Q=Готово"
+
+#: settings_dialog.cpp:668
+msgid "Choose UI mode"
+msgstr "Выбрать режим интерфейса"
+
+#: settings_dialog.cpp:669
+msgid "Taglines"
+msgstr "Теглайны"
+
+#: settings_dialog.cpp:670
+msgid "Spell-check dictionary/dictionaries"
+msgstr "Словарь/словари проверки правописания"
+
+#: settings_dialog.cpp:671
+msgid "Prompt for spell checker on save"
+msgstr "Спрашивать о проверке правописания при сохранении"
+
+#: settings_dialog.cpp:672
+msgid "Wrap quote lines to terminal width"
+msgstr "Переносить строки цитат по ширине терминала"
+
+#: settings_dialog.cpp:673
+msgid "Quote with author's initials"
+msgstr "Цитировать с инициалами автора"
+
+#: settings_dialog.cpp:674
+msgid "Indent quote lines containing initials"
+msgstr "Делать отступ в строках цитат с инициалами"
+
+#: settings_dialog.cpp:675
+msgid "Trim spaces from quote lines"
+msgstr "Убирать пробелы из строк цитат"
+
+#: settings_dialog.cpp:757
+msgid " Setting "
+msgstr " Параметр "
+
+#: settings_dialog.cpp:768
+#: settings_dialog.cpp:1066
+#: settings_dialog.cpp:1348
+msgid " Enabled "
+msgstr " Включено "
+
+#: settings_dialog.cpp:773
+msgid " Page 1 of 1 "
+msgstr " Страница 1 из 1 "
+
+#: settings_dialog.cpp:791
+msgid "Up, Dn, Enter=Select/toggle, ?=Help, ESC/Q/Ctrl-U=Close"
+msgstr "Up, Dn, Enter=Выбрать/переключить, ?=Справка, ESC/Q/Ctrl-U=Закрыть"
+
+#: settings_dialog.cpp:965
+msgid "Show kludge lines"
+msgstr "Показывать технические строки (kludge)"
+
+#: settings_dialog.cpp:967
+msgid "Show tear/origin lines"
+msgstr "Показывать строки tear/origin"
+
+#: settings_dialog.cpp:969
+msgid "Scrollbar in reader"
+msgstr "Полоса прокрутки в просмотрщике"
+
+#: settings_dialog.cpp:971
+msgid "Only show areas with new mail"
+msgstr "Показывать только разделы с новой почтой"
+
+#: settings_dialog.cpp:973
+msgid "Strip ANSI codes from messages"
+msgstr "Убирать коды ANSI из сообщений"
+
+#: settings_dialog.cpp:975
+msgid "Attribute code toggles..."
+msgstr "Переключатели кодов атрибутов..."
+
+#: settings_dialog.cpp:977
+msgid "Search using regular expression"
+msgstr "Поиск с регулярными выражениями"
+
+#: settings_dialog.cpp:979
+msgid "List messages in reversed"
+msgstr "Отображать сообщения в обратном порядке"
+
+#: settings_dialog.cpp:981
+msgid "Show splash screen on startup"
+msgstr "Показывать заставку при запуске"
+
+#: settings_dialog.cpp:983
+msgid "Reply packet directory"
+msgstr "Каталог пакетов ответов"
+
+#: settings_dialog.cpp:984
+msgid "(current dir)"
+msgstr "(текущий каталог)"
+
+#: settings_dialog.cpp:986
+msgid "Use external editor"
+msgstr "Использовать внешний редактор"
+
+#: settings_dialog.cpp:988
+msgid "External Editors..."
+msgstr "Внешние редакторы..."
+
+#: settings_dialog.cpp:990
+msgid "External Editor"
+msgstr "Внешний редактор"
+
+#: settings_dialog.cpp:991
+msgid "(none)"
+msgstr "(нет)"
+
+#: settings_dialog.cpp:1053
+msgid " Reader Settings "
+msgstr " Настройки просмотрщика "
+
+#: settings_dialog.cpp:1090
+msgid "Up, Dn, Enter=Select/toggle, S=Save, ESC/Q=Close"
+msgstr "Up, Dn, Enter=Выбрать/переключить, S=Сохранить, ESC/Q=Закрыть"
+
+#: settings_dialog.cpp:1195
+msgid "Select Reply Packet Directory"
+msgstr "Выбрать каталог пакетов ответов"
+
+#: settings_dialog.cpp:1258
+msgid "Settings saved successfully."
+msgstr "Настройки успешно сохранены."
+
+#: settings_dialog.cpp:1266
+msgid "Save changes before closing?"
+msgstr "Сохранить изменения перед закрытием?"
+
+#: settings_dialog.cpp:1295
+msgid "Synchronet Ctrl-A attribute codes"
+msgstr "Коды атрибутов Synchronet Ctrl-A"
+
+#: settings_dialog.cpp:1296
+msgid "WWIV attribute codes"
+msgstr "Коды атрибутов WWIV"
+
+#: settings_dialog.cpp:1297
+msgid "Celerity attribute codes"
+msgstr "Коды атрибутов Celerity"
+
+#: settings_dialog.cpp:1298
+msgid "Renegade attribute codes"
+msgstr "Коды атрибутов Renegade"
+
+#: settings_dialog.cpp:1299
+msgid "PCBoard/Wildcat attribute codes"
+msgstr "Коды атрибутов PCBoard/Wildcat"
+
+#: settings_dialog.cpp:1336
+msgid " Attribute Code Toggles "
+msgstr " Переключатели кодов атрибутов "
+
+#: settings_dialog.cpp:1385
+msgid "ANSI escape codes are always enabled."
+msgstr "Управляющие коды ANSI всегда включены."
+
+#: settings_dialog.cpp:1386
+msgid "These apply to the reader and editor."
+msgstr "Применяется к просмотрщику и редактору."
+
+#: settings_dialog.cpp:1390
+msgid " Up/Dn, Enter/Space=Toggle, ESC=Done "
+msgstr " Up/Dn, Enter/Пробел=Переключить, ESC=Готово "
+
+#: settings_dialog.cpp:1463
+msgid " Drop File Type "
+msgstr " Тип файла дропа "
+
+#: settings_dialog.cpp:1484
+msgid "Enter=Select, ESC=Cancel"
+msgstr "Enter=Выбрать, ESC=Отмена"
+
+#: settings_dialog.cpp:1538
+msgid " External Editor "
+msgstr " Внешний редактор "

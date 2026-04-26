@@ -83,6 +83,7 @@ Settings::Settings()
     , replyDir("")
     , useExternalEditor(false)
     , selectedEditor("")
+    , language("")
 {
 }
 
@@ -224,6 +225,7 @@ bool Settings::load()
         else if (key == "replyDir")          { replyDir = val; }
         else if (key == "useExternalEditor") { useExternalEditor = (val == "true" || val == "1"); }
         else if (key == "selectedEditor")    { selectedEditor = val; }
+        else if (key == "language")          { language = val; }
         // Backward compatibility: old-style single external editor
         else if (key == "externalEditor")    { legacyEditorPath = val; }
         else if (key == "externalEditorQuoting") { legacyQuoteMode = parseExtQuoteMode(val); }
@@ -284,6 +286,9 @@ bool Settings::save() const
             f << "useExternalEditor=" << (useExternalEditor ? "true" : "false") << "\n";
             f << "\n; Name of the selected external editor (must match an [external_editor:NAME] section)\n";
             f << "selectedEditor=" << selectedEditor << "\n";
+            f << "\n; UI language code (empty = match OS locale)\n";
+            f << "; Supported: cy da de el es fi fr ga ja nb pirate pl pt_BR ru sv zh_CN zh_TW\n";
+            f << "language=" << language << "\n";
         }
         else if (sec == "Themes")
         {

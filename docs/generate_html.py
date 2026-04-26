@@ -9,10 +9,13 @@ import sys
 script_dir = os.environ.get('SCRIPT_DIR', os.environ.get('SCRIPT_DIR_ENV', os.path.dirname(os.path.abspath(__file__))))
 project_dir = os.environ.get('PROJECT_DIR', os.environ.get('PROJECT_DIR_ENV', os.path.dirname(script_dir)))
 html_dir = os.path.join(script_dir, 'html')
-source = os.path.join(script_dir, 'SlyMail_User_Manual.md')
-output = os.path.join(html_dir, 'SlyMail_User_Manual.html')
+# Allow SOURCE_MD / OUTPUT_HTML / LANG_CODE env vars so the same script can be
+# called in a loop to generate translated variants of the manual.
+source = os.environ.get('SOURCE_MD', os.path.join(script_dir, 'SlyMail_User_Manual.md'))
+output = os.environ.get('OUTPUT_HTML', os.path.join(html_dir, 'SlyMail_User_Manual.html'))
+lang_code = os.environ.get('LANG_CODE', 'en')
 
-with open(source, 'r') as f:
+with open(source, 'r', encoding='utf-8') as f:
     raw = f.read()
 
 # Get version and date from environment (set by generate_docs.sh/.bat from program_info.h)
@@ -82,7 +85,7 @@ img { max-width: 100%; height: auto; border: 1px solid #dfe2e5; border-radius: 6
 """
 
 html = f'''<!DOCTYPE html>
-<html lang="en">
+<html lang="{lang_code}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -103,7 +106,7 @@ html = f'''<!DOCTYPE html>
 </body>
 </html>'''
 
-os.makedirs(html_dir, exist_ok=True)
-with open(output, 'w') as f:
+os.makedirs(os.path.dirname(output) if os.path.dirname(output) else html_dir, exist_ok=True)
+with open(output, 'w', encoding='utf-8') as f:
     f.write(html)
 print(f'  HTML generated: {output} ({len(html)} bytes)')

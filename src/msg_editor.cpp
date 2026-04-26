@@ -12,6 +12,7 @@
 #include "text_utils.h"
 #include "file_dir_utils.h"
 #include "file_browser.h"
+#include "i18n.h"
 #include <cctype>
 #include <fstream>
 #include <filesystem>
@@ -286,13 +287,13 @@ void MessageEditor::drawIceHeader()
     g_term->setAttr(cachedBorderColor(1, iceVertRightColors, bc1, bc2));
     g_term->putCP437(1, cols - 1, CP437_BOX_DRAWINGS_LIGHT_VERTICAL);
 
-    printAt(1, 1, "TO", labelAt);
-    printAt(1, 3, ":", colonAt);
+    printAt(1, 1, _("TO"), labelAt);
+    printAt(1, 3, _(":"), colonAt);
     printAt(1, 5, padStr(truncateStr(toField, 27), 27), toAt);
 
     int fromX = 35;
-    printAt(1, fromX, "FROM", labelAt);
-    printAt(1, fromX + 4, ":", colonAt);
+    printAt(1, fromX, _("FROM"), labelAt);
+    printAt(1, fromX + 4, _(":"), colonAt);
     printAt(1, fromX + 6, padStr(truncateStr(fromField, cols - fromX - 18), cols - fromX - 18), fromAt);
 
     // Time
@@ -314,16 +315,16 @@ void MessageEditor::drawIceHeader()
     g_term->setAttr(cachedBorderColor(2, iceVertRightColors, bc1, bc2));
     g_term->putCP437(2, cols - 1, CP437_BOX_DRAWINGS_LIGHT_VERTICAL);
 
-    printAt(2, 1, "SUBJECT", labelAt);
-    printAt(2, 8, ":", colonAt);
+    printAt(2, 1, _("SUBJECT"), labelAt);
+    printAt(2, 8, _(":"), colonAt);
     int subjW = cols - 24;
     printAt(2, 10, padStr(truncateStr(subjectField, subjW), subjW), subjAt);
 
     // TL (time left - just show a placeholder) and INS/OVR
-    printAt(2, cols - 14, "TL", labelAt);
-    printAt(2, cols - 12, ":", colonAt);
-    printAt(2, cols - 10, "---", iceTheme.topTimeLeftColor);
-    string modeStr = insertMode ? "INS" : "OVR";
+    printAt(2, cols - 14, _("TL"), labelAt);
+    printAt(2, cols - 12, _(":"), colonAt);
+    printAt(2, cols - 10, _("---"), iceTheme.topTimeLeftColor);
+    string modeStr = insertMode ? _("INS") : _("OVR");
     printAt(2, cols - 5, modeStr, modeAt);
 
     // Row 3: Separator with embedded info
@@ -531,9 +532,9 @@ void MessageEditor::drawIceStatusBar()
         printAt(y, kx, ")" + desc + " ", ctrlAt);
         kx += static_cast<int>(desc.size()) + 2;
     };
-    drawKey('A', "bort");
-    drawKey('Q', "Quote");
-    drawKey('Z', "Save");
+    drawKey('A', _("bort"));
+    drawKey('Q', _("Quote"));
+    drawKey('Z', _("Save"));
 
     // Row LINES-1: copyright/help line
     y = rows - 1;
@@ -552,7 +553,7 @@ void MessageEditor::drawIceStatusBar()
     cx += static_cast<int>(fromField.size()) + 5;
     printAt(y, cx, "Press ", helpAt);
     printAt(y, cx + 6, "ESC", tAttr(TC_GREEN, TC_BLACK, true));
-    printAt(y, cx + 9, "ape For Help", helpAt);
+    printAt(y, cx + 9, _("ape For Help"), helpAt);
 }
 
 // ---- DCT bottom status bar ----
@@ -586,8 +587,8 @@ void MessageEditor::drawDctStatusBar()
     int totalWidth = 0;
     struct DctHelpItem { string key; string desc; };
     vector<DctHelpItem> helpItems = {
-        {"CTRL Z", "Save"}, {"CTRL A", "Abort"},
-        {"CTRL Q", "Quote"}, {"ESC", "Menu"}
+        {"CTRL Z", _("Save")}, {"CTRL A", _("Abort")},
+        {"CTRL Q", _("Quote")}, {"ESC", _("Menu")}
     };
     for (auto& item : helpItems)
     {
@@ -615,10 +616,10 @@ void MessageEditor::drawDctStatusBar()
         x += static_cast<int>(desc.size()) + 3;
     };
 
-    drawDctKey("CTRL Z", "Save");
-    drawDctKey("CTRL A", "Abort");
-    drawDctKey("CTRL Q", "Quote");
-    drawDctKey("ESC", "Menu");
+    drawDctKey("CTRL Z", _("Save"));
+    drawDctKey("CTRL A", _("Abort"));
+    drawDctKey("CTRL Q", _("Quote"));
+    drawDctKey("ESC", _("Menu"));
 
     // INS/OVR at far right
     string modeStr = insertMode ? "INS" : "OVR";
@@ -760,7 +761,7 @@ void MessageEditor::drawQuoteWindow()
         g_term->setAttr(randomBorderColor(iceTheme.borderColor1, iceTheme.borderColor2));
         g_term->putCP437(quoteWinTop, 0, CP437_BOX_DRAWINGS_UPPER_LEFT_SINGLE);
         g_term->putCP437(quoteWinTop, 1, CP437_LEFT_HALF_BLOCK);
-        printAt(quoteWinTop, 2, "Quote Window", iceTheme.quoteWinBorderTextColor);
+        printAt(quoteWinTop, 2, _("Quote Window"), iceTheme.quoteWinBorderTextColor);
         g_term->setAttr(randomBorderColor(iceTheme.borderColor1, iceTheme.borderColor2));
         g_term->putCP437(quoteWinTop, 14, CP437_RIGHT_HALF_BLOCK);
         const int lastCol = editWidth-1;
@@ -780,7 +781,7 @@ void MessageEditor::drawQuoteWindow()
         g_term->putCP437(quoteWinTop, 0, CP437_BOX_DRAWINGS_UPPER_LEFT_SINGLE);
         g_term->drawHLine(quoteWinTop, 1, editWidth - 2);
         g_term->putCP437(quoteWinTop, editWidth - 1, CP437_BOX_DRAWINGS_UPPER_RIGHT_SINGLE);
-        printAt(quoteWinTop, 2, " Quote Window ", dctTheme.quoteWinBorderTextColor);
+        printAt(quoteWinTop, 2, string(" ") + _("Quote Window") + " ", dctTheme.quoteWinBorderTextColor);
     }
 
     // Quote lines
@@ -827,14 +828,14 @@ void MessageEditor::drawQuoteWindow()
         g_term->setAttr(randomBorderColor(iceTheme.borderColor1, iceTheme.borderColor2));
         g_term->putCP437(bottomY, col++, CP437_BOX_DRAWINGS_LOWER_LEFT_SINGLE);
         // 1st section
-        string helpStr = "^Q/ESC=End";
+        string helpStr = _("^Q/ESC=End");
         g_term->setAttr(randomBorderColor(iceTheme.borderColor1, iceTheme.borderColor2));
         g_term->putCP437(bottomY, col++, CP437_LEFT_HALF_BLOCK);
         g_term->setAttr(iceTheme.quoteWinBorderTextColor);
         printAt(bottomY, col, helpStr, iceTheme.quoteWinBorderTextColor);
         col += (int)helpStr.length();
         // 2nd section
-        helpStr = "CR=Accept";
+        helpStr = _("CR=Accept");
         g_term->setAttr(randomBorderColor(iceTheme.borderColor1, iceTheme.borderColor2));
         g_term->putCP437(bottomY, col++, CP437_RIGHT_HALF_BLOCK);
         g_term->setAttr(randomBorderColor(iceTheme.borderColor1, iceTheme.borderColor2));
@@ -843,7 +844,7 @@ void MessageEditor::drawQuoteWindow()
         printAt(bottomY, col, helpStr, iceTheme.quoteWinBorderTextColor);
         col += (int)helpStr.length();
         // 3rd section
-        helpStr = "Up/Down/PgUp/PgDn/Home/End=Scroll";
+        helpStr = _("Up/Down/PgUp/PgDn/Home/End=Scroll");
         g_term->setAttr(randomBorderColor(iceTheme.borderColor1, iceTheme.borderColor2));
         g_term->putCP437(bottomY, col++, CP437_RIGHT_HALF_BLOCK);
         g_term->setAttr(randomBorderColor(iceTheme.borderColor1, iceTheme.borderColor2));
@@ -866,7 +867,7 @@ void MessageEditor::drawQuoteWindow()
         // DCT mode
         g_term->setAttr(dctTheme.quoteWinBorderColor);
         g_term->putCP437(bottomY, 0, CP437_BOX_DRAWINGS_LOWER_LEFT_SINGLE);
-        const string helpStr = " ^Q/ESC=End | CR=Accept | Up/Down/PgUp/PgDn/Home/End=Scroll ";
+        const string helpStr = string(" ") + _("^Q/ESC=End") + " | " + _("CR=Accept") + " | " + _("Up/Down/PgUp/PgDn/Home/End=Scroll") + " ";
         g_term->drawHLine(bottomY, 1, editWidth - 2);
         g_term->putCP437(bottomY, editWidth - 1, CP437_BOX_DRAWINGS_LOWER_RIGHT_SINGLE);
         int helpX = (editWidth - static_cast<int>(helpStr.length())) / 2;
@@ -903,7 +904,7 @@ bool MessageEditor::promptYesNoIce(const string& question)
         TermAttr yesTxt = selectedYes ? selTxt : unsTxt;
         g_term->setAttr(yesBdr);
         g_term->putCP437(y, optX, CP437_LEFT_HALF_BLOCK);
-        printAt(y, optX + 1, "Yes", yesTxt);
+        printAt(y, optX + 1, _("Yes"), yesTxt);
         g_term->setAttr(yesBdr);
         g_term->putCP437(y, optX + 4, CP437_RIGHT_HALF_BLOCK);
 
@@ -914,7 +915,7 @@ bool MessageEditor::promptYesNoIce(const string& question)
         TermAttr noTxt = selectedYes ? unsTxt : selTxt;
         g_term->setAttr(noBdr);
         g_term->putCP437(y, optX, CP437_LEFT_HALF_BLOCK);
-        printAt(y, optX + 1, "No", noTxt);
+        printAt(y, optX + 1, _("No"), noTxt);
         g_term->setAttr(noBdr);
         g_term->putCP437(y, optX + 3, CP437_RIGHT_HALF_BLOCK);
 
@@ -1001,7 +1002,7 @@ bool MessageEditor::promptYesNoDct(const string& question, const string& title)
         if (selectedYes)
         {
             printAt(dlgY + 4, bx, "[", brkAttr);
-            printAt(dlgY + 4, bx + 1, "Yes", ynAttr);
+            printAt(dlgY + 4, bx + 1, _("Yes"), ynAttr);
             printAt(dlgY + 4, bx + 4, "]", brkAttr);
         }
         else
@@ -1015,7 +1016,7 @@ bool MessageEditor::promptYesNoDct(const string& question, const string& title)
         if (!selectedYes)
         {
             printAt(dlgY + 4, bx, "[", brkAttr);
-            printAt(dlgY + 4, bx + 1, "No", ynAttr);
+            printAt(dlgY + 4, bx + 1, _("No"), ynAttr);
             printAt(dlgY + 4, bx + 3, "]", brkAttr);
         }
         else
@@ -1094,7 +1095,7 @@ int MessageEditor::showEscMenu()
         fillRow(menuY + r, tAttr(TC_WHITE, TC_BLACK, false), menuX, menuX + menuW);
     }
 
-    drawBox(menuY, menuX, menuH, menuW, borderAttr, "Editor Menu", borderAttr);
+    drawBox(menuY, menuX, menuH, menuW, borderAttr, _("Editor Menu"), borderAttr);
 
     int y = menuY + 2;
     auto menuItem = [&](const string& key, const string& desc)
@@ -1105,17 +1106,17 @@ int MessageEditor::showEscMenu()
         ++y;
     };
 
-    menuItem("S", "Save message");
-    menuItem("A", "Abort (cancel)");
-    menuItem("I", "Toggle Insert/Overwrite");
-    menuItem("D", "Delete current line");
-    menuItem("Q", "Open quote window");
-    menuItem("W", "Word/text search");
-    menuItem("G", "Insert graphic character");
-    menuItem("L", "Command key help");
-    menuItem("C", "Change subject");
+    menuItem("S", _("Save message"));
+    menuItem("A", _("Abort (cancel)"));
+    menuItem("I", _("Toggle Insert/Overwrite"));
+    menuItem("D", _("Delete current line"));
+    menuItem("Q", _("Open quote window"));
+    menuItem("W", _("Word/text search"));
+    menuItem("G", _("Insert graphic character"));
+    menuItem("L", _("Command key help"));
+    menuItem("C", _("Change subject"));
     ++y;
-    printAt(y, menuX + 3, "ESC to close menu",
+    printAt(y, menuX + 3, _("ESC to close menu"),
             tAttr(TC_GREEN, TC_BLACK, false));
 
     g_term->refresh();
@@ -1127,7 +1128,7 @@ bool MessageEditor::handleQuoteWindow()
 {
     if (quoteLines.empty())
     {
-        messageDialog("Quote", "No quote lines available.");
+        messageDialog(_("Quote"), _("No quote lines available."));
         return false;
     }
     quoteWindowOpen = true;
@@ -1342,7 +1343,7 @@ void MessageEditor::showHelpScreen()
     ++y;
 
     // Navigation help
-    string navStr = "Up, Dn, PgUp, PgDn, HOME, END, ESC/Q=Close";
+    string navStr = _("Up, Dn, PgUp, PgDn, HOME, END, ESC/Q=Close");
     int navX = (cols - static_cast<int>(navStr.size()) - 2) / 2;
     drawBox(y, navX - 1, 3, static_cast<int>(navStr.size()) + 4,
             tAttr(TC_RED, TC_BLACK, false));
@@ -1352,9 +1353,9 @@ void MessageEditor::showHelpScreen()
     // Two column help
     TermAttr sectionAttr = headAttr;
     drawHLine(y, 0, cols / 2, sectionAttr);
-    printAt(y, 1, " Help keys ", sectionAttr);
+    printAt(y, 1, _(" Help keys "), sectionAttr);
     drawHLine(y, cols / 2, cols / 2, sectionAttr);
-    printAt(y, cols / 2 + 1, " Slash commands (on blank line) ", sectionAttr);
+    printAt(y, cols / 2 + 1, _(" Slash commands (on blank line) "), sectionAttr);
     ++y;
     ++y;
 
@@ -1366,26 +1367,26 @@ void MessageEditor::showHelpScreen()
     };
 
     // Left column
-    helpLine(0, "Ctrl-G", "Input graphic character");
-    helpLine(1, "/A", "Abort");
+    helpLine(0, "Ctrl-G", _("Input graphic character"));
+    helpLine(1, "/A", _("Abort"));
     ++y;
-    helpLine(0, "Ctrl-L", "Command key list (this)");
-    helpLine(1, "/S", "Save");
+    helpLine(0, "Ctrl-L", _("Command key list (this)"));
+    helpLine(1, "/S", _("Save"));
     ++y;
-    helpLine(0, "Ctrl-T", "List text replacements");
-    helpLine(1, "/Q", "Quote message");
-    ++y;
-    helpLine(0, "", "");
-    helpLine(1, "/U", "Your user settings");
+    helpLine(0, "Ctrl-T", _("List text replacements"));
+    helpLine(1, "/Q", _("Quote message"));
     ++y;
     helpLine(0, "", "");
-    helpLine(1, "/?", "Show help");
+    helpLine(1, "/U", _("Your user settings"));
+    ++y;
+    helpLine(0, "", "");
+    helpLine(1, "/?", _("Show help"));
     ++y;
     ++y;
 
     // Command/edit keys section
     drawHLine(y, 0, cols, sectionAttr);
-    printAt(y, 1, " Command/edit keys ", sectionAttr);
+    printAt(y, 1, _(" Command/edit keys "), sectionAttr);
     ++y;
     ++y;
 
@@ -1407,7 +1408,7 @@ void MessageEditor::showHelpScreen()
     cmdLine("Ctrl-U", "Your user settings", "Ctrl-K", "Change text color");
 
     y += 2;
-    printCentered(y, "Hit a key", tAttr(TC_GREEN, TC_BLACK, false));
+    printCentered(y, _("Hit a key"), tAttr(TC_GREEN, TC_BLACK, false));
     g_term->refresh();
     g_term->getKey();
 }
@@ -2340,7 +2341,7 @@ EditorResult MessageEditor::run(Settings& settings, const string& baseDir)
                     }
                     else
                     {
-                        messageDialog("Error", "Could not open file.");
+                        messageDialog(_("Error"), _("Could not open file."));
                     }
                 }
                 g_term->setCursorVisible(true);
@@ -2965,7 +2966,7 @@ string selectTagline(const string& baseDir)
     vector<string> taglines = loadTaglines(baseDir);
     if (taglines.empty())
     {
-        messageDialog("Taglines", "No taglines found in tagline_files/taglines.txt");
+        messageDialog(_("Taglines"), _("No taglines found in tagline_files/taglines.txt"));
         return "";
     }
 
@@ -3006,7 +3007,7 @@ string selectTagline(const string& baseDir)
         g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
 
         // Title
-        string title = " Select Tagline (R=Random) ";
+        string title = _(" Select Tagline (R=Random) ");
         int titleX = dlgX + 3;
         g_term->setAttr(borderAttr);
         g_term->putCP437(dlgY, titleX, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
@@ -3189,7 +3190,7 @@ bool performSpellCheck(vector<EditorLine>& lines,
 
     if (allDictWords.empty())
     {
-        messageDialog("Spell Check", "No dictionaries loaded. Configure in settings.");
+        messageDialog(_("Spell Check"), _("No dictionaries loaded. Configure in settings."));
         return false;
     }
     std::sort(allDictWords.begin(), allDictWords.end());
@@ -3236,7 +3237,7 @@ bool performSpellCheck(vector<EditorLine>& lines,
 
     if (misspellings.empty())
     {
-        messageDialog("Spell Check", "No misspelled words found!");
+        messageDialog(_("Spell Check"), _("No misspelled words found!"));
         return false;
     }
 
@@ -3333,7 +3334,7 @@ void postSaveProcessing(vector<EditorLine>& lines,
     // Spell-check prompt
     if (settings.promptSpellCheck && !settings.spellDictionaries.empty())
     {
-        if (confirmDialog("Run spell checker on your message?"))
+        if (confirmDialog(_("Run spell checker on your message?")))
         {
             performSpellCheck(lines, baseDir, settings.spellDictionaries);
         }
@@ -3342,7 +3343,7 @@ void postSaveProcessing(vector<EditorLine>& lines,
     // Tagline selection - prompt user first
     if (settings.taglines)
     {
-        if (confirmDialog("Add a tagline to the message?"))
+        if (confirmDialog(_("Add a tagline to the message?")))
         {
             string tagline = selectTagline(baseDir);
             if (!tagline.empty())
@@ -3397,7 +3398,7 @@ EditorResult editReply(const QwkMessage& origMsg,
         }
         if (isEmpty)
         {
-            messageDialog("Message Aborted", "Message was empty. Message not posted.");
+            messageDialog(_("Message Aborted"), _("Message was empty. Message not posted."));
             return EditorResult::Aborted;
         }
         reply.conference = origMsg.conference;
@@ -3551,7 +3552,7 @@ EditorResult editNewMessage(const string& userName,
         }
         if (isEmpty)
         {
-            messageDialog("Message Aborted", "Message was empty. Message not posted.");
+            messageDialog(_("Message Aborted"), _("Message was empty. Message not posted."));
             return EditorResult::Aborted;
         }
         reply.conference = confNumber;

@@ -11,6 +11,7 @@
 #include "settings_dialog.h"
 #include "file_browser.h"
 #include "program_info.h"
+#include "i18n.h"
 
 #include <filesystem>
 #include <ctime>
@@ -33,6 +34,7 @@ enum class ConfigCategory
     COUNT
 };
 
+// NOTE: these strings are translated at use-time via _() in showMainMenu()
 static const char* categoryNames[] =
 {
     "Editor Settings",
@@ -93,12 +95,12 @@ static bool editReaderSettings(Settings& settings)
     };
     vector<ReaderItem> items =
     {
-        {"Show kludge/control lines (@MSGID, @REPLY, etc.)", &settings.showKludgeLines},
-        {"Show tear lines and origin lines",                  &settings.showTearLine},
-        {"Show scrollbar in message reader",                  &settings.useScrollbar},
-        {"Only show areas with new mail",                     &settings.onlyShowAreasWithNewMail},
-        {"Strip ANSI codes from messages",                    &settings.stripAnsi},
-        {"Show messages in reverse order (newest first)",      &settings.reverseOrder},
+        {_("Show kludge/control lines (@MSGID, @REPLY, etc.)"), &settings.showKludgeLines},
+        {_("Show tear lines and origin lines"),                  &settings.showTearLine},
+        {_("Show scrollbar in message reader"),                  &settings.useScrollbar},
+        {_("Only show areas with new mail"),                     &settings.onlyShowAreasWithNewMail},
+        {_("Strip ANSI codes from messages"),                    &settings.stripAnsi},
+        {_("Show messages in reverse order (newest first)"),      &settings.reverseOrder},
     };
 
     // Total rows = bool items + 1 extra row for "Attribute code toggles..."
@@ -137,7 +139,7 @@ static bool editReaderSettings(Settings& settings)
         g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
 
         // Title
-        string titleText = " Reader Settings ";
+        string titleText = _(" Reader Settings ");
         int titleX = dlgX + 3;
         g_term->setAttr(borderAttr);
         g_term->putCP437(dlgY, titleX, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
@@ -149,7 +151,7 @@ static bool editReaderSettings(Settings& settings)
 
         // "Enabled" label
         g_term->setAttr(titleAttr);
-        g_term->printStr(dlgY, dlgX + dlgW - 14, " Enabled ");
+        g_term->printStr(dlgY, dlgX + dlgW - 14, _(" Enabled "));
 
         // Items
         for (int i = 0; i < itemCount; ++i)
@@ -189,7 +191,7 @@ static bool editReaderSettings(Settings& settings)
             else
             {
                 // Sub-menu item: "Attribute code toggles..."
-                printAt(y, dlgX + 2, "Attribute code toggles...", lbl);
+                printAt(y, dlgX + 2, _("Attribute code toggles..."), lbl);
             }
         }
 
@@ -208,12 +210,12 @@ static bool editReaderSettings(Settings& settings)
         g_term->drawHLine(helpY, dlgX + 1, dlgW - 2);
         g_term->putCP437(helpY, dlgX + dlgW - 1,
                          CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
-        string helpText = "Up, Dn, Enter/Space=Toggle, ESC=Done";
+        string helpText = _("Up, Dn, Enter/Space=Toggle, ESC=Done");
         int helpX = dlgX + (dlgW - static_cast<int>(helpText.size())) / 2;
         g_term->setAttr(titleAttr);
         g_term->printStr(helpY, helpX, helpText);
 
-        drawFooter("Arrow keys to navigate, Enter/Space to toggle, ESC to go back");
+        drawFooter(_("Arrow keys to navigate, Enter/Space to toggle, ESC to go back"));
         g_term->refresh();
 
         int ch = g_term->getKey();
@@ -283,8 +285,8 @@ static bool editThemeSettings(Settings& settings, const string& baseDir)
     for (;;)
     {
         // Rebuild labels with current values
-        items[0].label = "Ice mode theme:  " + (settings.iceThemeFile.empty() ? "(default: BlueIce)" : settings.iceThemeFile);
-        items[1].label = "DCT mode theme:  " + (settings.dctThemeFile.empty() ? "(default: Default)" : settings.dctThemeFile);
+        items[0].label = string(_("Ice mode theme:  ")) + (settings.iceThemeFile.empty() ? _("(default: BlueIce)") : settings.iceThemeFile);
+        items[1].label = string(_("DCT mode theme:  ")) + (settings.dctThemeFile.empty() ? _("(default: Default)") : settings.dctThemeFile);
 
         int dlgW = 73;
         if (dlgW > g_term->getCols() - 4)
@@ -310,7 +312,7 @@ static bool editThemeSettings(Settings& settings, const string& baseDir)
         g_term->setAttr(borderAttr);
         g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
 
-        string titleText = " Theme Settings ";
+        string titleText = _(" Theme Settings ");
         int titleX = dlgX + 3;
         g_term->setAttr(borderAttr);
         g_term->putCP437(dlgY, titleX, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
@@ -353,12 +355,12 @@ static bool editThemeSettings(Settings& settings, const string& baseDir)
         g_term->drawHLine(helpY, dlgX + 1, dlgW - 2);
         g_term->putCP437(helpY, dlgX + dlgW - 1,
                          CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
-        string helpText = "Enter=Select theme file, ESC=Done";
+        string helpText = _("Enter=Select theme file, ESC=Done");
         int helpX = dlgX + (dlgW - static_cast<int>(helpText.size())) / 2;
         g_term->setAttr(titleAttr);
         g_term->printStr(helpY, helpX, helpText);
 
-        drawFooter("Enter to browse theme files, ESC to go back");
+        drawFooter(_("Enter to browse theme files, ESC to go back"));
         g_term->refresh();
 
         int ch = g_term->getKey();
@@ -369,6 +371,18 @@ static bool editThemeSettings(Settings& settings, const string& baseDir)
                 break;
             case TK_DOWN:
                 if (selected < itemCount - 1) ++selected;
+                break;
+            case TK_HOME:
+                selected = 0;
+                break;
+            case TK_END:
+                selected = itemCount - 1;
+                break;
+            case TK_PGUP:
+                selected = 0;
+                break;
+            case TK_PGDN:
+                selected = itemCount - 1;
                 break;
             case TK_ENTER:
             case ' ':
@@ -397,7 +411,7 @@ static bool editThemeSettings(Settings& settings, const string& baseDir)
 
                 if (themeFiles.empty())
                 {
-                    messageDialog("Themes", "No theme files found in config/");
+                    messageDialog(_("Themes"), _("No theme files found in config/"));
                     break;
                 }
 
@@ -437,7 +451,7 @@ static bool editThemeSettings(Settings& settings, const string& baseDir)
                     g_term->setAttr(borderAttr);
                     g_term->drawBox(sDlgY, sDlgX, sDlgH, sDlgW);
 
-                    string sTitle = " Select Theme File ";
+                    string sTitle = _(" Select Theme File ");
                     int sTitleX = sDlgX + 3;
                     g_term->setAttr(borderAttr);
                     g_term->putCP437(sDlgY, sTitleX, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
@@ -493,12 +507,12 @@ static bool editThemeSettings(Settings& settings, const string& baseDir)
                     g_term->drawHLine(sHelpY, sDlgX + 1, sDlgW - 2);
                     g_term->putCP437(sHelpY, sDlgX + sDlgW - 1,
                                      CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
-                    string sHelp = "Enter=Select, ESC=Cancel";
+                    string sHelp = _("Enter=Select, ESC=Cancel");
                     int sHelpX = sDlgX + (sDlgW - static_cast<int>(sHelp.size())) / 2;
                     g_term->setAttr(titleAttr);
                     g_term->printStr(sHelpY, sHelpX, sHelp);
 
-                    drawFooter("Select a theme file");
+                    drawFooter(_("Select a theme file"));
                     g_term->refresh();
 
                     int sCh = g_term->getKey();
@@ -565,18 +579,19 @@ static bool editGeneralSettings(Settings& settings)
     };
     vector<GenItem> items =
     {
-        {"Your name (for replies)", &settings.userName, 25},
-        {"Reply packet directory",  &settings.replyDir, 60},
+        {_("Your name (for replies)"), &settings.userName, 25},
+        {_("Reply packet directory"),  &settings.replyDir, 60},
     };
 
     int strItemCount = static_cast<int>(items.size());
     // Non-string items
-    int itemCount = strItemCount + 5;
+    int itemCount = strItemCount + 6;
     int extEditorsListIdx = strItemCount;
     int useExtEditorIdx = strItemCount + 1;
     int selectEditorIdx = strItemCount + 2;
     int lightbarIdx = strItemCount + 3;
     int splashIdx = strItemCount + 4;
+    int langIdx = strItemCount + 5;
     int selected = 0;
     bool changed = false;
 
@@ -606,7 +621,7 @@ static bool editGeneralSettings(Settings& settings)
         g_term->setAttr(borderAttr);
         g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
 
-        string titleText = " General Settings ";
+        string titleText = _(" General Settings ");
         int titleX = dlgX + 3;
         g_term->setAttr(borderAttr);
         g_term->putCP437(dlgY, titleX, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
@@ -633,20 +648,42 @@ static bool editGeneralSettings(Settings& settings)
             if (i < strItemCount)
             {
                 string display = items[i].label + ": " +
-                    (items[i].value->empty() ? "(not set)" : *(items[i].value));
+                    (items[i].value->empty() ? _("(not set)") : *(items[i].value));
                 printAt(y, dlgX + 2, truncateStr(display, dlgW - 4),
                         isSel ? selAttr : itemAttr);
             }
             else if (i == extEditorsListIdx)
             {
                 TermAttr lbl = isSel ? selAttr : itemAttr;
-                printAt(y, dlgX + 2, "External Editors...", lbl);
+                printAt(y, dlgX + 2, _("External Editors..."), lbl);
             }
             else if (i == selectEditorIdx)
             {
                 TermAttr lbl = isSel ? selAttr : itemAttr;
-                string edName = settings.selectedEditor.empty() ? "(none)" : settings.selectedEditor;
-                printAt(y, dlgX + 2, "External Editor: " + edName, lbl);
+                string edName = settings.selectedEditor.empty() ? _("(none)") : settings.selectedEditor;
+                printAt(y, dlgX + 2, string(_("External Editor: ")) + edName, lbl);
+            }
+            else if (i == langIdx)
+            {
+                TermAttr lbl = isSel ? selAttr : itemAttr;
+                string langDisplay;
+                if (settings.language.empty())
+                {
+                    langDisplay = _("OS Default");
+                }
+                else
+                {
+                    langDisplay = settings.language;
+                    for (const auto& le : i18n_supported_languages())
+                    {
+                        if (le.code == settings.language)
+                        {
+                            langDisplay = le.displayName;
+                            break;
+                        }
+                    }
+                }
+                printAt(y, dlgX + 2, string(_("Language: ")) + langDisplay, lbl);
             }
             else
             {
@@ -655,17 +692,17 @@ static bool editGeneralSettings(Settings& settings)
                 string toggleLabel;
                 if (i == splashIdx)
                 {
-                    toggleLabel = "Show splash screen on startup";
+                    toggleLabel = _("Show splash screen on startup");
                     toggleVal = settings.showSplashScreen;
                 }
                 else if (i == useExtEditorIdx)
                 {
-                    toggleLabel = "Use external editor";
+                    toggleLabel = _("Use external editor");
                     toggleVal = settings.useExternalEditor;
                 }
                 else if (i == lightbarIdx)
                 {
-                    toggleLabel = "Use lightbar navigation in message list";
+                    toggleLabel = _("Use lightbar navigation in message list");
                     toggleVal = settings.lightbarMode;
                 }
                 TermAttr lbl = isSel ? selAttr : itemAttr;
@@ -701,12 +738,12 @@ static bool editGeneralSettings(Settings& settings)
         g_term->drawHLine(helpY, dlgX + 1, dlgW - 2);
         g_term->putCP437(helpY, dlgX + dlgW - 1,
                          CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
-        string helpText = "Enter=Edit value, ESC=Done";
+        string helpText = _("Enter=Edit value, ESC=Done");
         int helpX = dlgX + (dlgW - static_cast<int>(helpText.size())) / 2;
         g_term->setAttr(titleAttr);
         g_term->printStr(helpY, helpX, helpText);
 
-        drawFooter("Enter to edit, ESC to go back");
+        drawFooter(_("Enter to edit, ESC to go back"));
         g_term->refresh();
 
         int ch = g_term->getKey();
@@ -717,6 +754,18 @@ static bool editGeneralSettings(Settings& settings)
                 break;
             case TK_DOWN:
                 if (selected < itemCount - 1) ++selected;
+                break;
+            case TK_HOME:
+                selected = 0;
+                break;
+            case TK_END:
+                selected = itemCount - 1;
+                break;
+            case TK_PGUP:
+                selected = 0;
+                break;
+            case TK_PGDN:
+                selected = itemCount - 1;
                 break;
             case TK_ENTER:
             case ' ':
@@ -770,6 +819,16 @@ static bool editGeneralSettings(Settings& settings)
                     }
                     changed = true;
                 }
+                else if (selected == langIdx)
+                {
+                    string newCode = showLanguageSelector(settings.language);
+                    if (newCode != settings.language)
+                    {
+                        settings.language = newCode;
+                        changed = true;
+                        messageDialog(_("Language"), _("Restart required for language change to take effect."));
+                    }
+                }
                 else if (selected == 1) // Reply packet directory — use directory chooser
                 {
                     string startDir = settings.replyDir;
@@ -777,7 +836,7 @@ static bool editGeneralSettings(Settings& settings)
                     {
                         startDir = getSlyMailDataDir() + PATH_SEP_STR + "REP";
                     }
-                    string val = showDirChooser(startDir, "Select Reply Packet Directory");
+                    string val = showDirChooser(startDir, _("Select Reply Packet Directory"));
                     if (!val.empty())
                     {
                         settings.replyDir = val;
@@ -840,7 +899,7 @@ static void showMainMenu(Settings& settings, const string& baseDir)
         g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
 
         // Title
-        string titleText = " SlyMail Configuration ";
+        string titleText = _(" SlyMail Configuration ");
         int titleX = dlgX + 3;
         g_term->setAttr(borderAttr);
         g_term->putCP437(dlgY, titleX, CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
@@ -865,7 +924,7 @@ static void showMainMenu(Settings& settings, const string& baseDir)
                 fillRow(y, tAttr(TC_BLACK, TC_BLACK, false), dlgX + 1, dlgX + dlgW - 1);
             }
 
-            printAt(y, dlgX + 2, categoryNames[i], isSel ? selAttr : itemAttr);
+            printAt(y, dlgX + 2, _(categoryNames[i]), isSel ? selAttr : itemAttr);
         }
 
         // Bottom help
@@ -875,16 +934,16 @@ static void showMainMenu(Settings& settings, const string& baseDir)
         g_term->drawHLine(helpY, dlgX + 1, dlgW - 2);
         g_term->putCP437(helpY, dlgX + dlgW - 1,
                          CP437_BOX_DRAWINGS_LIGHT_VERTICAL_AND_LEFT);
-        string helpText = "Enter=Open, S=Save, Q/ESC=Quit";
+        string helpText = _("Enter=Open, S=Save, Q/ESC=Quit");
         int helpX = dlgX + (dlgW - static_cast<int>(helpText.size())) / 2;
         g_term->setAttr(titleAttr);
         g_term->printStr(helpY, helpX, helpText);
 
         // Settings file path info
-        printAt(rows - 3, 2, "Settings file: " + Settings::getSettingsPath(),
+        printAt(rows - 3, 2, string(_("Settings file: ")) + Settings::getSettingsPath(),
                 tAttr(TC_BLACK, TC_BLACK, true));
 
-        drawFooter("Enter=Open category, S=Save settings, Q/ESC=Quit");
+        drawFooter(_("Enter=Open category, S=Save settings, Q/ESC=Quit"));
         g_term->refresh();
 
         int ch = g_term->getKey();
@@ -927,7 +986,7 @@ static void showMainMenu(Settings& settings, const string& baseDir)
                 if (catChanged)
                 {
                     settings.save();
-                    messageDialog("Settings", "Settings saved to " + Settings::getSettingsPath());
+                    messageDialog(_("Settings"), string(_("Settings saved to ")) + Settings::getSettingsPath());
                 }
                 break;
             }
@@ -935,7 +994,7 @@ static void showMainMenu(Settings& settings, const string& baseDir)
             case 'S':
             {
                 settings.save();
-                messageDialog("Settings", "Settings saved to " + Settings::getSettingsPath());
+                messageDialog(_("Settings"), string(_("Settings saved to ")) + Settings::getSettingsPath());
                 break;
             }
             case 'q':
@@ -977,6 +1036,9 @@ int main(int argc, char* argv[])
     Settings settings;
     bool settingsExist = settings.load();
 
+    // Initialize gettext locale (must be after settings.load() to pick up settings.language)
+    i18n_init(baseDir + PATH_SEP_STR + "locale", settings.language);
+
     // First-run: if no settings file exists, prompt for user name
     if (!settingsExist)
     {
@@ -995,11 +1057,11 @@ int main(int argc, char* argv[])
         TermAttr textAttr   = tAttr(TC_CYAN, TC_BLACK, false);
         TermAttr inputAttr  = tAttr(TC_WHITE, TC_BLACK, true);
 
-        drawBox(boxY, boxX, boxH, boxW, borderAttr, " Welcome ", titleAttr);
+        drawBox(boxY, boxX, boxH, boxW, borderAttr, _(" Welcome "), titleAttr);
 
-        printAt(boxY + 2, boxX + 3, "Welcome to SlyMail!", titleAttr);
-        printAt(boxY + 3, boxX + 3, "Please enter the name you intend", textAttr);
-        printAt(boxY + 4, boxX + 3, "to use when writing messages:", textAttr);
+        printAt(boxY + 2, boxX + 3, _("Welcome to SlyMail!"), titleAttr);
+        printAt(boxY + 3, boxX + 3, _("Please enter the name you intend"), textAttr);
+        printAt(boxY + 4, boxX + 3, _("to use when writing messages:"), textAttr);
 
         g_term->refresh();
 
