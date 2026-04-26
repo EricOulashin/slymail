@@ -19,19 +19,38 @@
   #ifdef HAVE_LIBINTL
     #include <libintl.h>
     #define _(str) gettext(str)
+    #define N_(str) str        // no-op marker for string extraction only
   #else
     // No-op stub: English only
     #define _(str) (str)
+    #define N_(str) str        // no-op marker for string extraction only
     #define gettext(str) (str)
     #define ngettext(s1, s2, n) ((n) == 1 ? (s1) : (s2))
     #define bindtextdomain(d, p) ((void)0)
     #define textdomain(d)        ((void)0)
   #endif
 #else
-  // POSIX: GNU gettext is available as part of libc (glibc) or libintl
-  #include <libintl.h>
-  #define _(str) gettext(str)
-  #define N_(str) str        // no-op marker for string extraction only
+  // POSIX: Prefer GNU gettext if available; on systems without libintl headers
+  // (e.g. macOS without Homebrew gettext), fall back to English-only stubs so
+  // the code still compiles in CI/build environments.
+  #if defined(__has_include)
+    #if __has_include(<libintl.h>)
+      #include <libintl.h>
+      #define _(str) gettext(str)
+      #define N_(str) str
+    #else
+      #define _(str) (str)
+      #define N_(str) str
+      #define gettext(str) (str)
+      #define ngettext(s1, s2, n) ((n) == 1 ? (s1) : (s2))
+      #define bindtextdomain(d, p) ((void)0)
+      #define textdomain(d)        ((void)0)
+    #endif
+  #else
+    #include <libintl.h>
+    #define _(str) gettext(str)
+    #define N_(str) str
+  #endif
 #endif
 
 #include <string>

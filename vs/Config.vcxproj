@@ -89,6 +89,7 @@
     <ClCompile Include="..\src\file_browser.cpp" />
     <ClCompile Include="..\src\terminal.cpp" />
     <ClCompile Include="..\src\file_dir_utils.cpp" />
+    <ClCompile Include="..\src\i18n.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\terminal.h" />
@@ -104,6 +105,7 @@
     <ClInclude Include="..\src\file_dir_utils.h" />
     <ClInclude Include="..\src\file_browser.h" />
     <ClInclude Include="..\src\remote_systems.h" />
+    <ClInclude Include="..\src\i18n.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

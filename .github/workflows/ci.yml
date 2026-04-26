@@ -25,7 +25,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
-          sudo apt-get install -y g++ make libncursesw5-dev zip unzip gettext python3-pip python3-weasyprint
+          sudo apt-get install -y g++ make libncursesw5-dev zip unzip gettext python3-pip
           # Python packages for user-manual doc generation (English + all translations)
           pip3 install --break-system-packages markdown weasyprint || pip3 install markdown weasyprint || true
 
@@ -35,7 +35,10 @@ jobs:
           # macOS provides clang++ with C++17 support, ncurses, zip, and unzip
           # out of the box. gettext provides xgettext/msgfmt for .po/.mo files.
           brew install gettext || true
-          brew link --force gettext || true
+          # Don't rely on `brew link` for headers; instead export include/lib paths.
+          echo "PATH=$(brew --prefix gettext)/bin:$PATH" >> "$GITHUB_ENV"
+          echo "CPPFLAGS=-I$(brew --prefix gettext)/include" >> "$GITHUB_ENV"
+          echo "LDFLAGS=-L$(brew --prefix gettext)/lib" >> "$GITHUB_ENV"
           # Python packages for user-manual doc generation
           pip3 install --break-system-packages markdown weasyprint || pip3 install markdown weasyprint || true
 
