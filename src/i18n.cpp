@@ -2,10 +2,6 @@
 #include <cstdlib>
 #include <clocale>
 
-#ifndef _WIN32
-#include <libintl.h>
-#endif
-
 void i18n_init(const std::string& localedir, const std::string& locale)
 {
 #ifndef _WIN32
