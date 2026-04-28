@@ -58,11 +58,11 @@ Ved første kørsel opretter SlyMail en datamappe på `~/.slymail` (på Linux, m
 
 ### Konfigurationsprogrammet
 
-SlyMail inkluderer et selvstændigt konfigurationsprogram kaldet `config` (eller `slymail-config` hvis installeret via `make install`). Dette program giver en tekstbaseret brugerflade til konfigurering af alle SlyMail-indstillinger uden at åbne hovedprogrammet.
+SlyMail inkluderer et selvstændigt konfigurationsprogram kaldet `config` (eller `config_slymail` hvis installeret via `make install`). Dette program giver en tekstbaseret brugerflade til konfigurering af alle SlyMail-indstillinger uden at åbne hovedprogrammet.
 
 Kør det fra kommandolinjen:
 
-    config
+    config_slymail
 
 Konfigurationsprogrammet tilbyder disse kategorier:
 

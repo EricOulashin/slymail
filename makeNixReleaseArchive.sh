@@ -20,7 +20,7 @@ cp slymail.ini "$releaseDirName"
 #cp README.md "$releaseDirName"
 #cp CHANGELOG.md "$releaseDirName"
 cp slymail "$releaseDirName"
-cp config "$releaseDirName"
+cp config_slymail "$releaseDirName"
 
 # Copy compiled locale (.mo) files for runtime translation
 mkdir -p "$releaseDirName/locale"

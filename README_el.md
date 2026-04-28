@@ -222,7 +222,7 @@ make
 
 Αυτό κατασκευάζει δύο προγράμματα:
 - `slymail` - η κύρια εφαρμογή αναγνώστη QWK
-- `config` - το αυτόνομο βοηθητικό πρόγραμμα διαμόρφωσης
+- `config_slymail` - το αυτόνομο βοηθητικό πρόγραμμα διαμόρφωσης
 
 ### Κατασκευή με σύμβολα εντοπισμού σφαλμάτων
 
@@ -257,7 +257,7 @@ msbuild vs\SlyMail.sln /p:Configuration=Debug /p:Platform=x64
 
 Αυτό κατασκευάζει δύο εκτελέσιμα αρχεία:
 - `x64\Release\slymail.exe` — ο κύριος αναγνώστης QWK
-- `x64\Release\config.exe` — το αυτόνομο βοηθητικό πρόγραμμα διαμόρφωσης
+- `x64\Release\config_slymail.exe` — το αυτόνομο βοηθητικό πρόγραμμα διαμόρφωσης
 
 Η λύση περιέχει δύο έργα (`SlyMail.vcxproj` και `Config.vcxproj`) που στοχεύουν x64, C++17, με το σύνολο εργαλείων MSVC v143.
 
@@ -281,7 +281,7 @@ make
 ./slymail MYBBS.qwk
 
 # Run the standalone configuration utility
-./config
+./config_slymail
 ```
 
 ### Πρόγραμμα διαμόρφωσης

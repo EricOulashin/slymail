@@ -59,7 +59,7 @@ vs/Release/
 
 # Built binaries
 /slymail
-/config
+/config_slymail
 
 # Generated documentation screenshots (copied from project root)
 docs/html/screenshots/

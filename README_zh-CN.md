@@ -222,7 +222,7 @@ make
 
 这将构建两个程序：
 - `slymail` - 主 QWK 阅读器应用程序
-- `config` - 独立配置工具
+- `config_slymail` - 独立配置工具
 
 ### 使用调试符号构建
 
@@ -257,7 +257,7 @@ msbuild vs\SlyMail.sln /p:Configuration=Debug /p:Platform=x64
 
 这将构建两个可执行文件：
 - `x64\Release\slymail.exe` — 主 QWK 阅读器
-- `x64\Release\config.exe` — 独立配置工具
+- `x64\Release\config_slymail.exe` — 独立配置工具
 
 解决方案包含两个项目（`SlyMail.vcxproj` 和 `Config.vcxproj`），面向 x64、C++17，使用 MSVC v143 工具集。
 
@@ -281,7 +281,7 @@ Makefile 自动检测平台并使用适当的终端实现：
 ./slymail MYBBS.qwk
 
 # Run the standalone configuration utility
-./config
+./config_slymail
 ```
 
 ### 配置程序

@@ -40,7 +40,7 @@ copy /y slymail.ini "%releaseDirName%\" >nul
 
 REM Copy Windows executables (Release x64 build)
 copy /y vs\x64\Release\slymail.exe "%releaseDirName%\" >nul
-copy /y vs\x64\Release\config.exe "%releaseDirName%\" >nul
+copy /y vs\x64\Release\config_slymail.exe "%releaseDirName%\" >nul
 
 REM Copy docs (if they exist)
 if exist docs\SlyMail_User_Manual.pdf copy /y docs\SlyMail_User_Manual.pdf "%releaseDirName%\docs\" >nul

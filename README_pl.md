@@ -257,7 +257,7 @@ msbuild vs\SlyMail.sln /p:Configuration=Debug /p:Platform=x64
 
 Kompiluje dwa pliki wykonywalne:
 - `x64\Release\slymail.exe` — główny czytnik QWK
-- `x64\Release\config.exe` — samodzielne narzędzie konfiguracyjne
+- `x64\Release\config_slymail.exe` — samodzielne narzędzie konfiguracyjne
 
 Rozwiązanie zawiera dwa projekty (`SlyMail.vcxproj` i `Config.vcxproj`) przeznaczone dla x64, C++17, z zestawem narzędzi MSVC v143.
 
@@ -281,7 +281,7 @@ Makefile automatycznie wykrywa platformę i używa odpowiedniej implementacji te
 ./slymail MYBBS.qwk
 
 # Run the standalone configuration utility
-./config
+./config_slymail
 ```
 
 ### Program konfiguracyjny

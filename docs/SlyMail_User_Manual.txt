@@ -135,7 +135,7 @@ application.
 
 Run it from the command line:
 
-    config
+    config_slymail
 
 The configuration program offers these categories:
 
@@ -148,7 +148,7 @@ The configuration program offers these categories:
     editor configuration, lightbar mode, splash screen
 
 Settings are saved automatically when you exit each category. Both SlyMail and
-the config program read and write the same slymail.ini file.
+the config_slymail program read and write the same slymail.ini file.
 
 3. File Browser
 ===============
@@ -430,7 +430,7 @@ SlyMail aborts the message and shows a notification instead of posting it.
 SlyMail supports using external text editors instead of the built-in editor. To
 configure an external editor:
 
-  1. Open Settings (Ctrl-U or the config program)
+  1. Open Settings (Ctrl-U or the config_slymail program)
   2. Go to External Editors... to add and configure editors
   3. Set the External Editor to select which configured editor to use
   4. Enable Use external editor
@@ -747,7 +747,7 @@ Changed
 -------
   - Quote line wrapping now respects terminal width when enabled
   - Configuration on first start: If the user doesn't have any SlyMail settings
-    yet (i.e., their .slymail directory doesn't exist yet), config will run on
+    yet (i.e., their .slymail directory doesn't exist yet), config_slymail will run on
     startup, and the user's name will be asked before continuing on into
     configuration settings.
 
@@ -822,5 +822,5 @@ Added
   - SlyEdit-inspired message editor with Ice and DCT modes
   - Theme support, spell checker, and taglines
   - REP reply packet creation
-  - File browser and standalone config utility
+  - File browser and standalone config_slymail utility
 

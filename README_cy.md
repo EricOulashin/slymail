@@ -257,7 +257,7 @@ msbuild vs\SlyMail.sln /p:Configuration=Debug /p:Platform=x64
 
 Mae hyn yn adeiladu dwy weithredadwy:
 - `x64\Release\slymail.exe` — y prif ddarllennydd QWK
-- `x64\Release\config.exe` — y cyfleustod ffurfweddu annibynnol
+- `x64\Release\config_slymail.exe` — y cyfleustod ffurfweddu annibynnol
 
 Mae'r ateb yn cynnwys dau brosiect (`SlyMail.vcxproj` a `Config.vcxproj`) wedi'u targedu at x64, C++17, gyda set offer MSVC v143.
 
@@ -281,7 +281,7 @@ Mae'r Makefile yn canfod y llwyfan yn awtomatig ac yn defnyddio'r gweithrediad t
 ./slymail MYBBS.qwk
 
 # Run the standalone configuration utility
-./config
+./config_slymail
 ```
 
 ### Rhaglen Ffurfweddu

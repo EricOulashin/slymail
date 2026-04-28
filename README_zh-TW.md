@@ -222,7 +222,7 @@ make
 
 這將建置兩個程式：
 - `slymail` - 主 QWK 閱讀器應用程式
-- `config` - 獨立設定工具
+- `config_slymail` - 獨立設定工具
 
 ### 使用除錯符號建置
 
@@ -257,7 +257,7 @@ msbuild vs\SlyMail.sln /p:Configuration=Debug /p:Platform=x64
 
 這將建置兩個執行檔：
 - `x64\Release\slymail.exe` — 主 QWK 閱讀器
-- `x64\Release\config.exe` — 獨立設定工具
+- `x64\Release\config_slymail.exe` — 獨立設定工具
 
 方案包含兩個專案（`SlyMail.vcxproj` 和 `Config.vcxproj`），以 x64、C++17、MSVC v143 工具集為目標。
 
@@ -281,7 +281,7 @@ Makefile 自動偵測平台並使用適當的終端機實作：
 ./slymail MYBBS.qwk
 
 # Run the standalone configuration utility
-./config
+./config_slymail
 ```
 
 ### 設定程式

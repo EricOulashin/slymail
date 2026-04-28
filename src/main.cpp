@@ -662,9 +662,9 @@ int main(int argc, char* argv[])
         // Find the config executable next to the slymail executable
         string configProgram;
 #ifdef _WIN32
-        configProgram = baseDir + PATH_SEP_STR + "config.exe";
+        configProgram = baseDir + PATH_SEP_STR + "config_slymail.exe";
 #else
-        configProgram = baseDir + PATH_SEP_STR + "config";
+        configProgram = baseDir + PATH_SEP_STR + "config_slymail";
 #endif
         // Check if the config program exists
         std::error_code ec;

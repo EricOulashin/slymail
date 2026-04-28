@@ -56,11 +56,11 @@ On first run, SlyMail builds a data hold at `~/.slymail` (on Linux, macOS, and B
 
 ### The Configuration Program
 
-SlyMail comes with a standalone configuration program called `config` (or `slymail-config` if installed via `make install`). This program gives a text‑based way t’ set all SlyMail options without openin’ the main app.
+SlyMail comes with a standalone configuration program called `config_slymail` (or `config_slymail` if installed via `make install`). This program gives a text‑based way t’ set all SlyMail options without openin’ the main app.
 
 Run it from the command line:
 
-    config
+    config_slymail
 
 The configuration program offers these categories:
 
@@ -300,7 +300,7 @@ If ye save a message with no text (empty or only whitespace), SlyMail aborts the
 
 SlyMail supports usin’ external text editors instead o’ the built‑in editor. T’ configure one:
 
-1. Open Settings (Ctrl-U or the `config` program)
+1. Open Settings (Ctrl-U or the `config_slymail` program)
 2. Go to **External Editors...** t’ add and configure editors
 3. Set **External Editor** to choose which editor to use
 4. Enable **Use external editor**
@@ -634,5 +634,5 @@ If ye be usin’ a Synchronet BBS, these QWK packet settings be recommended fer 
 - SlyEdit‑inspired message editor with Ice and DCT modes
 - Theme support, spell checker, and taglines
 - REP reply packet creation
-- File browser and standalone config utility
+- File browser and standalone config_slymail utility
 

@@ -222,7 +222,7 @@ make
 
 Detta bygger två program:
 - `slymail` - huvudprogrammet för QWK-läsning
-- `config` - det fristående konfigurationsverktyget
+- `config_slymail` - det fristående konfigurationsverktyget
 
 ### Bygga med felsökningssymboler
 
@@ -257,7 +257,7 @@ msbuild vs\SlyMail.sln /p:Configuration=Debug /p:Platform=x64
 
 Detta bygger två körbara filer:
 - `x64\Release\slymail.exe` — huvudprogrammet för QWK-läsning
-- `x64\Release\config.exe` — det fristående konfigurationsverktyget
+- `x64\Release\config_slymail.exe` — det fristående konfigurationsverktyget
 
 Lösningen innehåller två projekt (`SlyMail.vcxproj` och `Config.vcxproj`) som riktar sig mot x64, C++17, med MSVC v143-verktygsuppsättningen.
 
@@ -281,7 +281,7 @@ Makefilen identifierar automatiskt plattformen och använder lämplig terminalim
 ./slymail MYBBS.qwk
 
 # Run the standalone configuration utility
-./config
+./config_slymail
 ```
 
 ### Konfigurationsprogram

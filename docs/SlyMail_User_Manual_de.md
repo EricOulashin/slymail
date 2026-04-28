@@ -58,11 +58,11 @@ Beim ersten Start erstellt SlyMail ein Datenverzeichnis unter `~/.slymail` (auf 
 
 ### Das Konfigurationsprogramm
 
-SlyMail enthält ein eigenständiges Konfigurationsprogramm namens `config` (oder `slymail-config` bei Installation über `make install`). Dieses Programm bietet eine textbasierte Oberfläche zur Konfiguration aller SlyMail-Einstellungen ohne Öffnen der Hauptanwendung.
+SlyMail enthält ein eigenständiges Konfigurationsprogramm namens `config` (oder `config_slymail` bei Installation über `make install`). Dieses Programm bietet eine textbasierte Oberfläche zur Konfiguration aller SlyMail-Einstellungen ohne Öffnen der Hauptanwendung.
 
 Starten Sie es über die Befehlszeile:
 
-    config
+    config_slymail
 
 Das Konfigurationsprogramm bietet folgende Kategorien:
 

@@ -139,13 +139,13 @@ og BSD) eller i din hjemmemappe på Windows. Denne mappe indeholder:
 -----------------------------
 
 SlyMail inkluderer et selvstændigt konfigurationsprogram kaldet config (eller
-slymail-config hvis installeret via make install). Dette program giver en
+config_slymail hvis installeret via make install). Dette program giver en
 tekstbaseret brugerflade til konfigurering af alle SlyMail-indstillinger uden
 at åbne hovedprogrammet.
 
 Kør det fra kommandolinjen:
 
-    config
+    config_slymail
 
 Konfigurationsprogrammet tilbyder disse kategorier:
 

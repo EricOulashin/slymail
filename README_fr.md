@@ -222,7 +222,7 @@ make
 
 Ceci compile deux programmes :
 - `slymail` - l'application principale du lecteur QWK
-- `config` - l'utilitaire de configuration autonome
+- `config_slymail` - l'utilitaire de configuration autonome
 
 ### Compiler avec les symboles de débogage
 
@@ -257,7 +257,7 @@ msbuild vs\SlyMail.sln /p:Configuration=Debug /p:Platform=x64
 
 Ceci compile deux exécutables :
 - `x64\Release\slymail.exe` — le lecteur QWK principal
-- `x64\Release\config.exe` — l'utilitaire de configuration autonome
+- `x64\Release\config_slymail.exe` — l'utilitaire de configuration autonome
 
 La solution contient deux projets (`SlyMail.vcxproj` et `Config.vcxproj`) ciblant x64, C++17, avec l'ensemble d'outils MSVC v143.
 
@@ -281,7 +281,7 @@ Le Makefile détecte automatiquement la plateforme et utilise l'implémentation 
 ./slymail MYBBS.qwk
 
 # Run the standalone configuration utility
-./config
+./config_slymail
 ```
 
 ### Programme de configuration

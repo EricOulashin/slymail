@@ -129,12 +129,12 @@ BSD) or in yer home directory on Windows. This hold contains:
 ------------------------------
 
 SlyMail comes with a standalone configuration program called config (or
-slymail-config if installed via make install). This program gives a text‑based
+config_slymail if installed via make install). This program gives a text‑based
 way t’ set all SlyMail options without openin’ the main app.
 
 Run it from the command line:
 
-    config
+    config_slymail
 
 The configuration program offers these categories:
 
@@ -147,7 +147,7 @@ The configuration program offers these categories:
     editor configuration, lightbar mode, splash screen
 
 Settings be saved automatically when ye leave each category. Both SlyMail and
-the config program read and write the same slymail.ini file.
+the config_slymail program read and write the same slymail.ini file.
 
 3. File Browser
 ===============
@@ -424,7 +424,7 @@ the message and shows a notification instead o’ postin’ it.
 SlyMail supports usin’ external text editors instead o’ the built‑in editor. T’
 configure one:
 
-  1. Open Settings (Ctrl-U or the config program)
+  1. Open Settings (Ctrl-U or the config_slymail program)
   2. Go to External Editors... t’ add and configure editors
   3. Set External Editor to choose which editor to use
   4. Enable Use external editor
@@ -820,5 +820,5 @@ Added
   - SlyEdit‑inspired message editor with Ice and DCT modes
   - Theme support, spell checker, and taglines
   - REP reply packet creation
-  - File browser and standalone config utility
+  - File browser and standalone config_slymail utility
 

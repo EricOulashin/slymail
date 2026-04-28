@@ -56,11 +56,11 @@ On first run, SlyMail creates a data directory at `~/.slymail` (on Linux, macOS,
 
 ### The Configuration Program
 
-SlyMail includes a standalone configuration program called `config` (or `slymail-config` if installed via `make install`). This program provides a text-based interface for configuring all SlyMail settings without opening the main application.
+SlyMail includes a standalone configuration program called `config_slymail` (or `config_slymail` if installed via `make install`). This program provides a text-based interface for configuring all SlyMail settings without opening the main application.
 
 Run it from the command line:
 
-    config
+    config_slymail
 
 The configuration program offers these categories:
 
@@ -69,7 +69,7 @@ The configuration program offers these categories:
 - **Theme Settings** - Select Ice and DCT color theme files
 - **General Settings** - Your name for replies, reply packet directory, external editor configuration, lightbar mode, splash screen
 
-Settings are saved automatically when you exit each category. Both SlyMail and the config program read and write the same `slymail.ini` file.
+Settings are saved automatically when you exit each category. Both SlyMail and the config_slymail program read and write the same `slymail.ini` file.
 
 ## File Browser
 
@@ -300,7 +300,7 @@ If you save a message that has no text content (empty or whitespace only), SlyMa
 
 SlyMail supports using external text editors instead of the built-in editor. To configure an external editor:
 
-1. Open Settings (Ctrl-U or the config program)
+1. Open Settings (Ctrl-U or the config_slymail program)
 2. Go to **External Editors...** to add and configure editors
 3. Set the **External Editor** to select which configured editor to use
 4. Enable **Use external editor**
@@ -560,7 +560,7 @@ If using a Synchronet BBS, the following QWK packet settings are recommended for
 
 #### Changed
 - Quote line wrapping now respects terminal width when enabled
-- Configuration on first start: If the user doesn't have any SlyMail settings yet (i.e., their .slymail directory doesn't exist yet), config will run on startup, and the user's name will be asked before continuing on into configuration settings.
+- Configuration on first start: If the user doesn't have any SlyMail settings yet (i.e., their .slymail directory doesn't exist yet), config_slymail will run on startup, and the user's name will be asked before continuing on into configuration settings.
 
 #### Fixed
 - Quote line editing no longer merges overflow with adjacent lines
@@ -622,4 +622,4 @@ If using a Synchronet BBS, the following QWK packet settings are recommended for
 - SlyEdit-inspired message editor with Ice and DCT modes
 - Theme support, spell checker, and taglines
 - REP reply packet creation
-- File browser and standalone config utility
+- File browser and standalone config_slymail utility

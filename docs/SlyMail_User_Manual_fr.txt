@@ -137,7 +137,7 @@ principale.
 
 Exécutez-le depuis la ligne de commande :
 
-    config
+    config_slymail
 
 Le programme de configuration propose ces catégories :
 

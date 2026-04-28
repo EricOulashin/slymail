@@ -385,12 +385,12 @@ leído” por conferencia</li>
 </ul>
 <h3 id="el-programa-de-configuración">El programa de configuración</h3>
 <p>SlyMail incluye un programa de configuración independiente llamado
-<code>config</code> (o <code>slymail-config</code> si se instaló con
+<code>config_slymail</code> (o <code>config_slymail</code> si se instaló con
 <code>make install</code>). Este programa ofrece una interfaz en modo
 texto para configurar todas las opciones de SlyMail sin abrir la
 aplicación principal.</p>
 <p>Ejecútalo desde la línea de comandos:</p>
-<pre><code>config</code></pre>
+<pre><code>config_slymail</code></pre>
 <p>El programa de configuración ofrece estas categorías:</p>
 <ul>
 <li><strong>Configuración del editor</strong> - Estilo del editor,
@@ -406,7 +406,7 @@ directorio de paquetes de respuesta, configuración de editor externo,
 modo “lightbar”, pantalla de presentación</li>
 </ul>
 <p>La configuración se guarda automáticamente al salir de cada
-categoría. Tanto SlyMail como el programa <code>config</code> leen y
+categoría. Tanto SlyMail como el programa <code>config_slymail</code> leen y
 escriben el mismo archivo <code>slymail.ini</code>.</p>
 <h2 id="explorador-de-archivos">Explorador de archivos</h2>
 <p>Cuando SlyMail se inicia, se muestra un explorador de archivos para
@@ -973,7 +973,7 @@ aborta el mensaje y muestra una notificación en lugar de publicarlo.</p>
 <p>SlyMail permite usar editores de texto externos en lugar del editor
 integrado. Para configurar un editor externo:</p>
 <ol type="1">
-<li>Abre Configuración (Ctrl-U o el programa <code>config</code>)</li>
+<li>Abre Configuración (Ctrl-U o el programa <code>config_slymail</code>)</li>
 <li>Ve a <strong>External Editors…</strong> para añadir y configurar
 editores</li>
 <li>Establece <strong>External Editor</strong> para elegir cuál
@@ -1493,7 +1493,7 @@ editar</li>
 <li>El ajuste de líneas citadas respeta el ancho del terminal cuando
 está habilitado</li>
 <li>Configuración en el primer inicio: si el usuario no tiene
-configuración, <code>config</code> se ejecuta al inicio y se solicita el
+configuración, <code>config_slymail</code> se ejecuta al inicio y se solicita el
 nombre antes de continuar</li>
 </ul>
 <h4 id="corregido">Corregido</h4>

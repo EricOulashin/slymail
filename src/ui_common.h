@@ -22,6 +22,12 @@ void drawProgramInfoLine(int y);
 
 void fillRow(int y, const TermAttr& attr, int startX = 0, int endX = -1);
 
+// Fill a dialog's complete rectangular area (border + interior) with a solid
+// background so that no previous terminal content shows through.  Call this
+// at the top of any dialog's full-redraw path before drawing the box/content,
+// and also before returning from a sub-dialog so it erases its own footprint.
+void clearDialogArea(int y, int x, int h, int w);
+
 void fillBullets(int y, int x, int len, const TermAttr& attr);
 
 // ---- Box-drawing helpers ----

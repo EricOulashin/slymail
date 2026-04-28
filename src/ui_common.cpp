@@ -62,6 +62,13 @@ void fillRow(int y, const TermAttr& attr, int startX, int endX)
     g_term->fillRegion(y, startX, endX, ' ');
 }
 
+void clearDialogArea(int y, int x, int h, int w)
+{
+    TermAttr bg = tAttr(TC_BLACK, TC_BLACK, false);
+    for (int r = y; r < y + h; ++r)
+        fillRow(r, bg, x, x + w);
+}
+
 void fillBullets(int y, int x, int len, const TermAttr& attr)
 {
     g_term->setAttr(attr);

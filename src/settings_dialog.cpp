@@ -59,6 +59,7 @@ EditorStyle showUIModeDialog(EditorStyle currentStyle)
     {
         if (needFullRedraw)
         {
+            clearDialogArea(dlgY, dlgX, dlgH, dlgW);
             // Draw box
             g_term->setAttr(borderAttr);
             g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
@@ -135,6 +136,7 @@ EditorStyle showUIModeDialog(EditorStyle currentStyle)
                 break;
             case TK_ENTER:
             {
+                clearDialogArea(dlgY, dlgX, dlgH, dlgW);
                 switch (cursor)
                 {
                     case 0: return EditorStyle::Ice;
@@ -144,6 +146,7 @@ EditorStyle showUIModeDialog(EditorStyle currentStyle)
                 return currentStyle;
             }
             case TK_ESCAPE:
+                clearDialogArea(dlgY, dlgX, dlgH, dlgW);
                 return currentStyle;
             case TK_RESIZE:
                 needFullRedraw = true;
@@ -330,6 +333,7 @@ string showThemeSelector(const string& baseDir, EditorStyle currentStyle)
 
         if (needFullRedraw || scrollChanged)
         {
+            clearDialogArea(dlgY, dlgX, dlgH, dlgW);
             // Draw box
             g_term->setAttr(borderAttr);
             g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
@@ -412,10 +416,12 @@ string showThemeSelector(const string& baseDir, EditorStyle currentStyle)
                 cursor = static_cast<int>(themes.size()) - 1;
                 break;
             case TK_ENTER:
+                clearDialogArea(dlgY, dlgX, dlgH, dlgW);
                 return themes[cursor];
             case TK_ESCAPE:
             case 'q':
             case 'Q':
+                clearDialogArea(dlgY, dlgX, dlgH, dlgW);
                 return "";
             case TK_RESIZE:
                 needFullRedraw = true;
@@ -539,6 +545,7 @@ string showDictionarySelector(const string& baseDir,
 
         if (needFullRedraw || scrollChanged)
         {
+            clearDialogArea(dlgY, dlgX, dlgH, dlgW);
             // Draw box
             g_term->setAttr(borderAttr);
             g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
@@ -645,6 +652,7 @@ string showDictionarySelector(const string& baseDir,
                         result += dicts[i];
                     }
                 }
+                clearDialogArea(dlgY, dlgX, dlgH, dlgW);
                 return result;
             }
             case TK_RESIZE:
@@ -721,6 +729,7 @@ string showLanguageSelector(const string& currentCode)
 
         if (needFullRedraw || scrollChanged)
         {
+            clearDialogArea(dlgY, dlgX, dlgH, dlgW);
             g_term->setAttr(borderAttr);
             g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
 
@@ -792,10 +801,12 @@ string showLanguageSelector(const string& currentCode)
                 break;
             case TK_ENTER:
             case ' ':
+                clearDialogArea(dlgY, dlgX, dlgH, dlgW);
                 return langs[cursor].code;
             case TK_ESCAPE:
             case 'q':
             case 'Q':
+                clearDialogArea(dlgY, dlgX, dlgH, dlgW);
                 return currentCode;
             case TK_RESIZE:
                 needFullRedraw = true;
@@ -897,7 +908,9 @@ bool showEditorSettings(Settings& settings, const string& baseDir)
     {
         if (needFullRedraw)
         {
-        g_term->clear();
+        // Erase the exact dialog footprint so no background content bleeds
+        // through, without wiping the full screen behind the dialog.
+        clearDialogArea(dlgY, dlgX, dlgH, dlgW);
 
         // Draw outer box
         g_term->setAttr(borderAttr);
@@ -1231,6 +1244,8 @@ bool showSettingsDialog(Settings& settings, const string& baseDir)
 
         if (needFullRedraw || scrollChanged)
         {
+            clearDialogArea(dlgY, dlgX, dlgH, dlgW);
+
             // Draw box
             g_term->setAttr(borderAttr);
             g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
@@ -1520,11 +1535,7 @@ bool showAttrCodeToggles(Settings& settings)
 
     while (true)
     {
-        // Clear dialog area
-        for (int r = 0; r < dlgH; ++r)
-        {
-            fillRow(dlgY + r, tAttr(TC_BLACK, TC_BLACK, false), dlgX, dlgX + dlgW);
-        }
+        clearDialogArea(dlgY, dlgX, dlgH, dlgW);
 
         // Box
         g_term->setAttr(borderAttr);
@@ -1655,7 +1666,7 @@ DropFileType showDropFileTypeSelector(DropFileType current)
 
     for (;;)
     {
-        g_term->clear();
+        clearDialogArea(dlgY, dlgX, dlgH, dlgW);
         g_term->setAttr(borderAttr);
         g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
         string title = _(" Drop File Type ");
@@ -1691,9 +1702,11 @@ DropFileType showDropFileTypeSelector(DropFileType current)
             case TK_DOWN: if (selected < totalItems - 1) ++selected; break;
             case TK_ENTER:
             case ' ':
+                clearDialogArea(dlgY, dlgX, dlgH, dlgW);
                 return items[selected].type;
             case TK_ESCAPE:
             case 'q': case 'Q':
+                clearDialogArea(dlgY, dlgX, dlgH, dlgW);
                 return current;
             default: break;
         }
@@ -1729,7 +1742,7 @@ bool showExternalEditorConfig(ExternalEditorConfig& editor)
     TermAttr valueAttr  = tAttr(TC_WHITE, TC_BLACK, true);
 
     auto drawDialog = [&]() {
-        g_term->clear();
+        clearDialogArea(dlgY, dlgX, dlgH, dlgW);
         g_term->setAttr(borderAttr);
         g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
 
@@ -1943,6 +1956,7 @@ bool showExternalEditorConfig(ExternalEditorConfig& editor)
             }
             case TK_ESCAPE:
             case 'q': case 'Q':
+                clearDialogArea(dlgY, dlgX, dlgH, dlgW);
                 return changed;
             default: break;
         }
@@ -1982,7 +1996,7 @@ bool showExternalEditorsList(Settings& settings)
         TermAttr selAttr    = tAttr(TC_BLUE, TC_WHITE, false);
         TermAttr activeAttr = tAttr(TC_GREEN, TC_BLACK, true);
 
-        g_term->clear();
+        clearDialogArea(dlgY, dlgX, dlgH, dlgW);
         g_term->setAttr(borderAttr);
         g_term->drawBox(dlgY, dlgX, dlgH, dlgW);
 
@@ -2104,7 +2118,17 @@ bool showExternalEditorsList(Settings& settings)
             }
             case TK_ESCAPE:
             case 'q': case 'Q':
+            {
+                int dlgW2 = g_term->getCols() > 69 ? 65 : g_term->getCols() - 4;
+                int totalItems2 = static_cast<int>(settings.externalEditors.size()) + 1;
+                int vis2 = std::min(totalItems2, g_term->getRows() - 10);
+                if (vis2 < 3) vis2 = 3;
+                int dlgH2 = vis2 + 4;
+                int dlgY2 = (g_term->getRows() - dlgH2) / 2;
+                int dlgX2 = (g_term->getCols() - dlgW2) / 2;
+                clearDialogArea(dlgY2, dlgX2, dlgH2, dlgW2);
                 return changed;
+            }
             default: break;
         }
     }

@@ -257,7 +257,7 @@ msbuild vs\SlyMail.sln /p:Configuration=Debug /p:Platform=x64
 
 Tógann sé seo dhá inrite:
 - `x64\Release\slymail.exe` — an príomhléitheoir QWK
-- `x64\Release\config.exe` — fóntas cumraithe neamhspleách
+- `x64\Release\config_slymail.exe` — fóntas cumraithe neamhspleách
 
 Tá dhá thionscadal ag an réiteach (`SlyMail.vcxproj` agus `Config.vcxproj`) dírithe ar x64, C++17, leis an tacar uirlisí MSVC v143.
 
@@ -281,7 +281,7 @@ Braithean an Makefile an t-ardán go huathoibríoch agus úsáideann sé an cur 
 ./slymail MYBBS.qwk
 
 # Run the standalone configuration utility
-./config
+./config_slymail
 ```
 
 ### Clár Cumraithe

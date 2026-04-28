@@ -3,7 +3,7 @@
 
 # Program names
 TARGET = slymail
-CONFIG_TARGET = config
+CONFIG_TARGET = config_slymail
 
 # Source files
 SRCDIR = src
@@ -81,7 +81,7 @@ endif
 # Windows (MinGW/MSYS2)
 ifeq ($(OS),Windows_NT)
     TARGET = slymail.exe
-    CONFIG_TARGET = config.exe
+    CONFIG_TARGET = config_slymail.exe
     TERM_SRC = $(SRCDIR)/terminal_win32.cpp
     LDFLAGS =
     # Uncomment if linking against a bundled libintl on Windows:
@@ -292,7 +292,7 @@ clean-locale:
 LOCALE_INSTALL_DIR = /usr/local/share/locale
 install: $(TARGET) $(CONFIG_TARGET) locale-compile
 	install -m 755 $(TARGET) /usr/local/bin/
-	install -m 755 $(CONFIG_TARGET) /usr/local/bin/slymail-config
+	install -m 755 $(CONFIG_TARGET) /usr/local/bin/config_slymail
 	@for lang in $(I18N_LANGS); do \
 	    mo="locale/$$lang/LC_MESSAGES/slymail.mo"; \
 	    if [ -f "$$mo" ]; then \
@@ -304,7 +304,7 @@ install: $(TARGET) $(CONFIG_TARGET) locale-compile
 # Uninstall
 uninstall:
 	rm -f /usr/local/bin/$(TARGET)
-	rm -f /usr/local/bin/slymail-config
+	rm -f /usr/local/bin/config_slymail
 	@for lang in $(I18N_LANGS); do \
 	    rm -f "$(LOCALE_INSTALL_DIR)/$$lang/LC_MESSAGES/slymail.mo"; \
 	done

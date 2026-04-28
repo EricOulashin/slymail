@@ -37,7 +37,7 @@ SlyMail interprets color/attribute codes from multiple BBS software packages, re
 - **Celerity pipe codes** — `|` + letter (e.g., `|c` for cyan, `|W` for bright white)
 - **Renegade pipe codes** — `|` + two-digit number 00–31
 
-Each BBS code type can be individually enabled or disabled via the **Attribute code toggles** sub-dialog in Reader Settings or the `config` utility. These toggles affect both the reader and the editor. A separate **Strip ANSI codes** option removes all ANSI sequences from messages when enabled.
+Each BBS code type can be individually enabled or disabled via the **Attribute code toggles** sub-dialog in Reader Settings or the `config_slymail` utility. These toggles affect both the reader and the editor. A separate **Strip ANSI codes** option removes all ANSI sequences from messages when enabled.
 
 ### File Attachments
 - Detects file attachments referenced via `@ATTACH:` kludge lines in message bodies
@@ -221,7 +221,7 @@ make
 
 This builds two programs:
 - `slymail` - the main QWK reader application
-- `config` - the standalone configuration utility
+- `config_slymail` - the standalone configuration utility
 
 ### Build with debug symbols
 
@@ -232,7 +232,7 @@ make debug
 ### Install (optional)
 
 ```bash
-sudo make install    # Installs slymail and config to /usr/local/bin/
+sudo make install    # Installs slymail and config_slymail to /usr/local/bin/
 sudo make uninstall  # Remove
 ```
 
@@ -256,7 +256,7 @@ msbuild vs\SlyMail.sln /p:Configuration=Debug /p:Platform=x64
 
 This builds two executables:
 - `x64\Release\slymail.exe` — the main QWK reader
-- `x64\Release\config.exe` — the standalone configuration utility
+- `x64\Release\config_slymail.exe` — the standalone configuration utility
 
 The solution contains two projects (`SlyMail.vcxproj` and `Config.vcxproj`) targeting x64, C++17, with the MSVC v143 toolset.
 
@@ -280,19 +280,19 @@ The Makefile automatically detects the platform and uses the appropriate termina
 ./slymail MYBBS.qwk
 
 # Run the standalone configuration utility
-./config
+./config_slymail
 ```
 
 ### Configuration Program
 
-The `config` utility provides a standalone text-based interface for configuring SlyMail settings without opening the main application. It offers four configuration categories:
+The `config_slymail` utility provides a standalone text-based interface for configuring SlyMail settings without opening the main application. It offers four configuration categories:
 
 - **Editor Settings** - All the same settings available via Ctrl-U in the editor (editor style, taglines, spell-check, quoting options, etc.)
 - **Reader Settings** - Toggle kludge lines, tear lines, scrollbar, ANSI stripping, lightbar mode, reverse order, and attribute code toggles (per-BBS enable/disable)
 - **Theme Settings** - Select Ice and DCT color theme files from the `config_files/` directory
 - **General Settings** - Set your name for replies and the REP packet output directory
 
-Settings are saved automatically when exiting each category. Both SlyMail and the config utility read and write the same settings file.
+Settings are saved automatically when exiting each category. Both SlyMail and the `config_slymail` utility read and write the same settings file.
 
 ### Key Bindings
 
@@ -406,7 +406,7 @@ CP437 box-drawing and special characters are defined in `cp437defs.h` and render
 
 ### Settings File
 
-Settings are stored in an INI file named `slymail.ini` in the same directory as the SlyMail executable. This file is shared between both SlyMail and the `config` utility. The file is well-commented with descriptions of each setting.
+Settings are stored in an INI file named `slymail.ini` in the same directory as the SlyMail executable. This file is shared between both SlyMail and the `config_slymail` utility. The file is well-commented with descriptions of each setting.
 
 Example `slymail.ini`:
 ```ini
@@ -465,13 +465,13 @@ Example: `nbh` = normal blue bright, `n4wh` = bright white on blue background
 
 ### Taglines
 
-Taglines are short quotes or sayings appended to the end of messages when saved. The tagline feature can be enabled via Ctrl-U in the editor or the `config` utility.
+Taglines are short quotes or sayings appended to the end of messages when saved. The tagline feature can be enabled via Ctrl-U in the editor or the `config_slymail` utility.
 
 Taglines are stored in `tagline_files/taglines.txt`, one per line. Lines starting with `#` or `;` are treated as comments and ignored. When saving a message with taglines enabled, the user is prompted to either select a specific tagline or choose one at random. Selected taglines are appended to the message with a `...` prefix (e.g., `...To err is human, to really foul things up requires a computer.`).
 
 ### Spell Checker
 
-SlyMail includes a built-in spell checker that uses plain-text dictionary files. The spell checker can be configured to prompt on save via Ctrl-U in the editor or the `config` utility.
+SlyMail includes a built-in spell checker that uses plain-text dictionary files. The spell checker can be configured to prompt on save via Ctrl-U in the editor or the `config_slymail` utility.
 
 **Dictionary files** are plain text files (one word per line) stored in `dictionary_files/`. Multiple dictionaries can be selected simultaneously for combined word coverage. SlyMail ships with:
 - `dictionary_en.txt` - English (general, ~130K words)
