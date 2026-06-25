@@ -55,7 +55,19 @@ CXXFLAGS = -std=c++17 -Wall -Wextra -O2 -I$(SRCDIR)
 ifeq ($(UNAME_S),Linux)
     TERM_SRC = $(SRCDIR)/terminal_ncurses.cpp
     CXXFLAGS += -D_XOPEN_SOURCE_EXTENDED
-    LDFLAGS = -lncursesw -ltinfo
+    # Wide ncurses (ncursesw) must link against the matching wide terminfo
+    # library.  Gentoo (and some other distros) ship separate libtinfo and
+    # libtinfow; linking ncursesw with narrow tinfo causes runtime crashes.
+    # See: https://github.com/EricOulashin/SlyMail/issues/37
+    NCURSESW_PC := $(shell pkg-config --libs ncursesw 2>/dev/null)
+    TINFOW_LIB  := $(shell $(CXX) -print-file-name=libtinfow.so)
+    ifneq ($(and $(TINFOW_LIB),$(wildcard $(TINFOW_LIB))),)
+        LDFLAGS = -lncursesw -ltinfow
+    else ifneq ($(NCURSESW_PC),)
+        LDFLAGS = $(NCURSESW_PC)
+    else
+        LDFLAGS = -lncursesw -ltinfo
+    endif
 endif
 ifeq ($(UNAME_S),Darwin)
     TERM_SRC = $(SRCDIR)/terminal_ncurses.cpp
